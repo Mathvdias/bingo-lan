@@ -1,3 +1,4 @@
+import 'package:bingo_app/shared/di/service_locator.dart';
 import 'package:bingo_app/shared/router.dart';
 import 'package:bingo_app/shared/ui/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,10 @@ void main() async {
   // Ensure Flutter bindings are initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. Initialize the Bingo SDK
+  // 1. Setup Service Locator
+  setupServiceLocator();
+
+  // 2. Initialize the Bingo SDK
   // Using placeholder keys for now. These should be stored securely.
   await BingoSDK.initialize(
     supabaseUrl: "YOUR_SUPABASE_URL",
@@ -17,7 +21,7 @@ void main() async {
     revenueCatKey: "YOUR_REVENUECAT_KEY",
   );
 
-  // 2. Fetch and activate remote feature flags.
+  // 3. Fetch and activate remote feature flags.
   final config = GetIt.I.get<IConfigDriver>();
   await config.fetchAndActivate();
 

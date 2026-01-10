@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import '../../features/host/invite_screen.dart';
 import '../../features/host/room_screen.dart';
 import '../../features/host/setup_screen.dart';
 import '../../features/lobby/lobby_screen.dart';
@@ -38,6 +39,17 @@ final GoRouter router = GoRouter(
       path: '/host/room',
       builder: (context, state) => const HostRoomScreen(),
     ),
+    GoRoute(
+      path: '/host/invite',
+      builder: (context, state) {
+        final qrData = state.extra as String?;
+        if (qrData == null) {
+          // Handle error case, maybe redirect to setup
+          return const HostSetupScreen();
+        }
+        return HostInviteScreen(qrData: qrData);
+      },
+    ),
     // Player Routes
     GoRoute(
       path: '/player/scan',
@@ -45,7 +57,14 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/player/game',
-      builder: (context, state) => const PlayerGameScreen(),
+      builder: (context, state) {
+        final cardId = state.extra as int?;
+        if (cardId == null) {
+          // Handle error case, maybe redirect to scan
+          return const PlayerScanScreen();
+        }
+        return PlayerGameScreen(cardId: cardId);
+      },
     ),
   ],
 );

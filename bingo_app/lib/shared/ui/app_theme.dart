@@ -60,6 +60,24 @@ final ThemeData bingoTheme = ThemeData(
     ), // Number
   ),
 
+  // Default InputDecoration style
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    fillColor: AppColors.card,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: AppColors.outline, width: 2),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: AppColors.outline, width: 2),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: AppColors.outline, width: 4),
+    ),
+  ),
+
   // Default ElevatedButton style
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -73,13 +91,25 @@ final ThemeData bingoTheme = ThemeData(
     ),
   ),
 
+  // Default SegmentedButton style
+  segmentedButtonTheme: SegmentedButtonThemeData(
+    style: SegmentedButton.styleFrom(
+      selectedBackgroundColor: AppColors.primary,
+      selectedForegroundColor: AppColors.text,
+      foregroundColor: AppColors.text,
+      side: const BorderSide(color: AppColors.outline, width: 2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      textStyle: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.normal),
+    ),
+  ),
+
   // Default Card style
-  cardTheme: const CardThemeData(
+  cardTheme: CardThemeData(
     color: AppColors.card,
     elevation: 0,
     shape: RoundedRectangleBorder(
-      side: BorderSide(color: AppColors.outline, width: 2),
-      borderRadius: BorderRadius.all(Radius.circular(16)),
+      side: const BorderSide(color: AppColors.outline, width: 2),
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
     ),
   ),
 );
