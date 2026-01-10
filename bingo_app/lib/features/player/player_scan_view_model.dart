@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:flutter/foundation.dart';
 
@@ -7,7 +8,8 @@ class PlayerScanViewModel extends BaseViewModel {
   String? get errorMessage => _errorMessage;
 
   /// Called when a QR code is detected by the scanner.
-  Future<void> onQrCodeScanned(String rawData) async {
+  /// Decodes the data, simulates a connection, and returns a random cardId on success.
+  Future<int?> onQrCodeScanned(String rawData) async {
     setLoading(true);
     _errorMessage = null;
     notifyListeners();
@@ -38,15 +40,21 @@ class PlayerScanViewModel extends BaseViewModel {
       // For now, just simulate a successful connection.
       await Future.delayed(const Duration(seconds: 1));
 
+      // 4. Generate a random seed for the bingo card
+      final cardId = Random().nextInt(999999);
+      return cardId;
+
     } on FormatException catch(e) {
       debugPrint('Error decoding QR code: $e');
       _errorMessage = 'QR Code inválido. Tente novamente.';
       notifyListeners();
+      return null;
     }
     catch (e) {
       debugPrint('An unexpected error occurred: $e');
       _errorMessage = 'Ocorreu um erro inesperado.';
       notifyListeners();
+      return null;
     } finally {
       setLoading(false);
     }

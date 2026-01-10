@@ -8,7 +8,7 @@ abstract class IGameConnection {
   
   /// Starts a new game room as the host.
   /// [roomName] is a user-friendly name for the session.
-  Future<void> hostRoom(String roomName);
+  Future<void> hostRoom(String roomName, String secretToken, String hostIp, int port);
 
   /// Broadcasts a [GameEvent] to all connected players.
   Future<void> broadcastEvent(GameEvent event);

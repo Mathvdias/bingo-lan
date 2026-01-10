@@ -1,17 +1,23 @@
 import 'dart:convert';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
+import 'package:bingo_core/bingo_core.dart'; // Import IGameConnection
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
 enum GameType { local, online }
 
 class HostSetupViewModel extends BaseViewModel {
+  final IGameConnection _gameConnection;
+
   String _roomName = '';
   GameType _gameType = GameType.local;
   String? errorMessage;
 
   String get roomName => _roomName;
   GameType get gameType => _gameType;
+
+  HostSetupViewModel({required IGameConnection gameConnection})
+      : _gameConnection = gameConnection;
 
   void onRoomNameChanged(String value) {
     _roomName = value;
@@ -51,8 +57,7 @@ class HostSetupViewModel extends BaseViewModel {
     // 1. Get Local IP Address
     final String? ip = await NetworkInfo().getWifiIP();
     if (ip == null) {
-      errorMessage =
-          "Não foi possível obter o IP. Verifique sua conexão Wi-Fi.";
+      errorMessage = "Não foi possível obter o IP. Verifique sua conexão Wi-Fi.";
       notifyListeners();
       return null;
     }
@@ -63,7 +68,10 @@ class HostSetupViewModel extends BaseViewModel {
     // 3. Define Port
     const int port = 8080; // As per sec.md
 
-    // 4. Construct QR Code Payload (JSON)
+    // 4. Host the room
+    await _gameConnection.hostRoom(roomName.trim(), secretToken, ip, port);
+
+    // 5. Construct QR Code Payload (JSON)
     final payload = {
       "v": 1,
       "t": "wifi",
@@ -73,12 +81,11 @@ class HostSetupViewModel extends BaseViewModel {
       "n": roomName.trim(),
     };
 
-    // 5. Encode to Base64
+    // 6. Encode to Base64
     final String jsonPayload = jsonEncode(payload);
     final String base64Payload = base64Encode(utf8.encode(jsonPayload));
-
-    // TODO: Start the shelf server with the secretToken
 
     return base64Payload;
   }
 }
+

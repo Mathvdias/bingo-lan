@@ -2,6 +2,7 @@ import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart'; // Import go_router
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class PlayerScanScreen extends StatelessWidget {
@@ -39,10 +40,17 @@ class PlayerScanScreen extends StatelessWidget {
                   detectionSpeed: DetectionSpeed.normal,
                   returnImage: false,
                 ),
-                onDetect: (capture) {
+                onDetect: (capture) async {
                   final List<Barcode> barcodes = capture.barcodes;
-                  if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
-                    viewModel.onQrCodeScanned(barcodes.first.rawValue!);
+                  if (barcodes.isNotEmpty &&
+                      barcodes.first.rawValue != null &&
+                      !viewModel.isLoading) {
+                    final cardId = await viewModel.onQrCodeScanned(
+                      barcodes.first.rawValue!,
+                    );
+                    if (cardId != null && context.mounted) {
+                      context.go('/player/game', extra: cardId);
+                    }
                   }
                 },
               ),
@@ -82,9 +90,7 @@ class PlayerScanScreen extends StatelessWidget {
               if (viewModel.isLoading)
                 Container(
                   color: Colors.black.withOpacity(0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: const Center(child: CircularProgressIndicator()),
                 ),
             ],
           ),
