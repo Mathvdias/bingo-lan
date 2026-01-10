@@ -1,4 +1,3 @@
-import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,21 +29,21 @@ class LobbyScreen extends StatelessWidget {
                   'Sua festa, suas regras',
                   textAlign: TextAlign.center,
                   style: textTheme.bodyLarge?.copyWith(
-                    color: AppColors.text.withOpacity(0.7),
+                    color: const Color.fromRGBO(18, 18, 18, 0.7),
                   ),
                 ),
                 const SizedBox(height: 64),
                 BingoButton(
                   label: 'Organizar um Bingo',
                   onPressed: () {
-                    context.go('/host/setup');
+                    context.push('/host/setup'); // Changed from .go to .push
                   },
                 ),
                 const SizedBox(height: 24),
                 BingoButton(
                   label: 'Entrar em um Bingo',
                   onPressed: () {
-                    context.go('/player/scan');
+                    context.push('/player/scan'); // Changed from .go to .push
                   },
                   color: colorScheme.secondary,
                 ),

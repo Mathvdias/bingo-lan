@@ -2,8 +2,12 @@ import 'package:get_it/get_it.dart';
 
 import '../drivers/i_config_driver.dart';
 import '../drivers/i_game_connection.dart';
+import '../drivers/i_network_info_driver.dart'; // New import
 import '../drivers/i_payment_driver.dart';
-import '../drivers/local_shelf_game_connection.dart'; // Import the new connection
+import '../drivers/i_uuid_driver.dart'; // New import
+import '../drivers/local_shelf_game_connection.dart';
+import '../drivers/network_info_driver.dart'; // New import
+import '../drivers/uuid_driver.dart'; // New import
 import '../logic/access_control_service.dart';
 
 // This is a placeholder implementation for the IConfigDriver.
@@ -68,8 +72,9 @@ class BingoSDK {
     // Register drivers with placeholder implementations for now.
     getIt.registerSingleton<IConfigDriver>(_PlaceholderConfigDriver());
     getIt.registerSingleton<IPaymentDriver>(_PlaceholderPaymentDriver());
-    // Register the actual LocalShelfGameConnection for IGameConnection
     getIt.registerSingleton<IGameConnection>(LocalShelfGameConnection());
+    getIt.registerSingleton<INetworkInfoDriver>(NetworkInfoDriver()); // New registration
+    getIt.registerSingleton<IUUIDDriver>(UUIDDriver()); // New registration
 
     // Initialize the payment driver
     await getIt<IPaymentDriver>().init();

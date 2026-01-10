@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
-import 'package:bingo_core/bingo_core.dart'; // Import IGameConnection
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:uuid/uuid.dart';
+import 'package:bingo_core/bingo_core.dart'; // Import IGameConnection, INetworkInfoDriver, IUUIDDriver
 
 enum GameType { local, online }
 
 class HostSetupViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
+  final INetworkInfoDriver _networkInfoDriver;
+  final IUUIDDriver _uuidDriver;
 
   String _roomName = '';
   GameType _gameType = GameType.local;
@@ -16,8 +16,13 @@ class HostSetupViewModel extends BaseViewModel {
   String get roomName => _roomName;
   GameType get gameType => _gameType;
 
-  HostSetupViewModel({required IGameConnection gameConnection})
-      : _gameConnection = gameConnection;
+  HostSetupViewModel({
+    required IGameConnection gameConnection,
+    required INetworkInfoDriver networkInfoDriver,
+    required IUUIDDriver uuidDriver,
+  })  : _gameConnection = gameConnection,
+        _networkInfoDriver = networkInfoDriver,
+        _uuidDriver = uuidDriver;
 
   void onRoomNameChanged(String value) {
     _roomName = value;
@@ -55,7 +60,7 @@ class HostSetupViewModel extends BaseViewModel {
 
   Future<String?> _createLocalRoom() async {
     // 1. Get Local IP Address
-    final String? ip = await NetworkInfo().getWifiIP();
+    final String? ip = await _networkInfoDriver.getWifiIP();
     if (ip == null) {
       errorMessage = "Não foi possível obter o IP. Verifique sua conexão Wi-Fi.";
       notifyListeners();
@@ -63,7 +68,7 @@ class HostSetupViewModel extends BaseViewModel {
     }
 
     // 2. Generate Secret Token
-    final String secretToken = const Uuid().v4().substring(0, 8);
+    final String secretToken = _uuidDriver.v4().substring(0, 8);
 
     // 3. Define Port
     const int port = 8080; // As per sec.md

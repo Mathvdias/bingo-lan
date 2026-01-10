@@ -1,3 +1,4 @@
+import 'dart:developer'; // Import for log
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
@@ -83,13 +84,13 @@ class PlayerScanScreen extends StatelessWidget {
                   label: 'Digitar Código Manualmente',
                   onPressed: () {
                     // TODO: Implement manual code entry dialog
-                    print("Manual code entry not implemented yet.");
+                    log("Manual code entry not implemented yet.");
                   },
                 ),
               ),
               if (viewModel.isLoading)
                 Container(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Color.fromRGBO(0, 0, 0, 0.5),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
             ],

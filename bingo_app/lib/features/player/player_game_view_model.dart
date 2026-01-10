@@ -1,6 +1,6 @@
+import 'dart:developer'; // Import for log
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
-import 'package:flutter/foundation.dart';
 
 class PlayerGameViewModel extends BaseViewModel {
   final int cardId;
@@ -12,7 +12,7 @@ class PlayerGameViewModel extends BaseViewModel {
   PlayerGameViewModel({required this.cardId}) {
     bingoCard = BingoCard(id: cardId);
     // For debugging, print the generated matrix
-    debugPrint('Player Card ID: $cardId, Matrix: ${bingoCard.matrix}');
+    log('Player Card ID: $cardId, Matrix: ${bingoCard.matrix}');
   }
 
   void markNumber(int number) {
@@ -33,7 +33,7 @@ class PlayerGameViewModel extends BaseViewModel {
     // 1. Checking if the current marked numbers actually form a bingo.
     // 2. Sending the claim to the host.
     // 3. Handling the host's response (valid/invalid).
-    debugPrint('Player shouted BINGO with card ID: $cardId');
+    log('Player shouted BINGO with card ID: $cardId');
     setLoading(false);
   }
 }

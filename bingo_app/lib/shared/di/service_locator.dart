@@ -1,7 +1,9 @@
+import 'dart:developer'; // Import for log
+import 'package:bingo_app/features/host/host_room_view_model.dart'; // Import HostRoomViewModel
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
 import 'package:bingo_app/features/player/player_game_view_model.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
-import 'package:bingo_core/bingo_core.dart'; // Import IGameConnection
+import 'package:bingo_core/bingo_core.dart'; // Import IGameConnection, AccessControlService, IConfigDriver, INetworkInfoDriver, IUUIDDriver
 import 'package:get_it/get_it.dart';
 
 // Create a global instance of GetIt
@@ -11,6 +13,7 @@ final GetIt serviceLocator = GetIt.instance;
 ///
 /// This function should be called once at app startup.
 void setupServiceLocator() {
+  log('Setting up service locator...');
   // -------------------
   // ViewModels
   // -------------------
@@ -20,11 +23,18 @@ void setupServiceLocator() {
 
   serviceLocator.registerFactory(() => HostSetupViewModel(
         gameConnection: serviceLocator<IGameConnection>(),
+        networkInfoDriver: serviceLocator<INetworkInfoDriver>(),
+        uuidDriver: serviceLocator<IUUIDDriver>(),
       ));
   serviceLocator.registerFactory(() => PlayerScanViewModel());
   serviceLocator.registerFactoryParam<PlayerGameViewModel, int, void>(
     (cardId, _) => PlayerGameViewModel(cardId: cardId),
   );
+  serviceLocator.registerFactory(() => HostRoomViewModel(
+        gameConnection: serviceLocator<IGameConnection>(),
+        accessControlService: serviceLocator<AccessControlService>(),
+        configDriver: serviceLocator<IConfigDriver>(),
+      ));
 
   // -------------------
   // Services & Drivers

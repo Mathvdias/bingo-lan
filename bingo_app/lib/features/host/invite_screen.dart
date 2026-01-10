@@ -1,4 +1,6 @@
+import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class HostInviteScreen extends StatelessWidget {
@@ -51,6 +53,13 @@ class HostInviteScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const Spacer(),
+              BingoButton(
+                label: 'Iniciar Bingo!',
+                onPressed: () {
+                  context.go('/host/room');
+                },
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

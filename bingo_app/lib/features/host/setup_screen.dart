@@ -82,7 +82,7 @@ class HostSetupScreen extends StatelessWidget {
                       onPressed: () async {
                         final qrData = await viewModel.createRoom();
                         if (qrData != null && context.mounted) {
-                          context.go('/host/invite', extra: qrData);
+                          context.push('/host/invite', extra: qrData); // Changed from .go to .push
                         }
                       },
                     ),
@@ -92,7 +92,7 @@ class HostSetupScreen extends StatelessWidget {
               ),
               if (viewModel.isLoading)
                 Container(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Color.fromRGBO(0, 0, 0, 0.5),
                   child: const Center(
                     child: CircularProgressIndicator(),
                   ),

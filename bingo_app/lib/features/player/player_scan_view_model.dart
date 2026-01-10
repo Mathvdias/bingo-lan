@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
+import 'dart:developer'; // Import for log
+import 'dart:math' hide log;
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
-import 'package:flutter/foundation.dart';
 
 class PlayerScanViewModel extends BaseViewModel {
   String? _errorMessage;
@@ -34,7 +34,7 @@ class PlayerScanViewModel extends BaseViewModel {
       final int port = payload['p'];
       final String token = payload['s'];
 
-      debugPrint('QR Decoded: Host=$host, Port=$port, Token=$token');
+      log('QR Decoded: Host=$host, Port=$port, Token=$token');
 
       // TODO: Connect to the host using the extracted data
       // For now, just simulate a successful connection.
@@ -43,15 +43,13 @@ class PlayerScanViewModel extends BaseViewModel {
       // 4. Generate a random seed for the bingo card
       final cardId = Random().nextInt(999999);
       return cardId;
-
-    } on FormatException catch(e) {
-      debugPrint('Error decoding QR code: $e');
+    } on FormatException catch (e) {
+      log('Error decoding QR code: $e');
       _errorMessage = 'QR Code inválido. Tente novamente.';
       notifyListeners();
       return null;
-    }
-    catch (e) {
-      debugPrint('An unexpected error occurred: $e');
+    } catch (e) {
+      log('An unexpected error occurred: $e');
       _errorMessage = 'Ocorreu um erro inesperado.';
       notifyListeners();
       return null;
