@@ -20,9 +20,9 @@ class HostSetupViewModel extends BaseViewModel {
     required IGameConnection gameConnection,
     required INetworkInfoDriver networkInfoDriver,
     required IUUIDDriver uuidDriver,
-  })  : _gameConnection = gameConnection,
-        _networkInfoDriver = networkInfoDriver,
-        _uuidDriver = uuidDriver;
+  }) : _gameConnection = gameConnection,
+       _networkInfoDriver = networkInfoDriver,
+       _uuidDriver = uuidDriver;
 
   void onRoomNameChanged(String value) {
     _roomName = value;
@@ -62,7 +62,8 @@ class HostSetupViewModel extends BaseViewModel {
     // 1. Get Local IP Address
     final String? ip = await _networkInfoDriver.getWifiIP();
     if (ip == null) {
-      errorMessage = "Não foi possível obter o IP. Verifique sua conexão Wi-Fi.";
+      errorMessage =
+          "Não foi possível obter o IP. Verifique sua conexão Wi-Fi.";
       notifyListeners();
       return null;
     }
@@ -90,7 +91,9 @@ class HostSetupViewModel extends BaseViewModel {
     final String jsonPayload = jsonEncode(payload);
     final String base64Payload = base64Encode(utf8.encode(jsonPayload));
 
-    return base64Payload;
+    // 7. Construct Deep Link
+    final String deepLink = 'bingolucca://join?data=$base64Payload';
+
+    return deepLink;
   }
 }
-

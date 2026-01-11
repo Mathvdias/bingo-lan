@@ -44,7 +44,10 @@ final GoRouter router = GoRouter(
     // Player Routes
     GoRoute(
       path: '/player/scan',
-      builder: (context, state) => const PlayerScanScreen(),
+      builder: (context, state) {
+        final data = state.uri.queryParameters['data'];
+        return PlayerScanScreen(initialData: data);
+      },
     ),
     GoRoute(
       path: '/player/game/:cardId',
@@ -55,6 +58,17 @@ final GoRouter router = GoRouter(
           return const PlayerScanScreen();
         }
         return PlayerGameScreen(cardId: cardId);
+      },
+    ),
+    GoRoute(
+      path: '/join',
+      redirect: (context, state) {
+        final data = state.uri.queryParameters['data'];
+        if (data != null) {
+          // Redirect to scan screen with data as query param
+          return '/player/scan?data=$data';
+        }
+        return '/player/scan';
       },
     ),
   ],

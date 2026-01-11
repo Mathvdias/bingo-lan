@@ -22,8 +22,18 @@ class PlayerScanViewModel extends BaseViewModel {
     notifyListeners();
 
     try {
+      String payloadToDecode = rawData;
+
+      // Handle Deep Link format: bingolucca://join?data=BASE64...
+      if (rawData.startsWith('bingolucca://') || rawData.startsWith('http')) {
+        final uri = Uri.tryParse(rawData);
+        if (uri != null && uri.queryParameters.containsKey('data')) {
+          payloadToDecode = uri.queryParameters['data']!;
+        }
+      }
+
       // 1. Decode Base64
-      final String decodedJson = utf8.decode(base64Decode(rawData));
+      final String decodedJson = utf8.decode(base64Decode(payloadToDecode));
 
       // 2. Parse JSON
       final Map<String, dynamic> payload = jsonDecode(decodedJson);

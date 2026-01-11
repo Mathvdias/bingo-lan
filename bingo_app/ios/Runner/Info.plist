@@ -51,5 +51,18 @@
 	<string>Precisamos do acesso ao Bluetooth para conectar a caixas de som.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Precisamos do acesso ao Bluetooth para conectar a caixas de som.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.example.bingoApp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>bingolucca</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

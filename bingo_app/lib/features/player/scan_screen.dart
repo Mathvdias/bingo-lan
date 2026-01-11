@@ -7,7 +7,9 @@ import 'package:go_router/go_router.dart'; // Import go_router
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class PlayerScanScreen extends StatefulWidget {
-  const PlayerScanScreen({super.key});
+  final String? initialData;
+
+  const PlayerScanScreen({super.key, this.initialData});
 
   @override
   State<PlayerScanScreen> createState() => _PlayerScanScreenState();
@@ -31,6 +33,23 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     super.dispose();
   }
 
+  Future<void> _handleScan(PlayerScanViewModel viewModel, String data) async {
+    if (viewModel.isLoading) return;
+
+    final cardId = await viewModel.onQrCodeScanned(data);
+
+    if (cardId != null && mounted) {
+      try {
+        await _scannerController.stop();
+      } catch (e) {
+        log("Error stopping scanner: $e");
+      }
+      if (mounted) {
+        context.go('/player/game/$cardId');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -47,6 +66,11 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
             );
           }
         });
+
+        // Auto-connect if data is provided via deep link
+        if (widget.initialData != null) {
+          _handleScan(viewModel, widget.initialData!);
+        }
       },
       builder: (context, viewModel, child) {
         return Scaffold(
@@ -62,31 +86,8 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                 controller: _scannerController,
                 onDetect: (capture) async {
                   final List<Barcode> barcodes = capture.barcodes;
-                  if (barcodes.isNotEmpty &&
-                      barcodes.first.rawValue != null &&
-                      !viewModel.isLoading) {
-                    // Stop camera before processing to prevent double scan or lag
-                    // await _scannerController.stop();
-                    // Actually, don't stop strictly yet, just pause detection logic via isLoading check.
-                    // But user says camera KEEPS active.
-
-                    final cardId = await viewModel.onQrCodeScanned(
-                      barcodes.first.rawValue!,
-                    );
-
-                    if (cardId != null && mounted) {
-                      try {
-                        // Stop the camera explicitly before navigating away
-                        await _scannerController.stop();
-                      } catch (e) {
-                        log("Error stopping scanner: $e");
-                      }
-                      if (mounted) {
-                        context.go('/player/game/$cardId');
-                      }
-                    } else {
-                      // If failed, maybe resume? It is still running.
-                    }
+                  if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
+                    _handleScan(viewModel, barcodes.first.rawValue!);
                   }
                 },
               ),
