@@ -50,7 +50,8 @@ class HostSetupViewModel extends BaseViewModel {
       if (gameType == GameType.local) {
         return await _createLocalRoom();
       } else {
-        // TODO: Implement online room creation
+        errorMessage = "Modo Online em breve!";
+        notifyListeners();
         return null;
       }
     } finally {

@@ -119,8 +119,13 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                 child: BingoButton(
                   label: 'Digitar Código Manualmente',
                   onPressed: () {
-                    // TODO: Implement manual code entry dialog
-                    log("Manual code entry not implemented yet.");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Entrada manual em breve! Use o QR Code.',
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),

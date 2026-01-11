@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'REDACTED_GOOGLE_KEY',
-    appId: '1:46563147810:android:804d935d20f877b6f34a7b',
+    appId: '1:46563147810:android:0828379abce7b79ff34a7b',
     messagingSenderId: '46563147810',
     projectId: 'bingo-lucca-app',
     storageBucket: 'bingo-lucca-app.firebasestorage.app',

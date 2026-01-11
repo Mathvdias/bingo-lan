@@ -20,5 +20,3 @@ class ShoutBingoEvent extends PlayerEvent {
     };
   }
 }
-
-// TODO: Add other PlayerEvent types

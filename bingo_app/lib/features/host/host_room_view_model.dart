@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer'; // Import for log
 import 'dart:math' hide log;
 
@@ -26,6 +27,9 @@ class HostRoomViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
   final AccessControlService _accessControlService;
   final IConfigDriver _configDriver;
+
+  final _actionController = StreamController<HostRoomAction>.broadcast();
+  Stream<HostRoomAction> get actionStream => _actionController.stream;
 
   int? _lastNumber;
   List<int> _drawnNumbers = [];
@@ -60,8 +64,8 @@ class HostRoomViewModel extends BaseViewModel {
 
   Future<void> drawNextNumber() async {
     if (!await canDrawNextNumber) {
-      // TODO: Show paywall or error message
       log('Cannot draw next number: Globo is a paid feature!');
+      _actionController.add(ShowPaywall());
       return;
     }
 
@@ -100,8 +104,9 @@ class HostRoomViewModel extends BaseViewModel {
             ),
           );
         notifyListeners();
+      } else {
+        log('Unknown player event received: $event');
       }
-      // TODO: Handle other player events
     });
   }
 
@@ -134,4 +139,19 @@ class HostRoomViewModel extends BaseViewModel {
   Future<void> stopGame() async {
     await _gameConnection.disconnect();
   }
+
+  @override
+  void dispose() {
+    _actionController.close();
+    super.dispose();
+  }
+}
+
+sealed class HostRoomAction {}
+
+class ShowPaywall extends HostRoomAction {}
+
+class ShowError extends HostRoomAction {
+  final String message;
+  ShowError(this.message);
 }

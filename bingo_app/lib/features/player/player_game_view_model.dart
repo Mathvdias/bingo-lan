@@ -11,6 +11,9 @@ class PlayerGameViewModel extends BaseViewModel {
 
   Set<int> get markedNumbers => _markedNumbers;
 
+  String? _gameWinner;
+  String? get gameWinner => _gameWinner;
+
   PlayerGameViewModel({
     required this.cardId,
     required IGameConnection gameConnection,
@@ -24,7 +27,8 @@ class PlayerGameViewModel extends BaseViewModel {
   void _listenToGameEvents() {
     _gameConnection.eventStream.listen((event) {
       if (event is GameOverEvent) {
-        // TODO: Navigate to Game Over screen or show Dialog
+        _gameWinner = event.winnerName;
+        notifyListeners();
         log('GAME OVER! Winner: ${event.winnerName}');
         // We could expose a "winnerName" property to binding
       } else if (event is RejectClaimEvent) {

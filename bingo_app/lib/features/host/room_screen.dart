@@ -1,9 +1,9 @@
-import 'dart:developer';
 import 'package:bingo_app/features/host/host_room_view_model.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HostRoomScreen extends StatelessWidget {
   const HostRoomScreen({super.key});
@@ -13,6 +13,38 @@ class HostRoomScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return ViewModelProvider<HostRoomViewModel>(
+      onReady: (viewModel) {
+        viewModel.actionStream.listen((event) {
+          if (!context.mounted) return;
+          switch (event) {
+            case ShowPaywall():
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Recurso Pago'),
+                  content: const Text(
+                    'O Globo Automático é um recurso pago. Faça upgrade para usar!',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Entendi'),
+                    ),
+                  ],
+                ),
+              );
+              break;
+            case ShowError(:final message):
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message),
+                  backgroundColor: AppColors.error,
+                ),
+              );
+              break;
+          }
+        });
+      },
       builder: (context, viewModel, child) {
         return Scaffold(
           appBar: AppBar(
@@ -22,8 +54,8 @@ class HostRoomScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.stop),
                 onPressed: () {
-                  // TODO: Implement logic to stop the game and disconnect.
-                  log("Stop game functionality not implemented.");
+                  viewModel.stopGame();
+                  context.go('/lobby');
                 },
               ),
             ],

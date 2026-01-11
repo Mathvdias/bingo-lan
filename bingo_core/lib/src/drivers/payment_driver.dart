@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'i_payment_driver.dart';
@@ -13,7 +15,7 @@ class PaymentDriver implements IPaymentDriver {
     try {
       await Purchases.configure(PurchasesConfiguration(_apiKey));
     } catch (e) {
-      print('Error initializing payments: $e');
+      log('Error initializing payments: $e');
     }
   }
 
@@ -25,7 +27,7 @@ class PaymentDriver implements IPaymentDriver {
           false;
     } catch (e) {
       // If error (e.g. network), default to false for safety
-      print("Error checking pro status: $e");
+      log("Error checking pro status: $e");
       return false;
     }
   }
@@ -38,17 +40,17 @@ class PaymentDriver implements IPaymentDriver {
           offerings.current!.availablePackages.isNotEmpty) {
         // Assume the first package is the pro subscription
         final package = offerings.current!.availablePackages.first;
-        await Purchases.purchasePackage(package);
+        await Purchases.purchase(PurchaseParams.package(package));
       }
     } on PlatformException catch (e) {
       // Handle user cancelled, etc
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         // show error
-        print("Purchase error: $e");
+        log("Purchase error: $e");
       }
     } catch (e) {
-      print("Purchase error: $e");
+      log("Purchase error: $e");
     }
   }
 
@@ -57,7 +59,7 @@ class PaymentDriver implements IPaymentDriver {
     try {
       await Purchases.restorePurchases();
     } catch (e) {
-      print("Restore purchase error: $e");
+      log("Restore purchase error: $e");
     }
   }
 }
