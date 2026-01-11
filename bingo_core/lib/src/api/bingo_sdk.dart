@@ -10,46 +10,10 @@ import '../drivers/network_info_driver.dart'; // New import
 import '../drivers/uuid_driver.dart'; // New import
 import '../logic/access_control_service.dart';
 
-// This is a placeholder implementation for the IConfigDriver.
-// A real implementation would use a service like Firebase Remote Config.
-class _PlaceholderConfigDriver implements IConfigDriver {
-  @override
-  Future<void> fetchAndActivate() async {
-    await Future.delayed(const Duration(milliseconds: 100));
-  }
+import '../drivers/payment_driver.dart'; // New import
+import '../drivers/remote_config_driver.dart'; // New import
 
-  @override
-  bool getBool(String key) {
-    return false;
-  }
-
-  @override
-  int getInt(String key) {
-    if (key == 'max_free_online_users') {
-      return 10;
-    }
-    return 0;
-  }
-}
-
-// This is a placeholder implementation for the IPaymentDriver.
-// A real implementation would use a service like RevenueCat.
-class _PlaceholderPaymentDriver implements IPaymentDriver {
-  @override
-  Future<void> init() async {}
-
-  @override
-  Future<bool> get isProUser async {
-    return false;
-  }
-
-  @override
-  Future<void> purchasePro() async {}
-
-  @override
-  Future<void> restorePurchases() async {}
-}
-
+// ... Placeholders removed ...
 
 /// The main entry point for the Bingo SDK.
 /// It handles the initialization of all necessary drivers and services.
@@ -69,12 +33,25 @@ class BingoSDK {
   }) async {
     final getIt = GetIt.instance;
 
-    // Register drivers with placeholder implementations for now.
-    getIt.registerSingleton<IConfigDriver>(_PlaceholderConfigDriver());
-    getIt.registerSingleton<IPaymentDriver>(_PlaceholderPaymentDriver());
+    // Register drivers
+    // Note: In a real app, you might lazily initialize some of these or handle errors if they fail.
+
+    // config
+    getIt.registerSingleton<IConfigDriver>(RemoteConfigDriver());
+
+    // payment
+    getIt.registerSingleton<IPaymentDriver>(PaymentDriver(revenueCatKey));
+
+    // connection
+    // For now we default to LocalShelf. If we want to support Online, we might need a Factory or switch implementation based on setup.
+    // However, IGameConnection is usually a singleton per session.
+    // If the app supports switching modes, we might need to register it as a LazySingleton or just re-register it?
+    // For simplicity, we register the Local one as default.
     getIt.registerSingleton<IGameConnection>(LocalShelfGameConnection());
-    getIt.registerSingleton<INetworkInfoDriver>(NetworkInfoDriver()); // New registration
-    getIt.registerSingleton<IUUIDDriver>(UUIDDriver()); // New registration
+
+    // network & uuid
+    getIt.registerSingleton<INetworkInfoDriver>(NetworkInfoDriver());
+    getIt.registerSingleton<IUUIDDriver>(UUIDDriver());
 
     // Initialize the payment driver
     await getIt<IPaymentDriver>().init();
@@ -86,7 +63,5 @@ class BingoSDK {
         payment: getIt<IPaymentDriver>(),
       ),
     );
-
-    // TODO: Initialize and register other drivers (Audio) here.
   }
 }

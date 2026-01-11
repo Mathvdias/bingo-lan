@@ -1,3 +1,4 @@
+import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/card_cell.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,11 @@ class BingoGrid extends StatelessWidget {
     // B-I-N-G-O Header
     final List<String> bingoLetters = ['B', 'I', 'N', 'G', 'O'];
     final List<Color> letterColors = [
-      Colors.red.shade200,
-      Colors.orange.shade200,
-      Colors.yellow.shade200,
-      Colors.green.shade200,
-      Colors.blue.shade200,
+      AppColors.pastelRed,
+      AppColors.pastelOrange,
+      AppColors.pastelYellow,
+      AppColors.pastelGreen,
+      AppColors.pastelBlue,
     ];
 
     return Column(
@@ -39,12 +40,14 @@ class BingoGrid extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   color: letterColors[index],
-                  border: Border.all(color: Colors.black, width: 2),
+                  border: Border.all(color: AppColors.outline, width: 2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   bingoLetters[index],
-                  style: textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
+                  style: textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             );
@@ -65,8 +68,9 @@ class BingoGrid extends StatelessWidget {
           itemBuilder: (context, index) {
             final int number = bingoCard.matrix[index];
             final bool isMarked = markedNumbers.contains(number);
-            final CardCellState state =
-                number == 0 ? CardCellState.validated : (isMarked ? CardCellState.marked : CardCellState.normal);
+            final CardCellState state = number == 0
+                ? CardCellState.validated
+                : (isMarked ? CardCellState.marked : CardCellState.normal);
 
             return CardCell(
               number: number,

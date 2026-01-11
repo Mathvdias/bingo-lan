@@ -91,7 +91,7 @@ class HostRoomViewModel extends BaseViewModel {
   void _listenToPlayerEvents() {
     _gameConnection.eventStream.listen((event) {
       if (event is ShoutBingoEvent) {
-        final shoutBingoEvent = event as ShoutBingoEvent; // Explicit cast
+        final shoutBingoEvent = event;
         _bingoClaims = List.from(_bingoClaims)
           ..add(
             Claim(
@@ -105,16 +105,33 @@ class HostRoomViewModel extends BaseViewModel {
     });
   }
 
-  void validateClaim(Claim claim) {
+  Future<void> validateClaim(Claim claim) async {
     setLoading(true);
-    // TODO: Implement logic to validate the claim based on the bingo card and drawn numbers.
-    // This will involve:
-    // 1. Re-generating the player's card using BingoCard.matrix(_cardId).n    // 2. Comparing the card against _drawnNumbers.
-    log('Validating claim for card ID: ${claim.cardId} by ${claim.playerName}');
-    _bingoClaims.remove(
-      claim,
-    ); // Remove from pending claims after validation attempt
+
+    // 1. Re-generate the player's card
+    final BingoCard card = BingoCard(id: claim.cardId);
+
+    // 2. Check if it has Bingo against drawn numbers
+    final bool hasBingo = card.hasBingo(_drawnNumbers);
+
+    if (hasBingo) {
+      log('BINGO CONFIRMED for ${claim.playerName}!');
+      await _gameConnection.broadcastEvent(
+        GameOverEvent(winnerName: claim.playerName),
+      );
+    } else {
+      log('FALSE BINGO by ${claim.playerName}');
+      await _gameConnection.broadcastEvent(
+        RejectClaimEvent(playerName: claim.playerName),
+      );
+    }
+
+    _bingoClaims.remove(claim);
     notifyListeners();
     setLoading(false);
+  }
+
+  Future<void> stopGame() async {
+    await _gameConnection.disconnect();
   }
 }

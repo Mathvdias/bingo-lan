@@ -1,11 +1,18 @@
 import 'dart:convert';
-import 'dart:developer'; // Import for log
+import 'dart:developer';
 import 'dart:math' hide log;
+
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
+import 'package:bingo_core/bingo_core.dart';
 
 class PlayerScanViewModel extends BaseViewModel {
+  final IGameConnection _gameConnection;
+
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  PlayerScanViewModel({required IGameConnection gameConnection})
+    : _gameConnection = gameConnection;
 
   /// Called when a QR code is detected by the scanner.
   /// Decodes the data, simulates a connection, and returns a random cardId on success.
@@ -36,11 +43,12 @@ class PlayerScanViewModel extends BaseViewModel {
 
       log('QR Decoded: Host=$host, Port=$port, Token=$token');
 
-      // TODO: Connect to the host using the extracted data
-      // For now, just simulate a successful connection.
-      await Future.delayed(const Duration(seconds: 1));
+      // 4. Connect to the host
+      // Construct WebSocket URL: ws://host:port?token=token
+      final connectionId = 'ws://$host:$port?token=$token';
+      await _gameConnection.joinRoom(connectionId);
 
-      // 4. Generate a random seed for the bingo card
+      // 5. Generate a random seed for the bingo card
       final cardId = Random().nextInt(999999);
       return cardId;
     } on FormatException catch (e) {
@@ -50,7 +58,7 @@ class PlayerScanViewModel extends BaseViewModel {
       return null;
     } catch (e) {
       log('An unexpected error occurred: $e');
-      _errorMessage = 'Ocorreu um erro inesperado.';
+      _errorMessage = 'Ocorreu um erro inesperado: $e';
       notifyListeners();
       return null;
     } finally {

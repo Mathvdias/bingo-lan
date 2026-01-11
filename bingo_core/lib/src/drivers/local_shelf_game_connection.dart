@@ -11,30 +11,91 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class LocalShelfGameConnection implements IGameConnection {
   HttpServer? _server;
-  String? _secretToken; // The token for the current hosted room
-  final Map<String, WebSocketChannel> _connectedPlayers =
-      {}; // {clientId: channel}
+  String? _secretToken;
+
+  // HOST State
+  final Map<String, WebSocketChannel> _connectedPlayers = {};
+
+  // PLAYER State
+  WebSocketChannel? _clientChannel;
+  StreamSubscription? _clientSubscription;
 
   final _gameEventController = StreamController<GameEvent>.broadcast();
-  final _playerEventController = StreamController<PlayerEvent>.broadcast();
+  final _connectedPlayersController =
+      StreamController<List<String>>.broadcast();
+
+  // In a real app, you might want separate streams for "Events from Host" vs "Events from Players"
+  // But given standard IGameConnection uses a single eventStream for UI to listen to "Game Events" (usually from Host)
+  // we will direct incoming messages to this stream.
 
   @override
   Stream<GameEvent> get eventStream => _gameEventController.stream;
 
-  // Player Methods (not implemented for host side)
+  @override
+  Stream<List<String>> get connectedPlayersStream =>
+      _connectedPlayersController.stream;
+
+  // --- PLAYER METHODS ---
+
   @override
   Future<void> joinRoom(String connectionId) async {
-    throw UnimplementedError(
-      'joinRoom is for players, not hosts in LocalShelfGameConnection',
-    );
+    // connectionId expected to be "ws://ip:port?token=..."
+    if (_clientChannel != null) {
+      await disconnect();
+    }
+
+    try {
+      final uri = Uri.parse(connectionId);
+      // Connect to the WebSocket
+      _clientChannel = WebSocketChannel.connect(uri);
+
+      _clientSubscription = _clientChannel!.stream.listen(
+        (message) {
+          log('Player received: $message');
+          try {
+            final json = jsonDecode(message);
+            // Verify if it is a GameEvent (from Host)
+            // The host sends GameEvents.
+            final event = GameEvent.fromJson(json);
+            _gameEventController.add(event);
+          } catch (e) {
+            log('Error parsing message from host: $e');
+          }
+        },
+        onError: (error) {
+          log('Client WebSocket error: $error');
+        },
+        onDone: () {
+          log('Disconnected from host.');
+        },
+      );
+
+      // Wait for connection to be potentially established?
+      // WebSocketChannel.connect is synchronous in creation but async in connection.
+      // We assume it works.
+      log('Participando da sala: $connectionId');
+    } catch (e) {
+      log('Error joining room: $e');
+      rethrow;
+    }
   }
 
   @override
   Future<void> sendPlayerEvent(PlayerEvent event) async {
-    _playerEventController.add(event); // Add player event to the stream
+    if (_clientChannel != null) {
+      // We are a Player sending to Host
+      final json = jsonEncode(event.toJson());
+      _clientChannel!.sink.add(json);
+    } else {
+      // We are Host, why are we sending PlayerEvent?
+      // Maybe testing? Or maybe the Host is also a Player?
+      // For now, ignore.
+      log('Cannot send PlayerEvent: No active client connection.');
+    }
   }
 
-  // Host Methods
+  // --- HOST METHODS ---
+
   @override
   Future<void> hostRoom(
     String roomName,
@@ -43,114 +104,87 @@ class LocalShelfGameConnection implements IGameConnection {
     int port,
   ) async {
     if (_server != null) {
-      throw StateError('Server is not running.');
+      throw StateError('Server is already running.');
     }
 
     _secretToken = secretToken;
 
-    // Create a pipeline that routes all requests to the WebSocket handler
-    final handler = const Pipeline()
-        .addMiddleware(logRequests())
-        .addHandler(
-          webSocketHandler((
-            WebSocketChannel webSocketChannel,
-            String? protocol,
-          ) {
-            // Secure Handshake: Validate the secret token
-            String? clientToken;
-            webSocketChannel.stream.listen(
-              (message) {
-                if (clientToken == null) {
-                  // First message should be the token or part of the handshake
-                  if (message is String && message == _secretToken) {
-                    clientToken = message;
-                    final clientId =
-                        'player_${_connectedPlayers.length + 1}'; // Simple ID for now
-                    _connectedPlayers[clientId] = webSocketChannel;
-                    log('Player $clientId connected to room $roomName');
-                    // Optionally send a welcome message or initial state
-                    webSocketChannel.sink.add(
-                      jsonEncode({'type': 'CONNECTED', 'clientId': clientId}),
-                    );
-                  } else {
-                    log(
-                      'Invalid token received from client: $message. Closing connection.',
-                    );
-                    webSocketChannel.sink.close(
-                      WebSocketStatus.protocolError,
-                      'Invalid token',
-                    );
-                  }
-                } else {
-                  // After handshake, process regular player events
-                  try {
-                    final Map<String, dynamic> json = jsonDecode(message);
-                    // TODO: Convert JSON to PlayerEvent and add to _playerEventController
-                    log('Received player event: $json');
-                  } catch (e) {
-                    log('Error processing player message: $e');
-                  }
-                }
-              },
-              onDone: () {
-                _connectedPlayers.removeWhere(
-                  (key, value) => value == webSocketChannel,
-                );
-                log(
-                  'Player disconnected. Remaining players: ${_connectedPlayers.length}',
-                );
-              },
-              onError: (error) {
-                log('WebSocket error: $error');
-                _connectedPlayers.removeWhere(
-                  (key, value) => value == webSocketChannel,
-                );
-              },
-            );
-          }),
+    final handler = const Pipeline().addMiddleware(logRequests()).addHandler((
+      request,
+    ) {
+      // 1. Intercept Request to check Token
+      final token = request.url.queryParameters['token'];
+      if (token != _secretToken) {
+        return Response.forbidden('Invalid Token');
+      }
+
+      // 2. If valid, upgrade to WebSocket
+      return webSocketHandler((
+        WebSocketChannel webSocketChannel,
+        String? protocol,
+      ) {
+        final clientId = 'player_${_connectedPlayers.length + 1}';
+        _connectedPlayers[clientId] = webSocketChannel;
+        log('Player $clientId connected to room $roomName');
+
+        // Notify subscribers about the new list of players
+        _connectedPlayersController.add(_connectedPlayers.keys.toList());
+
+        webSocketChannel.stream.listen(
+          (message) {
+            // Host receiving message from Player
+            try {
+              final json = jsonDecode(message);
+              // Parse as PlayerEvent
+              final event = PlayerEvent.fromJson(json);
+
+              // Since PlayerEvent extends GameEvent now (we modified it), this is valid.
+              _gameEventController.add(event);
+            } catch (e) {
+              log('Error processing player message: $e');
+            }
+          },
+          onDone: () {
+            _connectedPlayers.remove(clientId);
+            // Notify subscribers about the player leaving
+            _connectedPlayersController.add(_connectedPlayers.keys.toList());
+          },
         );
+      })(request);
+    });
 
-    // Start the HTTP server
     _server = await shelf_io.serve(handler, InternetAddress.anyIPv4, port);
-
-    log(
-      'Local server started on ws://$hostIp:$port for room "$roomName" with token "$secretToken"',
-    );
+    log('Local server started on ws://$hostIp:$port?token=$secretToken');
   }
 
   @override
   Future<void> broadcastEvent(GameEvent event) async {
     if (_server == null) {
-      throw StateError('Server is not running.');
+      // throw StateError('Server is not running.');
+      return;
     }
 
-    final jsonEvent = _gameEventToJson(event); // Serialize GameEvent to JSON
-    final message = jsonEncode(jsonEvent);
-
+    final json = jsonEncode(event.toJson());
     for (final channel in _connectedPlayers.values) {
-      channel.sink.add(message);
+      channel.sink.add(json);
     }
-    log('Broadcasted event: $message to ${_connectedPlayers.length} players');
   }
 
   @override
   Future<void> disconnect() async {
+    // HOST cleanup
     if (_server != null) {
       await _server!.close(force: true);
       _server = null;
-      _secretToken = null;
-      for (final channel in _connectedPlayers.values) {
-        await channel.sink.close();
-      }
       _connectedPlayers.clear();
-      log('Local server stopped.');
     }
-  }
 
-  // Helper to convert GameEvent to JSON
-  Map<String, dynamic> _gameEventToJson(GameEvent event) {
-    // TODO: Implement actual serialization based on GameEvent types
-    // This is a placeholder
-    return {'type': 'UNKNOWN_EVENT', 'data': event.toString()};
+    // PLAYER cleanup
+    if (_clientChannel != null) {
+      await _clientChannel!.sink.close();
+      _clientChannel = null;
+    }
+    await _clientSubscription?.cancel();
+    _clientSubscription = null;
   }
 }

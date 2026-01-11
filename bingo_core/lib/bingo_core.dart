@@ -2,7 +2,7 @@
 export 'src/api/bingo_sdk.dart';
 
 // Drivers
-export 'src/drivers/i_audio_driver.dart';
+
 export 'src/drivers/i_config_driver.dart';
 export 'src/drivers/i_game_connection.dart';
 export 'src/drivers/i_network_info_driver.dart'; // New export

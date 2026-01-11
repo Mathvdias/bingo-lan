@@ -40,7 +40,12 @@ class BingoCard {
 
   /// Helper function to fill a column with unique random numbers within a range.
   static void _fillColumn(
-      List<int> matrix, int colIndex, int min, int max, Random random) {
+    List<int> matrix,
+    int colIndex,
+    int min,
+    int max,
+    Random random,
+  ) {
     final Set<int> numbers = {};
     while (numbers.length < 5) {
       numbers.add(random.nextInt(max - min + 1) + min);
@@ -53,5 +58,58 @@ class BingoCard {
       // the center one later.
       matrix[i * 5 + colIndex] = sortedNumbers[i];
     }
+  }
+
+  /// Checks if this card has a bingo given the list of [drawnNumbers].
+  /// A bingo is achieved if any row, column, or diagonal is fully covered by the drawn numbers.
+  bool hasBingo(List<int> drawnNumbers) {
+    final List<int> cardMatrix = matrix;
+    final Set<int> drawnSet = drawnNumbers.toSet()..add(0); // 0 is free space
+
+    // 1. Check Rows
+    for (int row = 0; row < 5; row++) {
+      bool isBingo = true;
+      for (int col = 0; col < 5; col++) {
+        if (!drawnSet.contains(cardMatrix[row * 5 + col])) {
+          isBingo = false;
+          break;
+        }
+      }
+      if (isBingo) return true;
+    }
+
+    // 2. Check Columns
+    for (int col = 0; col < 5; col++) {
+      bool isBingo = true;
+      for (int row = 0; row < 5; row++) {
+        if (!drawnSet.contains(cardMatrix[row * 5 + col])) {
+          isBingo = false;
+          break;
+        }
+      }
+      if (isBingo) return true;
+    }
+
+    // 3. Check Main Diagonal (Top-Left to Bottom-Right)
+    bool isMainDiagBingo = true;
+    for (int i = 0; i < 5; i++) {
+      if (!drawnSet.contains(cardMatrix[i * 5 + i])) {
+        isMainDiagBingo = false;
+        break;
+      }
+    }
+    if (isMainDiagBingo) return true;
+
+    // 4. Check Anti-Diagonal (Top-Right to Bottom-Left)
+    bool isAntiDiagBingo = true;
+    for (int i = 0; i < 5; i++) {
+      if (!drawnSet.contains(cardMatrix[i * 5 + (4 - i)])) {
+        isAntiDiagBingo = false;
+        break;
+      }
+    }
+    if (isAntiDiagBingo) return true;
+
+    return false;
   }
 }

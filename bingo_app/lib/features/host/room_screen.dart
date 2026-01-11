@@ -111,9 +111,7 @@ class HostRoomScreen extends StatelessWidget {
               if (viewModel.isLoading)
                 Container(
                   color: Color.fromRGBO(0, 0, 0, 0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: const Center(child: CircularProgressIndicator()),
                 ),
             ],
           ),
