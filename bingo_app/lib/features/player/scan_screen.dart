@@ -6,8 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // Import go_router
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class PlayerScanScreen extends StatelessWidget {
+class PlayerScanScreen extends StatefulWidget {
   const PlayerScanScreen({super.key});
+
+  @override
+  State<PlayerScanScreen> createState() => _PlayerScanScreenState();
+}
+
+class _PlayerScanScreenState extends State<PlayerScanScreen> {
+  late MobileScannerController _scannerController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scannerController = MobileScannerController(
+      detectionSpeed: DetectionSpeed.normal,
+      returnImage: false,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scannerController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +38,7 @@ class PlayerScanScreen extends StatelessWidget {
     return ViewModelProvider<PlayerScanViewModel>(
       onReady: (viewModel) {
         viewModel.addListener(() {
-          if (viewModel.errorMessage != null) {
+          if (viewModel.errorMessage != null && mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(viewModel.errorMessage!),
@@ -37,20 +59,33 @@ class PlayerScanScreen extends StatelessWidget {
           body: Stack(
             children: [
               MobileScanner(
-                controller: MobileScannerController(
-                  detectionSpeed: DetectionSpeed.normal,
-                  returnImage: false,
-                ),
+                controller: _scannerController,
                 onDetect: (capture) async {
                   final List<Barcode> barcodes = capture.barcodes;
                   if (barcodes.isNotEmpty &&
                       barcodes.first.rawValue != null &&
                       !viewModel.isLoading) {
+                    // Stop camera before processing to prevent double scan or lag
+                    // await _scannerController.stop();
+                    // Actually, don't stop strictly yet, just pause detection logic via isLoading check.
+                    // But user says camera KEEPS active.
+
                     final cardId = await viewModel.onQrCodeScanned(
                       barcodes.first.rawValue!,
                     );
-                    if (cardId != null && context.mounted) {
-                      context.go('/player/game', extra: cardId);
+
+                    if (cardId != null && mounted) {
+                      try {
+                        // Stop the camera explicitly before navigating away
+                        await _scannerController.stop();
+                      } catch (e) {
+                        log("Error stopping scanner: $e");
+                      }
+                      if (mounted) {
+                        context.go('/player/game/$cardId');
+                      }
+                    } else {
+                      // If failed, maybe resume? It is still running.
                     }
                   }
                 },
@@ -90,7 +125,7 @@ class PlayerScanScreen extends StatelessWidget {
               ),
               if (viewModel.isLoading)
                 Container(
-                  color: Color.fromRGBO(0, 0, 0, 0.5),
+                  color: const Color.fromRGBO(0, 0, 0, 0.5),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
             ],

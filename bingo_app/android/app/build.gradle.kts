@@ -40,6 +40,20 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            resValue("string", "app_name", "BingoDev")
+        }
+        create("prod") {
+            dimension = "env"
+            resValue("string", "app_name", "BingoApp")
+        }
+    }
 }
 
 flutter {

@@ -1,17 +1,29 @@
 import 'package:bingo_app/shared/di/service_locator.dart';
 import 'package:bingo_app/shared/router.dart';
 import 'package:bingo_app/shared/ui/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:flutter/material.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'firebase_options.dart'; // Assumed generated options file
 
-void main() async {
+import 'flavors/app_config.dart';
+
+Future<void> mainCommon(AppConfig appConfig) async {
   // Ensure Flutter bindings are initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase
+  // Note: If you have different firebase_options for Dev/Prod, handle switching here
+  // using appConfig.flavor.
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   // 1. Setup Service Locator
   setupServiceLocator();
+
+  // Register AppConfig in GetIt so it can be accessed anywhere
+  GetIt.I.registerSingleton<AppConfig>(appConfig);
 
   // 2. Initialize the Bingo SDK
   // Using placeholder keys for now. These should be stored securely.
@@ -26,16 +38,19 @@ void main() async {
   await config.fetchAndActivate();
 
   // Run the main Flutter application.
-  runApp(const BingoApp());
+  runApp(BingoApp(appConfig: appConfig));
 }
 
 class BingoApp extends StatelessWidget {
-  const BingoApp({super.key});
+  final AppConfig appConfig;
+
+  const BingoApp({super.key, required this.appConfig});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Bingo Lucca',
+      restorationScopeId: 'bingo_app_root',
+      title: appConfig.appTitle, // Use dynamic title
       theme: bingoTheme,
       routerConfig: router,
     );

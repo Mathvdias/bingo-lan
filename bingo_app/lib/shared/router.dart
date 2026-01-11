@@ -47,11 +47,11 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const PlayerScanScreen(),
     ),
     GoRoute(
-      path: '/player/game',
+      path: '/player/game/:cardId',
       builder: (context, state) {
-        final cardId = state.extra as int?;
+        final cardIdStr = state.pathParameters['cardId'];
+        final cardId = int.tryParse(cardIdStr ?? '');
         if (cardId == null) {
-          // Handle error case, maybe redirect to scan
           return const PlayerScanScreen();
         }
         return PlayerGameScreen(cardId: cardId);
