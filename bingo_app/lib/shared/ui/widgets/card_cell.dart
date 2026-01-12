@@ -37,22 +37,24 @@ class CardCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: AspectRatio(
-        aspectRatio: 1, // Make it square
-        child: Container(
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(context),
-            border: Border.all(color: AppColors.outline, width: 2),
-            borderRadius: BorderRadius.circular(8), // Small radius for cells
-          ),
-          child: Center(
-            child: Text(
-              number == 0 ? 'FREE' : '$number', // 0 for FREE space
-              style: textTheme.displaySmall?.copyWith(
-                color: _getForegroundColor(context),
-                fontWeight: FontWeight.bold,
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AspectRatio(
+          aspectRatio: 1, // Make it square
+          child: Container(
+            decoration: BoxDecoration(
+              color: _getBackgroundColor(context),
+              border: Border.all(color: AppColors.outline, width: 2),
+              borderRadius: BorderRadius.circular(8), // Small radius for cells
+            ),
+            child: Center(
+              child: Text(
+                number == 0 ? 'FREE' : '$number', // 0 for FREE space
+                style: textTheme.displaySmall?.copyWith(
+                  color: _getForegroundColor(context),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

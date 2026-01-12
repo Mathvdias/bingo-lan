@@ -1,3 +1,4 @@
+import 'package:bingo_app/main_common.dart' show SplashScreen;
 import 'package:go_router/go_router.dart';
 
 import '../../features/host/invite_screen.dart';

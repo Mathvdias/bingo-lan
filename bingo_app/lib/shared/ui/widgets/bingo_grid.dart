@@ -1,4 +1,3 @@
-import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/card_cell.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
@@ -17,71 +16,30 @@ class BingoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    return SliverGrid.builder(
+      addRepaintBoundaries: false,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 5,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1, // Make cells square
+      ),
+      itemCount: 25,
+      itemBuilder: (context, index) {
+        final int number = bingoCard.matrix[index];
+        final bool isMarked = markedNumbers.contains(number);
+        final CardCellState state = number == 0
+            ? CardCellState.validated
+            : (isMarked ? CardCellState.marked : CardCellState.normal);
 
-    // B-I-N-G-O Header
-    final List<String> bingoLetters = ['B', 'I', 'N', 'G', 'O'];
-    final List<Color> letterColors = [
-      AppColors.pastelRed,
-      AppColors.pastelOrange,
-      AppColors.pastelYellow,
-      AppColors.pastelGreen,
-      AppColors.pastelBlue,
-    ];
-
-    return Column(
-      children: [
-        // Bingo Header Row
-        Row(
-          children: List.generate(5, (index) {
-            return Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: letterColors[index],
-                  border: Border.all(color: AppColors.outline, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  bingoLetters[index],
-                  style: textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-        const SizedBox(height: 8),
-        // Bingo Numbers Grid
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 5,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: 1, // Make cells square
-          ),
-          itemCount: 25,
-          itemBuilder: (context, index) {
-            final int number = bingoCard.matrix[index];
-            final bool isMarked = markedNumbers.contains(number);
-            final CardCellState state = number == 0
-                ? CardCellState.validated
-                : (isMarked ? CardCellState.marked : CardCellState.normal);
-
-            return CardCell(
-              number: number,
-              state: state,
-              onTap: onNumberTapped == null || number == 0
-                  ? null
-                  : () => onNumberTapped!(number),
-            );
-          },
-        ),
-      ],
+        return CardCell(
+          number: number,
+          state: state,
+          onTap: onNumberTapped == null || number == 0
+              ? null
+              : () => onNumberTapped!(number),
+        );
+      },
     );
   }
 }

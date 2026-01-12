@@ -2,6 +2,7 @@ import 'dart:developer'; // Import for log
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
+import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // Import go_router
@@ -122,13 +123,8 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
         }
       },
       builder: (context, viewModel, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Entrar em um Bingo'),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
+        return BingoScaffold(
+          title: 'Entrar em um Bingo',
           body: Stack(
             children: [
               MobileScanner(

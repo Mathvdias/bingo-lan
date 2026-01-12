@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:google_fonts/google_fonts.dart';
 
 import 'tokens/app_colors.dart';
@@ -18,6 +19,14 @@ final ThemeData bingoTheme = ThemeData(
     onSurface: AppColors.text,
     error: AppColors.error,
     onError: AppColors.text,
+  ),
+
+  // Default AppBar style
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    centerTitle: true,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
   ),
 
   // Text Theme

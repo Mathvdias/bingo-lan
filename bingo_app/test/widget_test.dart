@@ -1,5 +1,6 @@
 // This is a basic Flutter widget test.
 
+import 'package:bingo_app/main_common.dart' show BingoApp;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -142,6 +142,7 @@ class HostRoomViewModel extends BaseViewModel {
 
   @override
   void dispose() {
+    stopGame();
     _actionController.close();
     super.dispose();
   }

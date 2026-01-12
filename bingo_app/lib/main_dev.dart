@@ -1,5 +1,5 @@
 import 'package:bingo_app/flavors/app_config.dart';
-import 'package:bingo_app/main.dart';
+import 'package:bingo_app/main_common.dart';
 
 void main() {
   final devConfig = AppConfig(

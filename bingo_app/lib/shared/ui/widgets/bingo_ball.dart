@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import '../tokens/app_colors.dart';
+
+class BingoBall extends StatelessWidget {
+  final int number;
+  final bool isDrawn;
+  final double size;
+
+  const BingoBall({
+    super.key,
+    required this.number,
+    this.isDrawn = false,
+    this.size = 60.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.headlineMedium?.copyWith(
+      color: isDrawn ? Colors.white : AppColors.outline,
+    );
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: isDrawn ? AppColors.success : AppColors.card,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.outline, width: 2),
+      ),
+      child: Center(child: Text(number.toString(), style: textStyle)),
+    );
+  }
+}
