@@ -1,6 +1,7 @@
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
+import 'package:bingo_app/shared/ui/widgets/flippable_card.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -73,14 +74,36 @@ class HostSetupScreen extends StatelessWidget {
                           viewModel.onGameTypeChanged(newSelection.first);
                         },
                       ),
+                      const SizedBox(height: 16),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 500),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                        child: FlippableCard(
+                          key: ValueKey(viewModel.gameType),
+                          image: viewModel.gameType == GameType.local
+                              ? 'assets/images/bingo_local.png'
+                              : 'assets/images/bingo_remote.png',
+                          text: viewModel.gameType == GameType.local
+                              ? 'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.'
+                              : 'Jogue com pessoas de qualquer lugar do mundo. Requer uma conexão com a internet.',
+                        ),
+                      ),
                       const SizedBox(height: 32),
                       BingoButton(
                         label: 'Criar Sala',
                         onPressed: () async {
                           final qrData = await viewModel.createRoom();
                           if (qrData != null && context.mounted) {
-                            context.push('/host/invite',
-                                extra: qrData); // Changed from .go to .push
+                            context.push(
+                              '/host/invite',
+                              extra: qrData,
+                            ); // Changed from .go to .push
                           }
                         },
                       ),
