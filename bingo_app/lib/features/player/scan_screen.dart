@@ -1,5 +1,6 @@
 import 'dart:developer'; // Import for log
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
+import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,54 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
         context.go('/player/game/$cardId');
       }
     }
+  }
+
+  Future<void> _showManualEntryDialog(
+    BuildContext context,
+    PlayerScanViewModel viewModel,
+  ) async {
+    final TextEditingController controller = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Entrar Manualmente'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Cole o código ou link da sala abaixo:'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Código / Link',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+                minLines: 1,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                final text = controller.text.trim();
+                if (text.isNotEmpty) {
+                  Navigator.pop(context);
+                  _handleScan(viewModel, text);
+                }
+              },
+              child: const Text('Entrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -99,14 +148,31 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 3),
+                        border: Border.all(color: AppColors.primary, width: 4),
                         borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'Aponte a câmera para o QR Code do Host',
-                      style: textTheme.bodyLarge?.copyWith(color: Colors.white),
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          const Shadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 4,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -119,13 +185,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                 child: BingoButton(
                   label: 'Digitar Código Manualmente',
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Entrada manual em breve! Use o QR Code.',
-                        ),
-                      ),
-                    );
+                    _showManualEntryDialog(context, viewModel);
                   },
                 ),
               ),

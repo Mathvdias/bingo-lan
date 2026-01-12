@@ -14,6 +14,7 @@ export 'src/logic/access_control_service.dart';
 
 // Models
 export 'src/models/bingo_card.dart';
+export 'src/models/bingo_invite.dart';
 export 'src/models/game_event.dart';
 export 'src/models/game_events.dart'; // New export
 export 'src/models/player_event.dart';
