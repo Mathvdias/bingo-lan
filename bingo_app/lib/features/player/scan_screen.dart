@@ -43,13 +43,46 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     if (cardId != null && mounted) {
       try {
         await _scannerController.stop();
+        if (!mounted) return;
+        final playerName = await _showNameEntryDialog(context);
+        if (playerName != null && playerName.isNotEmpty && mounted) {
+          context.go('/player/game/$cardId?name=$playerName');
+        }
       } catch (e) {
         log("Error stopping scanner: $e");
       }
-      if (mounted) {
-        context.go('/player/game/$cardId');
-      }
     }
+  }
+
+  Future<String?> _showNameEntryDialog(BuildContext context) async {
+    final TextEditingController controller = TextEditingController();
+
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Digite seu nome'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              labelText: 'Nome',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final text = controller.text.trim();
+                if (text.isNotEmpty) {
+                  Navigator.pop(context, text);
+                }
+              },
+              child: const Text('Entrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _showManualEntryDialog(

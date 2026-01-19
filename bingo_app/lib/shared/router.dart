@@ -58,7 +58,8 @@ final GoRouter router = GoRouter(
         if (cardId == null) {
           return const PlayerScanScreen();
         }
-        return PlayerGameScreen(cardId: cardId);
+        final playerName = state.uri.queryParameters['name'] ?? '';
+        return PlayerGameScreen(cardId: cardId, playerName: playerName);
       },
     ),
     GoRoute(

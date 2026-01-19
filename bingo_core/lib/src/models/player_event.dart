@@ -10,6 +10,8 @@ abstract class PlayerEvent extends GameEvent {
     switch (json['type']) {
       case 'SHOUT_BINGO':
         return ShoutBingoEvent.fromJson(json);
+      case 'PLAYER_NAME':
+        return PlayerNameEvent.fromJson(json);
       default:
         throw Exception('Unknown PlayerEvent type: ${json['type']}');
     }

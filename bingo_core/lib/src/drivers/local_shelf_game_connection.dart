@@ -14,7 +14,7 @@ class LocalShelfGameConnection implements IGameConnection {
   String? _secretToken;
 
   // HOST State
-  final Map<String, WebSocketChannel> _connectedPlayers = {};
+  final Map<WebSocketChannel, String> _connectedPlayers = {};
 
   // PLAYER State
   WebSocketChannel? _clientChannel;
@@ -23,10 +23,6 @@ class LocalShelfGameConnection implements IGameConnection {
   final _gameEventController = StreamController<GameEvent>.broadcast();
   final _connectedPlayersController =
       StreamController<List<String>>.broadcast();
-
-  // In a real app, you might want separate streams for "Events from Host" vs "Events from Players"
-  // But given standard IGameConnection uses a single eventStream for UI to listen to "Game Events" (usually from Host)
-  // we will direct incoming messages to this stream.
 
   @override
   Stream<GameEvent> get eventStream => _gameEventController.stream;
@@ -39,14 +35,12 @@ class LocalShelfGameConnection implements IGameConnection {
 
   @override
   Future<void> joinRoom(String connectionId) async {
-    // connectionId expected to be "ws://ip:port?token=..."
     if (_clientChannel != null) {
       await disconnect();
     }
 
     try {
       final uri = Uri.parse(connectionId);
-      // Connect to the WebSocket
       _clientChannel = WebSocketChannel.connect(uri);
 
       _clientSubscription = _clientChannel!.stream.listen(
@@ -54,8 +48,6 @@ class LocalShelfGameConnection implements IGameConnection {
           log('Player received: $message');
           try {
             final json = jsonDecode(message);
-            // Verify if it is a GameEvent (from Host)
-            // The host sends GameEvents.
             final event = GameEvent.fromJson(json);
             _gameEventController.add(event);
           } catch (e) {
@@ -70,9 +62,6 @@ class LocalShelfGameConnection implements IGameConnection {
         },
       );
 
-      // Wait for connection to be potentially established?
-      // WebSocketChannel.connect is synchronous in creation but async in connection.
-      // We assume it works.
       log('Participando da sala: $connectionId');
     } catch (e) {
       log('Error joining room: $e');
@@ -83,13 +72,9 @@ class LocalShelfGameConnection implements IGameConnection {
   @override
   Future<void> sendPlayerEvent(PlayerEvent event) async {
     if (_clientChannel != null) {
-      // We are a Player sending to Host
       final json = jsonEncode(event.toJson());
       _clientChannel!.sink.add(json);
     } else {
-      // We are Host, why are we sending PlayerEvent?
-      // Maybe testing? Or maybe the Host is also a Player?
-      // For now, ignore.
       log('Cannot send PlayerEvent: No active client connection.');
     }
   }
@@ -112,42 +97,41 @@ class LocalShelfGameConnection implements IGameConnection {
     final handler = const Pipeline().addMiddleware(logRequests()).addHandler((
       request,
     ) {
-      // 1. Intercept Request to check Token
       final token = request.url.queryParameters['token'];
       if (token != _secretToken) {
         return Response.forbidden('Invalid Token');
       }
 
-      // 2. If valid, upgrade to WebSocket
       return webSocketHandler((
         WebSocketChannel webSocketChannel,
         String? protocol,
       ) {
-        final clientId = 'player_${_connectedPlayers.length + 1}';
-        _connectedPlayers[clientId] = webSocketChannel;
-        log('Player $clientId connected to room $roomName');
-
-        // Notify subscribers about the new list of players
-        _connectedPlayersController.add(_connectedPlayers.keys.toList());
+        final playerName = 'Player_${_connectedPlayers.length + 1}';
+        _connectedPlayers[webSocketChannel] = playerName;
+        log('Player $playerName connected to room $roomName');
+        _connectedPlayersController.add(_connectedPlayers.values.toList());
 
         webSocketChannel.stream.listen(
           (message) {
-            // Host receiving message from Player
             try {
               final json = jsonDecode(message);
-              // Parse as PlayerEvent
               final event = PlayerEvent.fromJson(json);
 
-              // Since PlayerEvent extends GameEvent now (we modified it), this is valid.
-              _gameEventController.add(event);
+              if (event is PlayerNameEvent) {
+                _connectedPlayers[webSocketChannel] = event.name;
+                _connectedPlayersController
+                    .add(_connectedPlayers.values.toList());
+              } else {
+                _gameEventController.add(event);
+              }
             } catch (e) {
               log('Error processing player message: $e');
             }
           },
           onDone: () {
-            _connectedPlayers.remove(clientId);
-            // Notify subscribers about the player leaving
-            _connectedPlayersController.add(_connectedPlayers.keys.toList());
+            _connectedPlayers.remove(webSocketChannel);
+            _connectedPlayersController
+                .add(_connectedPlayers.values.toList());
           },
         );
       })(request);
@@ -160,26 +144,23 @@ class LocalShelfGameConnection implements IGameConnection {
   @override
   Future<void> broadcastEvent(GameEvent event) async {
     if (_server == null) {
-      // throw StateError('Server is not running.');
       return;
     }
 
     final json = jsonEncode(event.toJson());
-    for (final channel in _connectedPlayers.values) {
+    for (final channel in _connectedPlayers.keys) {
       channel.sink.add(json);
     }
   }
 
   @override
   Future<void> disconnect() async {
-    // HOST cleanup
     if (_server != null) {
       await _server!.close(force: true);
       _server = null;
       _connectedPlayers.clear();
     }
 
-    // PLAYER cleanup
     if (_clientChannel != null) {
       await _clientChannel!.sink.close();
       _clientChannel = null;

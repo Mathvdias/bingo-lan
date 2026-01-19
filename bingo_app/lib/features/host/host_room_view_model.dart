@@ -34,10 +34,14 @@ class HostRoomViewModel extends BaseViewModel {
   int? _lastNumber;
   List<int> _drawnNumbers = [];
   List<Claim> _bingoClaims = [];
+  List<String> _players = [];
+  StreamSubscription? _playersSubscription;
 
   int? get lastNumber => _lastNumber;
   List<int> get drawnNumbers => _drawnNumbers;
   List<Claim> get bingoClaims => _bingoClaims;
+  List<String> get players => _players;
+  int get playerCount => _players.length;
 
   // Bingo numbers state
   final Set<int> _availableNumbers = Set<int>.from(
@@ -49,10 +53,14 @@ class HostRoomViewModel extends BaseViewModel {
     required IGameConnection gameConnection,
     required AccessControlService accessControlService,
     required IConfigDriver configDriver,
-  }) : _gameConnection = gameConnection,
-       _accessControlService = accessControlService,
-       _configDriver = configDriver {
+  })  : _gameConnection = gameConnection,
+        _accessControlService = accessControlService,
+        _configDriver = configDriver {
     _listenToPlayerEvents();
+    _playersSubscription = _gameConnection.connectedPlayersStream.listen((players) {
+      _players = players;
+      notifyListeners();
+    });
   }
 
   Future<bool> get canDrawNextNumber async {
@@ -142,6 +150,7 @@ class HostRoomViewModel extends BaseViewModel {
 
   @override
   void dispose() {
+    _playersSubscription?.cancel();
     stopGame();
     _actionController.close();
     super.dispose();

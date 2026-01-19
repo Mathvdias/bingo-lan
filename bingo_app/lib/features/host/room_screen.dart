@@ -10,14 +10,17 @@ class HostRoomScreen extends StatelessWidget {
   const HostRoomScreen({super.key});
 
   Future<bool> _showExitDialog(
-      BuildContext context, HostRoomViewModel viewModel) async {
+    BuildContext context,
+    HostRoomViewModel viewModel,
+  ) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Encerrar Sala'),
           content: const Text(
-              'Você tem certeza que deseja encerrar a sala? Todos os jogadores serão desconectados.'),
+            'Você tem certeza que deseja encerrar a sala? Todos os jogadores serão desconectados.',
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Não'),
@@ -40,9 +43,11 @@ class HostRoomScreen extends StatelessWidget {
   }
 
   Future<void> _onExit(
-      BuildContext context, HostRoomViewModel viewModel) async {
+    BuildContext context,
+    HostRoomViewModel viewModel,
+  ) async {
     final shouldPop = await _showExitDialog(context, viewModel);
-    if (shouldPop) {
+    if (shouldPop && context.mounted) {
       context.go('/lobby');
     }
   }
@@ -85,10 +90,12 @@ class HostRoomScreen extends StatelessWidget {
         });
       },
       builder: (context, viewModel, child) {
-        return WillPopScope(
-          onWillPop: () async {
-            await _onExit(context, viewModel);
-            return false;
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (!didPop) {
+              await _onExit(context, viewModel);
+            }
           },
           child: BingoScaffold(
             title: 'Sala do Bingo (Host)',
@@ -112,8 +119,10 @@ class HostRoomScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppColors.card,
                             borderRadius: BorderRadius.circular(16),
-                            border:
-                                Border.all(color: AppColors.outline, width: 2),
+                            border: Border.all(
+                              color: AppColors.outline,
+                              width: 2,
+                            ),
                           ),
                           child: Center(
                             child: Text(
@@ -132,8 +141,9 @@ class HostRoomScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final number = viewModel.drawnNumbers[index];
                               return Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 4),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   color: AppColors.success,
@@ -153,29 +163,49 @@ class HostRoomScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        // Player Count
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.people),
+                            const SizedBox(width: 8),
+                            Text(
+                              '${viewModel.playerCount} jogadores na sala',
+                              style: textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
                 ),
+                // Connected Players
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final playerName = viewModel.players[index];
+                    return ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(playerName),
+                    );
+                  }, childCount: viewModel.playerCount),
+                ),
                 // Bingo Claims
                 SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final claim = viewModel.bingoClaims[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          title: Text('${claim.playerName} gritou BINGO!'),
-                          subtitle: Text('Cartela ID: ${claim.cardId}'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.check),
-                            onPressed: () => viewModel.validateClaim(claim),
-                          ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final claim = viewModel.bingoClaims[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        title: Text('${claim.playerName} gritou BINGO!'),
+                        subtitle: Text('Cartela ID: ${claim.cardId}'),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.check),
+                          onPressed: () => viewModel.validateClaim(claim),
                         ),
-                      );
-                    },
-                    childCount: viewModel.bingoClaims.length,
-                  ),
+                      ),
+                    );
+                  }, childCount: viewModel.bingoClaims.length),
                 ),
                 SliverToBoxAdapter(
                   child: Padding(

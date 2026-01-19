@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 
 class PlayerGameScreen extends StatelessWidget {
   final int cardId;
+  final String playerName;
 
-  const PlayerGameScreen({super.key, required this.cardId});
+  const PlayerGameScreen(
+      {super.key, required this.cardId, required this.playerName});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class PlayerGameScreen extends StatelessWidget {
         );
       },
       onReady: (viewModel) {
-        // ViewModel is ready, no specific action needed here for now.
+        viewModel.setPlayerName(playerName);
       },
     );
   }

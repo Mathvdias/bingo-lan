@@ -14,6 +14,8 @@ class PlayerGameViewModel extends BaseViewModel {
   String? _gameWinner;
   String? get gameWinner => _gameWinner;
 
+  String playerName = '';
+
   PlayerGameViewModel({
     required this.cardId,
     required IGameConnection gameConnection,
@@ -22,6 +24,11 @@ class PlayerGameViewModel extends BaseViewModel {
     // For debugging, print the generated matrix
     log('Player Card ID: $cardId, Matrix: ${bingoCard.matrix}');
     _listenToGameEvents();
+  }
+
+  void setPlayerName(String name) {
+    playerName = name;
+    _gameConnection.sendPlayerEvent(PlayerNameEvent(name: playerName));
   }
 
   void _listenToGameEvents() {
@@ -52,9 +59,10 @@ class PlayerGameViewModel extends BaseViewModel {
   Future<void> shoutBingo() async {
     setLoading(true);
 
-    // We assume the user name comes from somewhere, maybe stored in shared prefs or passed in
-    // For now we use a placeholder or random ID
-    final String playerName = 'Player_${cardId % 100}';
+    if (playerName.isEmpty) {
+      // This should not happen if the UI flow is correct
+      playerName = 'Player_${cardId % 100}';
+    }
 
     try {
       await _gameConnection.sendPlayerEvent(

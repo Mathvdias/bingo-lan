@@ -20,3 +20,20 @@ class ShoutBingoEvent extends PlayerEvent {
     };
   }
 }
+
+class PlayerNameEvent extends PlayerEvent {
+  final String name;
+  PlayerNameEvent({required this.name});
+
+  factory PlayerNameEvent.fromJson(Map<String, dynamic> json) {
+    return PlayerNameEvent(name: json['payload']['name'] as String);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'PLAYER_NAME',
+      'payload': {'name': name},
+    };
+  }
+}
