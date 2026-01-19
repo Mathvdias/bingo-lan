@@ -12,6 +12,9 @@ export 'src/drivers/i_uuid_driver.dart'; // New export
 // Logic
 export 'src/logic/access_control_service.dart';
 
+// Services
+export 'src/services/jwt_service.dart';
+
 // Models
 export 'src/models/bingo_card.dart';
 export 'src/models/bingo_invite.dart';

@@ -38,24 +38,47 @@ class PlayerScanViewModel extends BaseViewModel {
       // 2. Parse JSON
       final Map<String, dynamic> payload = jsonDecode(decodedJson);
 
-      // 3. Validate Payload (basic validation)
-      if (payload['v'] != 1 ||
-          payload['t'] == null ||
-          payload['h'] == null ||
-          payload['p'] == null ||
-          payload['s'] == null) {
-        throw const FormatException('QR Code inválido ou corrompido.');
+      // 3. Validate Payload version
+      final int version = payload['v'] ?? 1;
+
+      String connectionId;
+
+      if (version == 2) {
+        // Version 2: Using JWT token
+        if (payload['h'] == null ||
+            payload['p'] == null ||
+            payload['token'] == null) {
+          throw const FormatException('QR Code inválido ou corrompido.');
+        }
+
+        final String host = payload['h'];
+        final int port = payload['p'];
+        final String jwtToken = payload['token'];
+
+        log('QR Decoded (v2): Host=$host, Port=$port, Token=<JWT>');
+
+        // Construct WebSocket URL with JWT token
+        connectionId = 'ws://$host:$port?token=$jwtToken';
+      } else {
+        // Version 1: Legacy format (backwards compatibility)
+        if (payload['t'] == null ||
+            payload['h'] == null ||
+            payload['p'] == null ||
+            payload['s'] == null) {
+          throw const FormatException('QR Code inválido ou corrompido.');
+        }
+
+        final String host = payload['h'];
+        final int port = payload['p'];
+        final String token = payload['s'];
+
+        log('QR Decoded (v1): Host=$host, Port=$port, Token=$token');
+
+        // Construct WebSocket URL with simple token
+        connectionId = 'ws://$host:$port?token=$token';
       }
 
-      final String host = payload['h'];
-      final int port = payload['p'];
-      final String token = payload['s'];
-
-      log('QR Decoded: Host=$host, Port=$port, Token=$token');
-
       // 4. Connect to the host
-      // Construct WebSocket URL: ws://host:port?token=token
-      final connectionId = 'ws://$host:$port?token=$token';
       await _gameConnection.joinRoom(connectionId);
 
       // 5. Generate a random seed for the bingo card

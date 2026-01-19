@@ -4,6 +4,7 @@ import 'dart:developer'; // Import for log
 import 'dart:io';
 
 import 'package:bingo_core/bingo_core.dart';
+import 'package:bingo_core/src/services/jwt_service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_web_socket/shelf_web_socket.dart';
@@ -98,8 +99,24 @@ class LocalShelfGameConnection implements IGameConnection {
       request,
     ) {
       final token = request.url.queryParameters['token'];
-      if (token != _secretToken) {
-        return Response.forbidden('Invalid Token');
+      if (token == null) {
+        return Response.forbidden('Missing Token');
+      }
+
+      // Validate JWT token
+      try {
+        final isValid = JwtService.validateRoomToken(
+          token: token,
+          secret: _secretToken!,
+          expectedRoomId: roomName,
+        );
+
+        if (!isValid) {
+          return Response.forbidden('Invalid Token or Room ID mismatch');
+        }
+      } catch (e) {
+        log('Token validation error: $e');
+        return Response.forbidden('Invalid or Expired Token');
       }
 
       return webSocketHandler((
@@ -119,8 +136,9 @@ class LocalShelfGameConnection implements IGameConnection {
 
               if (event is PlayerNameEvent) {
                 _connectedPlayers[webSocketChannel] = event.name;
-                _connectedPlayersController
-                    .add(_connectedPlayers.values.toList());
+                _connectedPlayersController.add(
+                  _connectedPlayers.values.toList(),
+                );
               } else {
                 _gameEventController.add(event);
               }
@@ -130,15 +148,14 @@ class LocalShelfGameConnection implements IGameConnection {
           },
           onDone: () {
             _connectedPlayers.remove(webSocketChannel);
-            _connectedPlayersController
-                .add(_connectedPlayers.values.toList());
+            _connectedPlayersController.add(_connectedPlayers.values.toList());
           },
         );
       })(request);
     });
 
     _server = await shelf_io.serve(handler, InternetAddress.anyIPv4, port);
-    log('Local server started on ws://$hostIp:$port?token=$secretToken');
+    log('Local server started on ws://$hostIp:$port?token=<JWT>');
   }
 
   @override

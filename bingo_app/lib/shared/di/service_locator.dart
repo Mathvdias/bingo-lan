@@ -27,7 +27,6 @@ void setupServiceLocator() {
     () => HostSetupViewModel(
       gameConnection: serviceLocator<IGameConnection>(),
       networkInfoDriver: serviceLocator<INetworkInfoDriver>(),
-      uuidDriver: serviceLocator<IUUIDDriver>(),
     ),
   );
   serviceLocator.registerFactory(

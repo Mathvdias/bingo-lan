@@ -7,7 +7,6 @@ enum GameType { local, online }
 class HostSetupViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
   final INetworkInfoDriver _networkInfoDriver;
-  final IUUIDDriver _uuidDriver;
 
   String _roomName = '';
   GameType _gameType = GameType.local;
@@ -19,10 +18,8 @@ class HostSetupViewModel extends BaseViewModel {
   HostSetupViewModel({
     required IGameConnection gameConnection,
     required INetworkInfoDriver networkInfoDriver,
-    required IUUIDDriver uuidDriver,
   }) : _gameConnection = gameConnection,
-       _networkInfoDriver = networkInfoDriver,
-       _uuidDriver = uuidDriver;
+       _networkInfoDriver = networkInfoDriver;
 
   void onRoomNameChanged(String value) {
     _roomName = value;
@@ -69,30 +66,37 @@ class HostSetupViewModel extends BaseViewModel {
       return null;
     }
 
-    // 2. Generate Secret Token
-    final String secretToken = _uuidDriver.v4().substring(0, 8);
+    // 2. Generate Secret for JWT signing
+    final String jwtSecret = JwtService.generateSecret();
 
     // 3. Define Port
     const int port = 8080; // As per sec.md
 
-    // 4. Host the room
-    await _gameConnection.hostRoom(roomName.trim(), secretToken, ip, port);
+    // 4. Host the room (pass JWT secret)
+    await _gameConnection.hostRoom(roomName.trim(), jwtSecret, ip, port);
 
-    // 5. Construct QR Code Payload (JSON)
+    // 5. Generate JWT token for this room
+    final String jwtToken = JwtService.generateRoomToken(
+      roomId: roomName.trim(),
+      role: 'player',
+      secret: jwtSecret,
+    );
+
+    // 6. Construct QR Code Payload (JSON) with JWT
     final payload = {
-      "v": 1,
+      "v": 2, // Version 2 - now using JWT
       "t": "wifi",
       "h": ip,
       "p": port,
-      "s": secretToken,
+      "token": jwtToken, // JWT token instead of simple secret
       "n": roomName.trim(),
     };
 
-    // 6. Encode to Base64
+    // 7. Encode to Base64
     final String jsonPayload = jsonEncode(payload);
     final String base64Payload = base64Encode(utf8.encode(jsonPayload));
 
-    // 7. Construct Deep Link
+    // 8. Construct Deep Link
     final String deepLink = 'bingolucca://join?data=$base64Payload';
 
     return deepLink;
