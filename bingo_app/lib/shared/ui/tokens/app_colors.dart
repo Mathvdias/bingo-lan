@@ -12,6 +12,10 @@ class AppColors {
   static const Color card = Color(0xFFFFFFFF);
   static const Color outline = Color(0xFF121212);
   static const Color text = Color(0xFF121212); // Same as outline
+  static const Color background = Color(0xFFFFFDF5); // Same as surface
+  static const Color textSecondary = Color(
+    0xFF757575,
+  ); // Gray for secondary text
 
   // Bingo Header Pastels
   static const Color pastelRed = Color(0xFFEF9A9A);

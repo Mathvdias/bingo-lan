@@ -45,8 +45,23 @@ dependencies:
   qr_flutter: ^4.1.0
   mobile_scanner: ^7.1.4
   get_it: ^9.2.0
+  
+  # Firebase
   firebase_core: ^4.3.0
+  firebase_auth: ^6.1.4
+  firebase_analytics: ^12.1.1
+  
+  # Auth providers
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
+  
+  # Database
+  supabase_flutter: ^2.12.0
+  
+  # UI
   flip_card: ^0.7.0
+  clarity_flutter: ^1.7.0
+  purchases_flutter: ^9.10.7
 
 dev_dependencies:
   flutter_test:

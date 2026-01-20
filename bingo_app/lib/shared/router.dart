@@ -1,22 +1,24 @@
-import 'package:bingo_app/main_common.dart' show SplashScreen;
+import 'package:bingo_app/shared/services/analytics_service.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/login_screen.dart';
+import '../../features/lobby/lobby_screen.dart';
 import '../../features/host/invite_screen.dart';
 import '../../features/host/room_screen.dart';
 import '../../features/host/setup_screen.dart';
-import '../../features/lobby/lobby_screen.dart';
-
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/player/game_screen.dart';
 import '../../features/player/scan_screen.dart';
-import '../../main.dart'; // Assuming SplashScreen is in main.dart
 
 /// The route configuration for the application.
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/lobby',
+  observers: [AnalyticsService.observer],
   routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    GoRoute(path: '/', builder: (context, state) => const LobbyScreen()),
     GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
 
     GoRoute(
       path: '/paywall',
@@ -45,33 +47,28 @@ final GoRouter router = GoRouter(
     // Player Routes
     GoRoute(
       path: '/player/scan',
-      builder: (context, state) {
-        final data = state.uri.queryParameters['data'];
-        return PlayerScanScreen(initialData: data);
-      },
+      builder: (context, state) => const PlayerScanScreen(),
     ),
     GoRoute(
-      path: '/player/game/:cardId',
+      path: '/player/game',
       builder: (context, state) {
-        final cardIdStr = state.pathParameters['cardId'];
-        final cardId = int.tryParse(cardIdStr ?? '');
+        final cardId = state.extra as int?;
         if (cardId == null) {
+          // Handle error case, maybe redirect to scan
           return const PlayerScanScreen();
         }
-        final playerName = state.uri.queryParameters['name'] ?? '';
-        return PlayerGameScreen(cardId: cardId, playerName: playerName);
-      },
-    ),
-    GoRoute(
-      path: '/join',
-      redirect: (context, state) {
-        final data = state.uri.queryParameters['data'];
-        if (data != null) {
-          // Redirect to scan screen with data as query param
-          return '/player/scan?data=$data';
-        }
-        return '/player/scan';
+        return PlayerGameScreen(cardId: cardId, playerName: 'Player');
       },
     ),
   ],
 );
+
+/// Splash screen (simple loading screen)
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+  }
+}
