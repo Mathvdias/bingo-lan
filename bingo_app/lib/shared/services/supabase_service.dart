@@ -17,10 +17,16 @@ class SupabaseService {
 
   /// Get Supabase client instance
   static SupabaseClient get client {
-    if (_client == null) {
+    if (_client != null) {
+      return _client!;
+    }
+
+    // Fallback: check if Supabase singleton is initialized
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
       throw Exception('Supabase not initialized. Call initialize() first.');
     }
-    return _client!;
   }
 
   /// Sync Firebase user to Supabase
