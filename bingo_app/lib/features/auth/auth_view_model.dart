@@ -2,6 +2,7 @@ import 'package:bingo_app/features/auth/auth_service.dart';
 import 'package:bingo_app/shared/services/supabase_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:developer';
 
 enum AuthMethod { google, apple }
@@ -38,6 +39,17 @@ class AuthViewModel extends BaseViewModel {
       return true;
     } on FirebaseAuthException catch (e) {
       _handleAuthException(e);
+      return false;
+    } on GoogleSignInException catch (e) {
+      // Captura erros específicos do Google Sign In (configuração, cancelamento pelo usuário)
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        // Erro 16 (reauth failed) geralmente aparece como canceled/failed
+        _errorMessage = 'Login cancelado ou falha de configuração (SHA-1).';
+      } else {
+        _errorMessage = 'Erro Google Sign-In: ${e.description}';
+      }
+      log('Google Sign-In Error: ${e.code} - ${e.description}');
+      notifyListeners();
       return false;
     } catch (e) {
       _errorMessage = 'Erro inesperado ao fazer login com Google';

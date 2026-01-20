@@ -8,7 +8,7 @@ class ClarityService {
   /// Get Clarity configuration
   static ClarityConfig get config => ClarityConfig(
     projectId: projectId,
-    logLevel: LogLevel.None, // Use LogLevel.Verbose for debugging
+    logLevel: LogLevel.Verbose, // Changed to Verbose for debugging
   );
 
   /// Get ClarityWidget to wrap the app

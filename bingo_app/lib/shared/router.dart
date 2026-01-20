@@ -1,4 +1,5 @@
 import 'package:bingo_app/shared/services/analytics_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +16,25 @@ import '../../features/player/scan_screen.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/lobby',
   observers: [AnalyticsService.observer],
+  redirect: (context, state) {
+    // Check if user is authenticated
+    final user = FirebaseAuth.instance.currentUser;
+    final isLoggedIn = user != null;
+    final isOnLoginPage = state.matchedLocation == '/login';
+
+    // If not logged in and not on login page, redirect to login
+    if (!isLoggedIn && !isOnLoginPage) {
+      return '/login';
+    }
+
+    // If logged in and on login page, redirect to lobby
+    if (isLoggedIn && isOnLoginPage) {
+      return '/lobby';
+    }
+
+    // No redirect needed
+    return null;
+  },
   routes: <RouteBase>[
     GoRoute(path: '/', builder: (context, state) => const LobbyScreen()),
     GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
