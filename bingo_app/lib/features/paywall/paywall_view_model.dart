@@ -56,7 +56,7 @@ class PaywallViewModel extends BaseViewModel {
   /// Check current subscription status
   Future<void> _checkSubscriptionStatus() async {
     try {
-      _isPro = await SubscriptionService.hasActiveSubscription();
+      _isPro = await SubscriptionService.checkSubscriptionStatus();
       notifyListeners();
     } catch (e) {
       log('Error checking subscription status: $e');

@@ -1,4 +1,5 @@
 import 'package:bingo_app/features/host/host_room_view_model.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
@@ -17,19 +18,17 @@ class HostRoomScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Encerrar Sala'),
-          content: const Text(
-            'Você tem certeza que deseja encerrar a sala? Todos os jogadores serão desconectados.',
-          ),
+          title: Text(AppLocalizations.of(context)!.stopRoomTitle),
+          content: Text(AppLocalizations.of(context)!.stopRoomMessage),
           actions: <Widget>[
             TextButton(
-              child: const Text('Não'),
+              child: Text(AppLocalizations.of(context)!.no),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             TextButton(
-              child: const Text('Sim'),
+              child: Text(AppLocalizations.of(context)!.yes),
               onPressed: () {
                 viewModel.stopGame();
                 Navigator.of(context).pop(true);
@@ -65,14 +64,12 @@ class HostRoomScreen extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
-                  title: const Text('Recurso Pago'),
-                  content: const Text(
-                    'O Globo Automático é um recurso pago. Faça upgrade para usar!',
-                  ),
+                  title: Text(AppLocalizations.of(context)!.paywallTitle),
+                  content: Text(AppLocalizations.of(context)!.paywallMessage),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Entendi'),
+                      child: Text(AppLocalizations.of(context)!.confirm),
                     ),
                   ],
                 ),
@@ -98,7 +95,7 @@ class HostRoomScreen extends StatelessWidget {
             }
           },
           child: BingoScaffold(
-            title: 'Sala do Bingo (Host)',
+            title: AppLocalizations.of(context)!.hostRoomTitle,
             onBack: () => _onExit(context, viewModel),
             actions: [
               IconButton(
@@ -170,7 +167,7 @@ class HostRoomScreen extends StatelessWidget {
                             const Icon(Icons.people),
                             const SizedBox(width: 8),
                             Text(
-                              '${viewModel.playerCount} jogadores na sala',
+                              '${viewModel.playerCount} ${AppLocalizations.of(context)!.playersInRoom}',
                               style: textTheme.bodyLarge,
                             ),
                           ],
@@ -197,8 +194,12 @@ class HostRoomScreen extends StatelessWidget {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        title: Text('${claim.playerName} gritou BINGO!'),
-                        subtitle: Text('Cartela ID: ${claim.cardId}'),
+                        title: Text(
+                          '${claim.playerName} ${AppLocalizations.of(context)!.shoutedBingo}',
+                        ),
+                        subtitle: Text(
+                          '${AppLocalizations.of(context)!.cardId} ${claim.cardId}',
+                        ),
                         trailing: IconButton(
                           icon: const Icon(Icons.check),
                           onPressed: () => viewModel.validateClaim(claim),
@@ -210,9 +211,78 @@ class HostRoomScreen extends StatelessWidget {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: BingoButton(
-                      label: 'Sortear Próximo Número',
-                      onPressed: viewModel.drawNextNumber,
+                    child: DefaultTabController(
+                      length: 2,
+                      child: Column(
+                        children: [
+                          TabBar(
+                            tabs: [
+                              Tab(
+                                text: AppLocalizations.of(
+                                  context,
+                                )!.virtualGlobe,
+                              ),
+                              Tab(
+                                text: AppLocalizations.of(context)!.manualGlobe,
+                              ),
+                            ],
+                            labelColor: AppColors.primary,
+                            unselectedLabelColor: AppColors.textSecondary,
+                            indicatorColor: AppColors.primary,
+                          ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            height: 200, // Fixed height for controls
+                            child: TabBarView(
+                              children: [
+                                // Virtual Globe
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    BingoButton(
+                                      label: AppLocalizations.of(
+                                        context,
+                                      )!.drawRandom,
+                                      onPressed: viewModel.drawRandomNumber,
+                                      // Disable if auto-playing
+                                      color: viewModel.isAutoPlaying
+                                          ? Colors.grey
+                                          : AppColors.primary,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Globo Automático (Premium): ',
+                                        ),
+                                        Switch(
+                                          value: viewModel.isAutoPlaying,
+                                          onChanged: (value) =>
+                                              viewModel.toggleAutoPlay(),
+                                          activeColor: AppColors.primary,
+                                        ),
+                                        if (viewModel.isAutoPlaying)
+                                          const SizedBox(
+                                            height: 16,
+                                            width: 16,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
+                                // Manual Input
+                                _ManualInputControl(viewModel: viewModel),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -221,6 +291,70 @@ class HostRoomScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ManualInputControl extends StatefulWidget {
+  final HostRoomViewModel viewModel;
+  const _ManualInputControl({required this.viewModel});
+
+  @override
+  State<_ManualInputControl> createState() => _ManualInputControlState();
+}
+
+class _ManualInputControlState extends State<_ManualInputControl> {
+  final _controller = TextEditingController();
+
+  void _submit() {
+    final text = _controller.text;
+    final number = int.tryParse(text);
+    if (number != null) {
+      widget.viewModel.drawManualNumber(number);
+      _controller.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 100,
+              child: TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.numberInput,
+                  border: OutlineInputBorder(),
+                ),
+                onSubmitted: (_) => _submit(),
+              ),
+            ),
+            const SizedBox(width: 16),
+            ElevatedButton(
+              onPressed: _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+              ),
+              child: Text(AppLocalizations.of(context)!.confirm),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          AppLocalizations.of(context)!.manualInputInstruction,
+          style: const TextStyle(color: Colors.grey, fontSize: 12),
+        ),
+      ],
     );
   }
 }

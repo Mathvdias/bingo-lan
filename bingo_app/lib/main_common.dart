@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:developer';
+import 'package:bingo_app/core/config/env.dart';
+import 'package:bingo_app/l10n/app_localizations.dart' show AppLocalizations;
 import 'package:bingo_app/shared/di/service_locator.dart';
 import 'package:bingo_app/shared/router.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
@@ -13,6 +15,7 @@ import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 
 import 'flavors/app_config.dart';
@@ -40,26 +43,24 @@ Future<void> mainCommon(AppConfig appConfig) async {
   // 1. Setup Service Locator
   setupServiceLocator();
 
+  // Validate Environment Variables
+  Env.validate();
+
   // Register AppConfig in GetIt so it can be accessed anywhere
   GetIt.I.registerSingleton<AppConfig>(appConfig);
 
   // 2. Initialize the Bingo SDK
-  // Using placeholder keys for now. These should be stored securely.
   await BingoSDK.initialize(
-    supabaseUrl: "REDACTED",
-    supabaseKey:
-        "REDACTED",
-    revenueCatKey: "REDACTED_REVENUECAT_TEST_KEY",
+    supabaseUrl: Env.supabaseUrl,
+    supabaseKey: Env.supabaseAnonKey,
+    revenueCatKey: Platform.isIOS
+        ? Env.revenueCatIosKey
+        : Env.revenueCatAndroidKey,
   );
 
   // 2.5 Initialize RevenueCat for subscriptions (non-blocking)
-  // TODO: Replace with your production keys when available
   try {
-    await SubscriptionService.initialize(
-      apiKey: Platform.isIOS
-          ? 'REDACTED_REVENUECAT_TEST_KEY'
-          : 'REDACTED_REVENUECAT_TEST_KEY',
-    ).timeout(const Duration(seconds: 5));
+    await SubscriptionService.initialize().timeout(const Duration(seconds: 5));
   } catch (e) {
     // Ignore RevenueCat errors during development
     // App will work without monetization features
@@ -90,8 +91,26 @@ class BingoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       restorationScopeId: 'bingo_app_root',
-      title: appConfig.appTitle, // Use dynamic title
+      debugShowCheckedModeBanner: false,
+      title: appConfig.appTitle,
+
+      // Localization Configuration
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('pt', ''), // Portuguese (Default)
+        Locale('en', ''), // English
+        Locale('es', ''), // Spanish
+        Locale('fr', ''), // French
+        Locale('ja', ''), // Japanese
+      ],
+
       theme: bingoTheme,
+      themeMode: ThemeMode.light, // Enforce light mode
       routerConfig: router,
     );
   }

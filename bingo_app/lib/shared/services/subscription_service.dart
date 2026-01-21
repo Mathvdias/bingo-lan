@@ -1,6 +1,9 @@
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:bingo_app/shared/services/supabase_service.dart';
+import 'package:bingo_app/core/config/env.dart';
 import 'dart:developer';
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/services.dart';
 
 /// Service for managing in-app purchases and subscriptions via RevenueCat
@@ -9,20 +12,33 @@ class SubscriptionService {
   static const String annualProductId = 'annual_subscription';
   static const String lifetimeProductId = 'lifetime_purchase';
 
+  /// Stream of premium status
+  static final _premiumStatusController = StreamController<bool>.broadcast();
+  static Stream<bool> get premiumStatusStream =>
+      _premiumStatusController.stream;
+
   /// Initialize RevenueCat SDK
-  static Future<void> initialize({
-    required String apiKey,
-    String? userId,
-  }) async {
+  static Future<void> initialize({String? apiKey, String? userId}) async {
     try {
       await Purchases.setLogLevel(LogLevel.debug);
 
-      final configuration = PurchasesConfiguration(apiKey);
+      final key =
+          apiKey ??
+          (Platform.isIOS ? Env.revenueCatIosKey : Env.revenueCatAndroidKey);
+
+      final configuration = PurchasesConfiguration(key);
       if (userId != null) {
         configuration.appUserID = userId;
       }
 
       await Purchases.configure(configuration);
+
+      // Listen for updates
+      Purchases.addCustomerInfoUpdateListener((customerInfo) {
+        _updatePremiumStatus(customerInfo);
+        _syncPurchaseToSupabase(customerInfo);
+      });
+
       log('RevenueCat initialized successfully');
     } catch (e) {
       log('Error initializing RevenueCat: $e');
@@ -30,11 +46,19 @@ class SubscriptionService {
     }
   }
 
+  /// Helper to update local stream
+  static void _updatePremiumStatus(CustomerInfo? info) {
+    if (info == null) return;
+    final isPremium = info.entitlements.all['premium']?.isActive ?? false;
+    _premiumStatusController.add(isPremium);
+  }
+
   /// Set user ID (call after authentication)
   static Future<void> setUserId(String userId) async {
     try {
       await Purchases.logIn(userId);
       log('RevenueCat user ID set: $userId');
+      await checkSubscriptionStatus(); // Initial check
     } catch (e) {
       log('Error setting RevenueCat user ID: $e');
     }
@@ -89,10 +113,11 @@ class SubscriptionService {
     }
   }
 
-  /// Check if user has active subscription
-  static Future<bool> hasActiveSubscription() async {
+  /// Check if user has active subscription and update stream
+  static Future<bool> checkSubscriptionStatus() async {
     try {
       final customerInfo = await Purchases.getCustomerInfo();
+      _updatePremiumStatus(customerInfo);
       return customerInfo.entitlements.all['premium']?.isActive ?? false;
     } catch (e) {
       log('Error checking subscription status: $e');

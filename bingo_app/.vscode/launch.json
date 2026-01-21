@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "bingo_dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_dev.dart",
+            "args": [
+                "--dart-define=SUPABASE_URL=REDACTED",
+                "--dart-define=SUPABASE_ANON_KEY=REDACTED",
+                "--dart-define=RC_ANDROID_KEY=REDACTED",
+                "--dart-define=RC_IOS_KEY=REDACTED",
+                "--dart-define=CLARITY_PROJECT_ID=REDACTED",
+                "--dart-define=GEMINI_API_KEY=REDACTED",
+                "--dart-define=ENVIRONMENT=dev",
+                "--dart-define=ENABLE_DEBUG_LOGS=true"
+            ]
+        },
+        {
+            "name": "bingo_prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_prod.dart",
+            "args": [
+                "--dart-define=SUPABASE_URL=REDACTED",
+                "--dart-define=SUPABASE_ANON_KEY=YOUR_PROD_KEY_HERE",
+                "--dart-define=RC_ANDROID_KEY=YOUR_PROD_RC_KEY",
+                "--dart-define=RC_IOS_KEY=YOUR_PROD_RC_KEY",
+                "--dart-define=CLARITY_PROJECT_ID=YOUR_PROD_CLARITY_ID",
+                "--dart-define=ENVIRONMENT=prod",
+                "--dart-define=ENABLE_DEBUG_LOGS=false"
+            ]
+        }
+    ]
+}

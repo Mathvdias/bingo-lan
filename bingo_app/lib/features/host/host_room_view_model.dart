@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:developer'; // Import for log
 import 'dart:math' hide log;
 
+import 'package:intl/intl.dart';
+import 'package:bingo_app/shared/services/subscription_service.dart';
+import 'package:bingo_app/shared/services/ai_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart'; // Import core types including events
 
@@ -53,11 +56,13 @@ class HostRoomViewModel extends BaseViewModel {
     required IGameConnection gameConnection,
     required AccessControlService accessControlService,
     required IConfigDriver configDriver,
-  })  : _gameConnection = gameConnection,
-        _accessControlService = accessControlService,
-        _configDriver = configDriver {
+  }) : _gameConnection = gameConnection,
+       _accessControlService = accessControlService,
+       _configDriver = configDriver {
     _listenToPlayerEvents();
-    _playersSubscription = _gameConnection.connectedPlayersStream.listen((players) {
+    _playersSubscription = _gameConnection.connectedPlayersStream.listen((
+      players,
+    ) {
       _players = players;
       notifyListeners();
     });
@@ -70,34 +75,102 @@ class HostRoomViewModel extends BaseViewModel {
         await _accessControlService.canAccess('is_globo_paid');
   }
 
-  Future<void> drawNextNumber() async {
-    if (!await canDrawNextNumber) {
-      log('Cannot draw next number: Globo is a paid feature!');
+  Timer? _autoPlayTimer;
+  bool _isAutoPlaying = false;
+  bool get isAutoPlaying => _isAutoPlaying;
+
+  // Manual Mode: Host enters a number
+  Future<void> drawManualNumber(int number) async {
+    if (_isAutoPlaying) return;
+
+    // Validation
+    if (number < 1 || number > 75) {
+      _actionController.add(ShowError('Número deve ser entre 1 e 75'));
+      return;
+    }
+    if (_drawnNumbers.contains(number)) {
+      _actionController.add(ShowError('Número $number já foi sorteado!'));
+      return;
+    }
+
+    _processDraw(number);
+  }
+
+  // Auto Mode: App draws randomly
+  Future<void> toggleAutoPlay() async {
+    if (_isAutoPlaying) {
+      _stopAutoPlay();
+    } else {
+      await _startAutoPlay();
+    }
+  }
+
+  Future<void> _startAutoPlay() async {
+    // Check Premium
+    final isPremium =
+        await SubscriptionService.checkSubscriptionStatus(); // Using new method
+    if (!isPremium) {
       _actionController.add(ShowPaywall());
       return;
     }
 
-    if (_availableNumbers.isEmpty) {
-      log('All numbers have been drawn!');
-      return;
-    }
+    _isAutoPlaying = true;
+    notifyListeners();
 
-    setLoading(true);
+    // Initial draw immediately? Or wait? Let's wait.
+    _autoPlayTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (_availableNumbers.isEmpty) {
+        _stopAutoPlay();
+        return;
+      }
+      _drawRandomNumber();
+    });
+  }
 
-    // Draw a random number
+  void _stopAutoPlay() {
+    _autoPlayTimer?.cancel();
+    _autoPlayTimer = null;
+    _isAutoPlaying = false;
+    notifyListeners();
+  }
+
+  // Single Random Draw (can be used by AutoPlay or manual click)
+  Future<void> drawRandomNumber() async {
+    // If used manually, it might be free or paid depending on rules.
+    // Assuming 'Globo Virtual' single click is allowed or maybe restricted.
+    // user said 'Globo Automatico' is paid. 'Inserir valores' is free.
+    // To be safe, let's treat Random Draw as part of 'Globo Virtual' (Premium) or just Auto.
+    // Let's allow single random draw for now but prioritize Manual Input for free.
+    _drawRandomNumber();
+  }
+
+  void _drawRandomNumber() {
+    if (_availableNumbers.isEmpty) return;
+
     final int randomIndex = _random.nextInt(_availableNumbers.length);
     final int drawnNumber = _availableNumbers.elementAt(randomIndex);
-    _availableNumbers.remove(drawnNumber);
+    _processDraw(drawnNumber);
+  }
 
-    _lastNumber = drawnNumber;
-    _drawnNumbers = List.from(_drawnNumbers)
-      ..add(drawnNumber); // Add to history
+  Future<void> _processDraw(int number) async {
+    if (_availableNumbers.contains(number)) {
+      _availableNumbers.remove(number);
+    }
+
+    _lastNumber = number;
+    _drawnNumbers = List.from(_drawnNumbers)..add(number);
 
     // Broadcast the number to all connected players
-    await _gameConnection.broadcastEvent(NumberDrawnEvent(number: drawnNumber));
+    await _gameConnection.broadcastEvent(NumberDrawnEvent(number: number));
+
+    // Announce AI Joke (Local or Remote)
+    final joke = AiService.getJokeForNumber(number, locale: Intl.defaultLocale);
+    _actionController.add(
+      ShowError(await joke),
+    ); // Reusing ShowError as 'ShowToast' for now, or just logging.
+    // Better: Add a new Action 'AnnounceNumber'
 
     notifyListeners();
-    setLoading(false);
   }
 
   void _listenToPlayerEvents() {

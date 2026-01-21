@@ -26,7 +26,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
   Future<void> _checkSubscription() async {
     setState(() => _checkingSubscription = true);
     try {
-      final hasSub = await SubscriptionService.hasActiveSubscription();
+      final hasSub = await SubscriptionService.checkSubscriptionStatus();
       if (mounted) {
         setState(() {
           _isPremium = hasSub;
@@ -72,34 +72,46 @@ class _LobbyScreenState extends State<LobbyScreen> {
         elevation: 0,
         actions: [
           // Premium badge or upgrade button
-          if (_checkingSubscription)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            )
-          else if (_isPremium)
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Chip(
-                label: const Text('PREMIUM'),
-                backgroundColor: Colors.amber,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            )
-          else
-            TextButton.icon(
-              onPressed: () => context.push('/paywall'),
-              icon: const Icon(Icons.star, color: Colors.amber),
-              label: const Text('Upgrade'),
-              style: TextButton.styleFrom(foregroundColor: Colors.amber),
-            ),
+          StreamBuilder<bool>(
+            stream: SubscriptionService.premiumStatusStream,
+            initialData: _isPremium,
+            builder: (context, snapshot) {
+              final isPremium = snapshot.data ?? false;
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  !_isPremium &&
+                  _checkingSubscription) {
+                return const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                );
+              }
+
+              if (isPremium) {
+                return Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Chip(
+                    label: const Text('PREMIUM'),
+                    backgroundColor: Colors.amber,
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              }
+
+              return TextButton.icon(
+                onPressed: () => context.push('/paywall'),
+                icon: const Icon(Icons.star, color: Colors.amber),
+                label: const Text('Upgrade'),
+                style: TextButton.styleFrom(foregroundColor: Colors.amber),
+              );
+            },
+          ),
 
           // User menu
           PopupMenuButton<String>(
