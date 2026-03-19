@@ -4,6 +4,7 @@ import 'package:bingo_app/shared/ui/widgets/bingo_grid.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_grid_header.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
+import 'package:bingo_app/shared/ui/widgets/banner_ad_widget.dart';
 import 'package:flutter/material.dart';
 
 class PlayerGameScreen extends StatelessWidget {
@@ -43,6 +44,12 @@ class PlayerGameScreen extends StatelessWidget {
                     label: 'Gritar BINGO!',
                     onPressed: viewModel.shoutBingo,
                   ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16.0, bottom: 32.0),
+                  child: BannerAdWidget(),
                 ),
               ),
             ],

@@ -9,4 +9,6 @@ abstract class IConfigDriver {
 
   /// Returns the integer value for a given [key].
   int getInt(String key);
+  
+  String getString(String key);
 }

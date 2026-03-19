@@ -65,4 +65,10 @@ class RemoteConfigDriver implements IConfigDriver {
     if (_remoteConfig == null) return 0; // Default safe value
     return _remoteConfig!.getInt(key);
   }
+
+  @override
+  String getString(String key) {
+    if (_remoteConfig == null) return ''; // Default safe value
+    return _remoteConfig!.getString(key);
+  }
 }

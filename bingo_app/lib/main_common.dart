@@ -12,6 +12,8 @@ import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:bingo_core/bingo_core.dart';
+import 'package:bingo_app/shared/services/ad_service.dart';
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -75,6 +77,10 @@ Future<void> mainCommon(AppConfig appConfig) async {
   // 3. Fetch and activate remote feature flags.
   final config = GetIt.I.get<IConfigDriver>();
   await config.fetchAndActivate();
+
+  // 4. Initialize AdMob and A/B Testing Config
+  await AdService.initialize();
+  await RevenueConfigService.initialize();
 
   // Run the main Flutter application wrapped with Clarity
   runApp(ClarityService.wrapApp(BingoApp(appConfig: appConfig)));
