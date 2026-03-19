@@ -1,4 +1,5 @@
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
+import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // After animation, go to lobby
     Future.delayed(const Duration(milliseconds: 2500), () {
       if (mounted) {
+        AdService.showAppOpenAd();
         context.go('/lobby');
       }
     });

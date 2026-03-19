@@ -31,6 +31,15 @@ class AdService {
     throw UnsupportedError('Unsupported platform');
   }
 
+  static String get appOpenAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-3940256099942544/9257395915'; // Google Test ID
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-3940256099942544/5575463023'; // Google Test ID
+    }
+    throw UnsupportedError('Unsupported platform');
+  }
+
   /// Carrega e exibe um Interstitial Ad
   static void showInterstitialAd({void Function()? onAdDismissed}) {
     InterstitialAd.load(
@@ -63,6 +72,24 @@ class AdService {
           }
         },
       ),
+    );
+  }
+
+  /// Carrega e exibe um App Open Ad
+  static void showAppOpenAd() {
+    AppOpenAd.load(
+      adUnitId: appOpenAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+        onAdLoaded: (ad) {
+          log('App Open Ad loaded.');
+          ad.show();
+        },
+        onAdFailedToLoad: (error) {
+          log('App Open Ad failed to load: $error');
+        },
+      ),
+      orientation: AppOpenAd.orientationPortrait,
     );
   }
 }

@@ -156,8 +156,42 @@ class PaywallScreen extends StatelessWidget {
                       package.identifier,
                 );
               }).toList()
+            else if (viewModel.errorMessage != null)
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      viewModel.errorMessage!,
+                      style: const TextStyle(color: AppColors.error),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton.icon(
+                      onPressed: viewModel.fetchOfferings,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Tentar novamente'),
+                    ),
+                  ],
+                ),
+              )
             else
-              const Center(child: Text('Carregando planos...')),
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text('Carregando planos...'),
+                      SizedBox(height: 8),
+                      Text(
+                        'Dica: Verifique se as Offerings estão configuradas como "Current" no RevenueCat.',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             const SizedBox(height: 24),
 
