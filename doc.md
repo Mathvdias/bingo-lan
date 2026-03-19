@@ -280,7 +280,7 @@ dependencies:
   
   # Logic
   firebase_remote_config: ^4.3.8
-  purchases_flutter: ^6.1.0
+  purchases_flutter: ^9.15.0
   get_it: ^7.6.6
   uuid: ^4.2.1
 

@@ -61,19 +61,7 @@ class HostRoomScreen extends StatelessWidget {
           if (!context.mounted) return;
           switch (event) {
             case ShowPaywall():
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: Text(AppLocalizations.of(context)!.paywallTitle),
-                  content: Text(AppLocalizations.of(context)!.paywallMessage),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(AppLocalizations.of(context)!.confirm),
-                    ),
-                  ],
-                ),
-              );
+              context.push('/paywall');
               break;
             case ShowError(:final message):
               ScaffoldMessenger.of(context).showSnackBar(

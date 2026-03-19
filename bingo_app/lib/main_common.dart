@@ -52,11 +52,15 @@ Future<void> mainCommon(AppConfig appConfig) async {
   GetIt.I.registerSingleton<AppConfig>(appConfig);
 
   // 2. Initialize the Bingo SDK
-  await BingoSDK.initialize(
-    revenueCatKey: Platform.isIOS
-        ? Env.revenueCatIosKey
-        : Env.revenueCatAndroidKey,
-  );
+  try {
+    await BingoSDK.initialize(
+      revenueCatKey: Platform.isIOS
+          ? Env.revenueCatIosKey
+          : Env.revenueCatAndroidKey,
+    );
+  } catch (e) {
+    log('BingoSDK (Core) initialization failed: $e');
+  }
 
   // 2.5 Initialize RevenueCat for subscriptions (non-blocking)
   try {

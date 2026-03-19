@@ -1,5 +1,6 @@
-import 'dart:io';
 import 'dart:developer';
+import 'dart:io';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdService {
@@ -89,7 +90,6 @@ class AdService {
           log('App Open Ad failed to load: $error');
         },
       ),
-      orientation: AppOpenAd.orientationPortrait,
     );
   }
 }

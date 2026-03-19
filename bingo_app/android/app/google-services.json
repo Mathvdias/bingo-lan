@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:46563147810:android:804d935d20f877b6f34a7b",
         "android_client_info": {
-          "package_name": "com.example.bingo_app"
+          "package_name": "com.matheus.bingo"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "46563147810-vacji9h95h9iafv206gbedrb0mjh1roo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.bingo_app",
+            "package_name": "com.matheus.bingo",
             "certificate_hash": "e4ca91b9df7790b9f186ebbe038c78910db0338e"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "46563147810-haakeq4k319kdvksvd1fj2htl8qhdrqa.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.bingoApp"
+                "bundle_id": "com.matheus.bingo"
               }
             }
           ]
@@ -53,7 +53,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:46563147810:android:0828379abce7b79ff34a7b",
         "android_client_info": {
-          "package_name": "com.example.bingo_app.dev"
+          "package_name": "com.matheus.bingo.dev"
         }
       },
       "oauth_client": [
@@ -61,7 +61,7 @@
           "client_id": "46563147810-mncbcv1qv24qgeb9ennoj4d8m18n3rb6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.bingo_app.dev",
+            "package_name": "com.matheus.bingo.dev",
             "certificate_hash": "e4ca91b9df7790b9f186ebbe038c78910db0338e"
           }
         },
@@ -86,7 +86,7 @@
               "client_id": "46563147810-haakeq4k319kdvksvd1fj2htl8qhdrqa.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.bingoApp"
+                "bundle_id": "com.matheus.bingo"
               }
             }
           ]

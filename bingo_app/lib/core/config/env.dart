@@ -5,7 +5,8 @@
 class Env {
   // Supabase Configuration completely removed
 
-  // RevenueCat Configuration
+  // IMPORTANT: Replace these placeholders with your actual RevenueCat API Keys
+  // Found at app.revenuecat.com -> Project Settings -> API Keys
   static const String revenueCatAndroidKey = String.fromEnvironment(
     'RC_ANDROID_KEY',
     defaultValue: 'REDACTED',
