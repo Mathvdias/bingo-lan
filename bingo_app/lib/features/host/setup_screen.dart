@@ -51,48 +51,10 @@ class HostSetupScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      Text(
-                        'Escolha o tipo de jogo',
-                        style: textTheme.bodyLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      SegmentedButton<GameType>(
-                        segments: const [
-                          ButtonSegment(
-                            value: GameType.local,
-                            label: Text('Local (Wi-Fi)'),
-                            icon: Icon(Icons.wifi),
-                          ),
-                          ButtonSegment(
-                            value: GameType.online,
-                            label: Text('Online'),
-                            icon: Icon(Icons.cloud),
-                          ),
-                        ],
-                        selected: {viewModel.gameType},
-                        onSelectionChanged: (Set<GameType> newSelection) {
-                          viewModel.onGameTypeChanged(newSelection.first);
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 500),
-                        transitionBuilder:
-                            (Widget child, Animation<double> animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                        child: FlippableCard(
-                          key: ValueKey(viewModel.gameType),
-                          image: viewModel.gameType == GameType.local
-                              ? 'assets/images/bingo_local.png'
-                              : 'assets/images/bingo_remote.png',
-                          text: viewModel.gameType == GameType.local
-                              ? 'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.'
-                              : 'Jogue com pessoas de qualquer lugar do mundo. Requer uma conexão com a internet.',
-                        ),
+                      const SizedBox(height: 32),
+                      FlippableCard(
+                        image: 'assets/images/bingo_local.png',
+                        text: 'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.',
                       ),
                       const SizedBox(height: 32),
                       BingoButton(

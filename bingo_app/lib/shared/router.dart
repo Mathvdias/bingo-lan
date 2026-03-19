@@ -9,6 +9,7 @@ import '../../features/host/setup_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/player/game_screen.dart';
 import '../../features/player/scan_screen.dart';
+import '../../features/solo/solo_game_screen.dart';
 
 /// The route configuration for the application.
 final GoRouter router = GoRouter(
@@ -58,6 +59,10 @@ final GoRouter router = GoRouter(
         }
         return PlayerGameScreen(cardId: cardId, playerName: 'Player');
       },
+    ),
+    GoRoute(
+      path: '/solo',
+      builder: (context, state) => const SoloGameScreen(),
     ),
   ],
 );

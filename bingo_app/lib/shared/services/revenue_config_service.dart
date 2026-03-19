@@ -22,6 +22,7 @@ class RevenueConfigService {
       await _remoteConfig.setDefaults(const {
         'revenue_model': 'ad_supported',
         'max_free_players_path_a': 10,
+        'solo_mode_enabled': false,
       });
 
       await _remoteConfig.fetchAndActivate();
@@ -42,5 +43,8 @@ class RevenueConfigService {
 
   static int get maxFreePlayersPathA {
     return _remoteConfig.getInt('max_free_players_path_a');
+  }
+  static bool get soloModeEnabled {
+    return _remoteConfig.getBool('solo_mode_enabled');
   }
 }

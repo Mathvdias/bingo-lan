@@ -1,19 +1,15 @@
 import 'dart:convert';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
-import 'package:bingo_core/bingo_core.dart'; // Import IGameConnection, INetworkInfoDriver, IUUIDDriver
-
-enum GameType { local, online }
+import 'package:bingo_core/bingo_core.dart';
 
 class HostSetupViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
   final INetworkInfoDriver _networkInfoDriver;
 
   String _roomName = '';
-  GameType _gameType = GameType.local;
   String? errorMessage;
 
   String get roomName => _roomName;
-  GameType get gameType => _gameType;
 
   HostSetupViewModel({
     required IGameConnection gameConnection,
@@ -23,13 +19,6 @@ class HostSetupViewModel extends BaseViewModel {
 
   void onRoomNameChanged(String value) {
     _roomName = value;
-  }
-
-  void onGameTypeChanged(GameType? value) {
-    if (value != null && _gameType != value) {
-      _gameType = value;
-      notifyListeners();
-    }
   }
 
   /// Creates a game room and returns the data for the QR code.
@@ -44,13 +33,7 @@ class HostSetupViewModel extends BaseViewModel {
     setLoading(true);
 
     try {
-      if (gameType == GameType.local) {
-        return await _createLocalRoom();
-      } else {
-        errorMessage = "Modo Online em breve!";
-        notifyListeners();
-        return null;
-      }
+      return await _createLocalRoom();
     } finally {
       setLoading(false);
     }
@@ -97,7 +80,7 @@ class HostSetupViewModel extends BaseViewModel {
     final String base64Payload = base64Encode(utf8.encode(jsonPayload));
 
     // 8. Construct Deep Link
-    final String deepLink = 'bingolucca://join?data=$base64Payload';
+    final String deepLink = 'bingo://join?data=$base64Payload';
 
     return deepLink;
   }

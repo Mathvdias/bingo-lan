@@ -1,6 +1,7 @@
 import 'package:bingo_app/shared/di/service_locator.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -101,7 +102,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Bingo da Galera',
+                  'Bingo',
                   textAlign: TextAlign.center,
                   style: textTheme.displayLarge,
                 ),
@@ -128,6 +129,13 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   },
                   color: colorScheme.secondary,
                 ),
+                if (RevenueConfigService.soloModeEnabled) ...[
+                  const SizedBox(height: 16),
+                  BingoButton(
+                    label: 'Bingo Individual',
+                    onPressed: () => context.push('/solo'),
+                  ),
+                ],
               ],
             ),
           ),

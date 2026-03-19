@@ -57,7 +57,7 @@ android {
         }
         create("prod") {
             dimension = "env"
-            resValue("string", "app_name", "\"Bingo da Galera\"")
+            resValue("string", "app_name", "\"Bingo\"")
         }
     }
 }

@@ -75,9 +75,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
               const SizedBox(height: 32),
               const Text(
-                "Bingo da Galera",
+                "Bingo",
                 style: TextStyle(
-                  fontSize: 40, 
+                  fontSize: 48, 
                   fontWeight: FontWeight.w900, 
                   color: AppColors.text,
                 ),
