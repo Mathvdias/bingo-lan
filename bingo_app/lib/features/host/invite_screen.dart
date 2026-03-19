@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HostInviteScreen extends StatelessWidget {
   final String qrData;
@@ -99,13 +100,11 @@ class HostInviteScreen extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: const Icon(Icons.copy),
-                                    tooltip: 'Copiar Código',
+                                    icon: const Icon(Icons.share),
+                                    tooltip: 'Compartilhar Código',
                                     onPressed: () {
-                                      _copyToClipboard(
-                                        context,
-                                        qrData,
-                                        'Código copiado!',
+                                      Share.share(
+                                        'Bora pro Bingo da Galera! Nosso código da sala é: $qrData',
                                       );
                                     },
                                   ),
@@ -117,15 +116,13 @@ class HostInviteScreen extends StatelessWidget {
                                 children: [
                                   TextButton.icon(
                                     onPressed: () {
-                                      _copyToClipboard(
-                                        context,
-                                        qrData,
-                                        'Link copiado!',
+                                      Share.share(
+                                        'Vem pro Bingo da Galera! Só clicar pelo celular: bingo://room/$qrData',
                                       );
                                     },
-                                    icon: const Icon(Icons.link),
+                                    icon: const Icon(Icons.share),
                                     label:
-                                        const Text('Copiar Link de Convite'),
+                                        const Text('Compartilhar Link de Convite'),
                                     style: TextButton.styleFrom(
                                       foregroundColor: AppColors.text,
                                     ),
@@ -181,12 +178,5 @@ class HostInviteScreen extends StatelessWidget {
         );
       },
     );
-  }
-
-  void _copyToClipboard(BuildContext context, String text, String message) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }

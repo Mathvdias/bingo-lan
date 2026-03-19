@@ -1,4 +1,3 @@
-import 'package:bingo_app/features/auth/auth_service.dart';
 import 'package:bingo_app/shared/di/service_locator.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
@@ -40,31 +39,10 @@ class _LobbyScreenState extends State<LobbyScreen> {
     }
   }
 
-  Future<void> _logout() async {
-    try {
-      final authService = serviceLocator<AuthService>();
-      await authService.signOut();
-
-      // Track logout
-      await AnalyticsService.trackCustomEvent('user_logout', null);
-
-      if (mounted) {
-        context.go('/login');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erro ao fazer logout: $e')));
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    final authService = serviceLocator<AuthService>();
 
     return Scaffold(
       appBar: AppBar(
@@ -112,71 +90,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
               );
             },
           ),
-
-          // User menu
-          PopupMenuButton<String>(
-            icon: CircleAvatar(
-              backgroundImage: authService.userPhotoUrl != null
-                  ? NetworkImage(authService.userPhotoUrl!)
-                  : null,
-              child: authService.userPhotoUrl == null
-                  ? Text(
-                      authService.userDisplayName
-                              ?.substring(0, 1)
-                              .toUpperCase() ??
-                          'U',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  : null,
-            ),
-            onSelected: (value) {
-              if (value == 'logout') {
-                _logout();
-              } else if (value == 'paywall') {
-                context.push('/paywall');
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                enabled: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      authService.userDisplayName ?? 'Usuário',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      authService.userEmail ?? '',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-              const PopupMenuDivider(),
-              if (!_isPremium)
-                const PopupMenuItem(
-                  value: 'paywall',
-                  child: Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.amber),
-                      SizedBox(width: 8),
-                      Text('Assinar Premium'),
-                    ],
-                  ),
-                ),
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout),
-                    SizedBox(width: 8),
-                    Text('Sair'),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ],
       ),
       body: SafeArea(
@@ -188,7 +101,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Bingo Lucca',
+                  'Bingo da Galera',
                   textAlign: TextAlign.center,
                   style: textTheme.displayLarge,
                 ),

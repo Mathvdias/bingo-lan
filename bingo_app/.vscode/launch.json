@@ -7,6 +7,7 @@
             "type": "dart",
             "program": "lib/main_dev.dart",
             "args": [
+                "--flavor", "dev",
                 "--dart-define=SUPABASE_URL=REDACTED",
                 "--dart-define=SUPABASE_ANON_KEY=REDACTED",
                 "--dart-define=RC_ANDROID_KEY=REDACTED",
@@ -23,6 +24,7 @@
             "type": "dart",
             "program": "lib/main_prod.dart",
             "args": [
+                "--flavor", "prod",
                 "--dart-define=SUPABASE_URL=REDACTED",
                 "--dart-define=SUPABASE_ANON_KEY=YOUR_PROD_KEY_HERE",
                 "--dart-define=RC_ANDROID_KEY=YOUR_PROD_RC_KEY",

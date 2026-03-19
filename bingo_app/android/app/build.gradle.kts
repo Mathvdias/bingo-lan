@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.example.bingo_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "25.1.8937393"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -31,6 +31,12 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        externalNativeBuild {
+            cmake {
+                arguments("-DCMAKE_C_COMPILER_WORKS=TRUE", "-DCMAKE_CXX_COMPILER_WORKS=TRUE")
+            }
+        }
     }
 
     buildTypes {
@@ -47,11 +53,11 @@ android {
         create("dev") {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            resValue("string", "app_name", "BingoDev")
+            resValue("string", "app_name", "\"BingoDev\"")
         }
         create("prod") {
             dimension = "env"
-            resValue("string", "app_name", "BingoApp")
+            resValue("string", "app_name", "\"Bingo da Galera\"")
         }
     }
 }

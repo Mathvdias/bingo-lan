@@ -1,6 +1,4 @@
 import 'dart:developer'; // Import for log
-import 'package:bingo_app/features/auth/auth_service.dart';
-import 'package:bingo_app/features/auth/auth_view_model.dart';
 import 'package:bingo_app/features/host/host_invite_view_model.dart';
 import 'package:bingo_app/features/host/host_room_view_model.dart';
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
@@ -54,12 +52,4 @@ void setupServiceLocator() {
 
   // Paywall ViewModel (Nova versão sem paymentDriver)
   serviceLocator.registerFactory(() => PaywallViewModel());
-
-  // AuthService
-  serviceLocator.registerLazySingleton<AuthService>(() => AuthService());
-
-  // Auth ViewModel
-  serviceLocator.registerFactory(
-    () => AuthViewModel(authService: serviceLocator<AuthService>()),
-  );
 }

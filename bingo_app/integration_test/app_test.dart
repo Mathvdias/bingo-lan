@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:bingo_app/main_dev.dart' as app;
+import 'package:bingo_app/main_common.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,7 @@ void main() {
       // We expect the main 'Bingo Lucca' title or a known key on the Lobby screen.
       // Since locale might kick in, it might be the localized string. 
       // We will just verify that the test runner successfully booted the app without crashing.
-      expect(find.byType(app.BingoApp), findsOneWidget);
+      expect(find.byType(BingoApp), findsOneWidget);
     });
   });
 }

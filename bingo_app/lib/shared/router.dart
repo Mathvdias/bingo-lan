@@ -1,9 +1,7 @@
+import 'package:bingo_app/features/splash/splash_screen.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../features/auth/login_screen.dart';
 import '../../features/lobby/lobby_screen.dart';
 import '../../features/host/invite_screen.dart';
 import '../../features/host/room_screen.dart';
@@ -14,31 +12,12 @@ import '../../features/player/scan_screen.dart';
 
 /// The route configuration for the application.
 final GoRouter router = GoRouter(
-  initialLocation: '/lobby',
+  initialLocation: '/splash',
   observers: [AnalyticsService.observer],
-  redirect: (context, state) {
-    // Check if user is authenticated
-    final user = FirebaseAuth.instance.currentUser;
-    final isLoggedIn = user != null;
-    final isOnLoginPage = state.matchedLocation == '/login';
-
-    // If not logged in and not on login page, redirect to login
-    if (!isLoggedIn && !isOnLoginPage) {
-      return '/login';
-    }
-
-    // If logged in and on login page, redirect to lobby
-    if (isLoggedIn && isOnLoginPage) {
-      return '/lobby';
-    }
-
-    // No redirect needed
-    return null;
-  },
   routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => const LobbyScreen()),
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
 
     GoRoute(
       path: '/paywall',
@@ -83,12 +62,3 @@ final GoRouter router = GoRouter(
   ],
 );
 
-/// Splash screen (simple loading screen)
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
-  }
-}
