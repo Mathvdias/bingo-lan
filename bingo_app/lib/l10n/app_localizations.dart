@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 import 'app_localizations_fr.dart';
+import 'app_localizations_it.dart';
 import 'app_localizations_ja.dart';
 import 'app_localizations_pt.dart';
 
@@ -100,6 +101,7 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('es'),
     Locale('fr'),
+    Locale('it'),
     Locale('ja'),
     Locale('pt'),
   ];
@@ -113,13 +115,13 @@ abstract class AppLocalizations {
   /// No description provided for @startBingo.
   ///
   /// In en, this message translates to:
-  /// **'Organizar um Bingo'**
+  /// **'Host a Bingo'**
   String get startBingo;
 
   /// No description provided for @joinBingo.
   ///
   /// In en, this message translates to:
-  /// **'Entrar em um Bingo'**
+  /// **'Join a Bingo'**
   String get joinBingo;
 
   /// No description provided for @upgrade.
@@ -137,7 +139,7 @@ abstract class AppLocalizations {
   /// No description provided for @manualGlobe.
   ///
   /// In en, this message translates to:
-  /// **'Manual (Físico)'**
+  /// **'Manual (Physical Globe)'**
   String get manualGlobe;
 
   /// No description provided for @virtualGlobe.
@@ -149,55 +151,55 @@ abstract class AppLocalizations {
   /// No description provided for @autoGlobe.
   ///
   /// In en, this message translates to:
-  /// **'Globo Automático (Premium)'**
+  /// **'Auto Globe (Premium)'**
   String get autoGlobe;
 
   /// No description provided for @drawRandom.
   ///
   /// In en, this message translates to:
-  /// **'Sortear (Aleatório)'**
+  /// **'Draw (Random)'**
   String get drawRandom;
 
   /// No description provided for @confirm.
   ///
   /// In en, this message translates to:
-  /// **'Confirmar'**
+  /// **'Confirm'**
   String get confirm;
 
   /// No description provided for @numberInput.
   ///
   /// In en, this message translates to:
-  /// **'Número'**
+  /// **'Number'**
   String get numberInput;
 
   /// No description provided for @typeNumberHint.
   ///
   /// In en, this message translates to:
-  /// **'Digite o número sorteado'**
+  /// **'Type the drawn number'**
   String get typeNumberHint;
 
   /// No description provided for @errorInvalidNumber.
   ///
   /// In en, this message translates to:
-  /// **'Número deve ser entre 1 e 75'**
+  /// **'Number must be between 1 and 75'**
   String get errorInvalidNumber;
 
   /// No description provided for @errorNumberDrawn.
   ///
   /// In en, this message translates to:
-  /// **'Número já foi sorteado!'**
+  /// **'Number already drawn!'**
   String get errorNumberDrawn;
 
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recurso Pago'**
+  /// **'Premium Feature'**
   String get paywallTitle;
 
   /// No description provided for @paywallMessage.
   ///
   /// In en, this message translates to:
-  /// **'O Globo Automático é um recurso pago. Faça upgrade!'**
+  /// **'Auto Globe is a premium feature. Upgrade now!'**
   String get paywallMessage;
 
   /// No description provided for @stopRoomTitle.
@@ -265,8 +267,14 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es', 'fr', 'ja', 'pt'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'en',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'pt',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -281,6 +289,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEs();
     case 'fr':
       return AppLocalizationsFr();
+    case 'it':
+      return AppLocalizationsIt();
     case 'ja':
       return AppLocalizationsJa();
     case 'pt':

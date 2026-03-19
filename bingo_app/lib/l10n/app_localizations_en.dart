@@ -12,10 +12,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Bingo Lucca';
 
   @override
-  String get startBingo => 'Organizar um Bingo';
+  String get startBingo => 'Host a Bingo';
 
   @override
-  String get joinBingo => 'Entrar em um Bingo';
+  String get joinBingo => 'Join a Bingo';
 
   @override
   String get upgrade => 'Upgrade';
@@ -24,38 +24,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumBadge => 'PREMIUM';
 
   @override
-  String get manualGlobe => 'Manual (Físico)';
+  String get manualGlobe => 'Manual (Physical Globe)';
 
   @override
   String get virtualGlobe => 'Virtual';
 
   @override
-  String get autoGlobe => 'Globo Automático (Premium)';
+  String get autoGlobe => 'Auto Globe (Premium)';
 
   @override
-  String get drawRandom => 'Sortear (Aleatório)';
+  String get drawRandom => 'Draw (Random)';
 
   @override
-  String get confirm => 'Confirmar';
+  String get confirm => 'Confirm';
 
   @override
-  String get numberInput => 'Número';
+  String get numberInput => 'Number';
 
   @override
-  String get typeNumberHint => 'Digite o número sorteado';
+  String get typeNumberHint => 'Type the drawn number';
 
   @override
-  String get errorInvalidNumber => 'Número deve ser entre 1 e 75';
+  String get errorInvalidNumber => 'Number must be between 1 and 75';
 
   @override
-  String get errorNumberDrawn => 'Número já foi sorteado!';
+  String get errorNumberDrawn => 'Number already drawn!';
 
   @override
-  String get paywallTitle => 'Recurso Pago';
+  String get paywallTitle => 'Premium Feature';
 
   @override
-  String get paywallMessage =>
-      'O Globo Automático é um recurso pago. Faça upgrade!';
+  String get paywallMessage => 'Auto Globe is a premium feature. Upgrade now!';
 
   @override
   String get stopRoomTitle => 'End Room';

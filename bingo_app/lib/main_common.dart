@@ -51,8 +51,6 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   // 2. Initialize the Bingo SDK
   await BingoSDK.initialize(
-    supabaseUrl: Env.supabaseUrl,
-    supabaseKey: Env.supabaseAnonKey,
     revenueCatKey: Platform.isIOS
         ? Env.revenueCatIosKey
         : Env.revenueCatAndroidKey,
@@ -102,10 +100,11 @@ class BingoApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('pt', ''), // Portuguese (Default)
-        Locale('en', ''), // English
+        Locale('en', ''), // English (Primary)
+        Locale('pt', ''), // Portuguese
         Locale('es', ''), // Spanish
         Locale('fr', ''), // French
+        Locale('it', ''), // Italian
         Locale('ja', ''), // Japanese
       ],
 

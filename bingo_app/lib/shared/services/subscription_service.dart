@@ -1,5 +1,4 @@
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:bingo_app/shared/services/supabase_service.dart';
 import 'package:bingo_app/core/config/env.dart';
 import 'dart:developer';
 import 'dart:async';
@@ -36,7 +35,6 @@ class SubscriptionService {
       // Listen for updates
       Purchases.addCustomerInfoUpdateListener((customerInfo) {
         _updatePremiumStatus(customerInfo);
-        _syncPurchaseToSupabase(customerInfo);
       });
 
       log('RevenueCat initialized successfully');
@@ -81,9 +79,6 @@ class SubscriptionService {
       final purchaseResult = await Purchases.purchasePackage(package);
       final customerInfo = purchaseResult.customerInfo;
 
-      // Sync purchase to Supabase
-      await _syncPurchaseToSupabase(customerInfo);
-
       log('Purchase successful: ${package.identifier}');
       return customerInfo;
     } on PlatformException catch (e) {
@@ -101,9 +96,6 @@ class SubscriptionService {
   static Future<CustomerInfo?> restorePurchases() async {
     try {
       final customerInfo = await Purchases.restorePurchases();
-
-      // Sync restored purchases to Supabase
-      await _syncPurchaseToSupabase(customerInfo);
 
       log('Purchases restored successfully');
       return customerInfo;
@@ -135,50 +127,7 @@ class SubscriptionService {
     }
   }
 
-  /// Sync purchase to Supabase
-  static Future<void> _syncPurchaseToSupabase(CustomerInfo customerInfo) async {
-    try {
-      // Get active entitlements
-      final activeEntitlements = customerInfo.entitlements.active;
 
-      if (activeEntitlements.isEmpty) {
-        log('No active entitlements to sync');
-        return;
-      }
-
-      // Get the first active entitlement (assuming one subscription)
-      final entitlement = activeEntitlements.values.first;
-
-      // Determine subscription type
-      String subscriptionType = 'unknown';
-      if (entitlement.productIdentifier.contains('weekly')) {
-        subscriptionType = 'weekly';
-      } else if (entitlement.productIdentifier.contains('annual')) {
-        subscriptionType = 'annual';
-      } else if (entitlement.productIdentifier.contains('lifetime')) {
-        subscriptionType = 'lifetime';
-      }
-
-      // Get current user ID
-      final userId = customerInfo.originalAppUserId;
-
-      await SupabaseService.client.from('purchases').upsert({
-        'user_id': userId,
-        'product_id': entitlement.productIdentifier,
-        'subscription_type': subscriptionType,
-        'purchase_date': entitlement.originalPurchaseDate,
-        'expiry_date': entitlement.expirationDate,
-        'is_active': entitlement.isActive,
-        'revenuecat_transaction_id': entitlement.identifier,
-        'revenuecat_metadata': {}, // CustomerInfo no longer has toJson()
-      }, onConflict: 'user_id');
-
-      log('Purchase synced to Supabase');
-    } catch (e) {
-      log('Error syncing purchase to Supabase: $e');
-      // Don't rethrow - allow purchase to complete even if sync fails
-    }
-  }
 
   /// Sign out user
   static Future<void> signOut() async {

@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:bingo_app/shared/services/supabase_service.dart';
 import 'dart:developer';
 
 /// Service for tracking analytics events via Firebase Analytics
@@ -299,24 +298,5 @@ class AnalyticsService {
     }
   }
 
-  // ==================== Dual Logging (Firebase + Supabase) ====================
 
-  /// Log event to both Firebase and Supabase
-  static Future<void> logEventDual({
-    required String userId,
-    required String eventName,
-    Map<String, Object>? parameters,
-    String? screenName,
-  }) async {
-    // Log to Firebase
-    await trackCustomEvent(eventName, parameters);
-
-    // Log to Supabase
-    await SupabaseService.logEvent(
-      userId: userId,
-      eventName: eventName,
-      eventParams: parameters,
-      screenName: screenName,
-    );
-  }
 }

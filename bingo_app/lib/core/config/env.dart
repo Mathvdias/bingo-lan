@@ -3,16 +3,7 @@
 /// This class handles environment variables passed via --dart-define
 /// Usage: flutter run --dart-define=SUPABASE_URL=...
 class Env {
-  // Supabase Configuration
-  static const String supabaseUrl = String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: 'REDACTED',
-  );
-  static const String supabaseAnonKey = String.fromEnvironment(
-    'SUPABASE_ANON_KEY',
-    defaultValue:
-        'REDACTED',
-  );
+  // Supabase Configuration completely removed
 
   // RevenueCat Configuration
   static const String revenueCatAndroidKey = String.fromEnvironment(
@@ -50,8 +41,7 @@ class Env {
   static void validate() {
     final missingKeys = <String>[];
 
-    if (supabaseUrl.isEmpty) missingKeys.add('SUPABASE_URL');
-    if (supabaseAnonKey.isEmpty) missingKeys.add('SUPABASE_ANON_KEY');
+
     if (revenueCatAndroidKey.isEmpty) missingKeys.add('RC_ANDROID_KEY');
     if (revenueCatIosKey.isEmpty) missingKeys.add('RC_IOS_KEY');
     if (clarityProjectId.isEmpty) missingKeys.add('CLARITY_PROJECT_ID');

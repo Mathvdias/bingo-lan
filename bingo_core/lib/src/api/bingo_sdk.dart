@@ -24,11 +24,10 @@ class BingoSDK {
   /// It sets up the dependency injection container (GetIt) and registers
   /// the necessary service drivers.
   ///
-  /// The [supabaseUrl], [supabaseKey], and [revenueCatKey] are placeholders
+  ///
+  /// The [revenueCatKey] is a parameter
   /// for the actual keys required by the real implementations.
   static Future<void> initialize({
-    required String supabaseUrl,
-    required String supabaseKey,
     required String revenueCatKey,
   }) async {
     final getIt = GetIt.instance;

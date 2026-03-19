@@ -1,5 +1,4 @@
 import 'package:bingo_app/features/auth/auth_service.dart';
-import 'package:bingo_app/shared/services/supabase_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,8 +32,8 @@ class AuthViewModel extends BaseViewModel {
         return false;
       }
 
-      // Sync user to Supabase
-      await _syncUserToSupabase(userCredential.user!);
+      // Sync user
+      await _syncUserAfterLogin(userCredential.user!);
 
       log('Google Sign-In completed successfully');
       return true;
@@ -75,8 +74,8 @@ class AuthViewModel extends BaseViewModel {
         return false;
       }
 
-      // Sync user to Supabase
-      await _syncUserToSupabase(userCredential.user!);
+      // Sync user
+      await _syncUserAfterLogin(userCredential.user!);
 
       log('Apple Sign-In completed successfully');
       return true;
@@ -107,34 +106,13 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  /// Sync Firebase user to Supabase
-  Future<void> _syncUserToSupabase(User user) async {
+  /// Sync user after login
+  Future<void> _syncUserAfterLogin(User user) async {
     try {
-      // Extract provider info
-      final provider = user.providerData.isNotEmpty
-          ? user.providerData.first.providerId
-          : 'unknown';
-
-      await SupabaseService.syncUser(
-        firebaseUid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoUrl: user.photoURL,
-        provider: provider,
-      );
-
-      // Log sign-in event
-      await SupabaseService.logEvent(
-        userId: user.uid,
-        eventName: 'user_sign_in',
-        eventParams: {'provider': provider},
-      );
-
       // Identify user in RevenueCat
       await SubscriptionService.setUserId(user.uid);
     } catch (e) {
-      log('Error syncing user to Supabase: $e');
-      // Don't throw - allow sign-in to complete even if Supabase sync fails
+      log('Error syncing user after login: $e');
     }
   }
 
