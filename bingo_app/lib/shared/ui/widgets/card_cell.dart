@@ -1,5 +1,6 @@
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 
 enum CardCellState { normal, marked, validated }
 
@@ -63,3 +64,12 @@ class CardCell extends StatelessWidget {
     );
   }
 }
+
+@Preview(name: 'Card Cell - Normal')
+Widget cardCellNormalPreview() => const SizedBox(width: 80, height: 80, child: CardCell(number: 15));
+
+@Preview(name: 'Card Cell - Marked')
+Widget cardCellMarkedPreview() => const SizedBox(width: 80, height: 80, child: CardCell(number: 15, state: CardCellState.marked));
+
+@Preview(name: 'Card Cell - FREE Space')
+Widget cardCellFreePreview() => const SizedBox(width: 80, height: 80, child: CardCell(number: 0, state: CardCellState.validated));

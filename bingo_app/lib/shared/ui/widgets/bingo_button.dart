@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widget_previews.dart';
 
 import '../tokens/app_colors.dart';
 
@@ -83,4 +84,16 @@ class _BingoButtonState extends State<BingoButton> {
       ),
     );
   }
+}
+
+@Preview(name: 'Bingo Button - Primary')
+Widget bingoButtonPreview() {
+  return Scaffold(
+    body: Center(
+      child: BingoButton(
+        label: 'Start Game',
+        onPressed: () {},
+      ),
+    ),
+  );
 }

@@ -1,6 +1,7 @@
 import 'package:bingo_app/shared/ui/widgets/card_cell.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 
 class BingoGrid extends StatelessWidget {
   final BingoCard bingoCard;
@@ -42,4 +43,21 @@ class BingoGrid extends StatelessWidget {
       },
     );
   }
+}
+
+@Preview(name: 'Bingo Grid (Cartela)')
+Widget bingoGridPreview() {
+  return Scaffold(
+    body: CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(16.0),
+          sliver: BingoGrid(
+            bingoCard: BingoCard(id: 1),
+            markedNumbers: const {1, 16, 45, 0}, // Mocked Marks
+          ),
+        ),
+      ],
+    ),
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import '../tokens/app_colors.dart';
 
 class BingoBall extends StatelessWidget {
@@ -31,3 +32,9 @@ class BingoBall extends StatelessWidget {
     );
   }
 }
+
+@Preview(name: 'Bingo Ball - Normal')
+Widget bingoBallNormalPreview() => const Scaffold(body: Center(child: BingoBall(number: 75)));
+
+@Preview(name: 'Bingo Ball - Drawn')
+Widget bingoBallDrawnPreview() => const Scaffold(body: Center(child: BingoBall(number: 75, isDrawn: true)));
