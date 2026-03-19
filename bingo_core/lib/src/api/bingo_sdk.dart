@@ -41,12 +41,7 @@ class BingoSDK {
     // payment
     getIt.registerSingleton<IPaymentDriver>(PaymentDriver(revenueCatKey));
 
-    // connection
-    // For now we default to LocalShelf. If we want to support Online, we might need a Factory or switch implementation based on setup.
-    // However, IGameConnection is usually a singleton per session.
-    // If the app supports switching modes, we might need to register it as a LazySingleton or just re-register it?
-    // For simplicity, we register the Local one as default.
-    getIt.registerSingleton<IGameConnection>(LocalShelfGameConnection());
+
 
     // network & uuid
     getIt.registerSingleton<INetworkInfoDriver>(NetworkInfoDriver());
@@ -61,6 +56,14 @@ class BingoSDK {
         config: getIt<IConfigDriver>(),
         payment: getIt<IPaymentDriver>(),
       ),
+    );
+
+    // Register connection, which now depends on config and access control
+    getIt.registerSingleton<IGameConnection>(
+      LocalShelfGameConnection(
+        accessControl: getIt<AccessControlService>(),
+        configDriver: getIt<IConfigDriver>(),
+      )
     );
   }
 }

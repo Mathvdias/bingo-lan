@@ -66,6 +66,14 @@ class HostRoomViewModel extends BaseViewModel {
       _players = players;
       notifyListeners();
     });
+
+    _gameConnection.errorStream.listen((errorMsg) {
+       if (errorMsg == 'PAYWALL_TRIGGERED') {
+          _actionController.add(ShowPaywall());
+       } else {
+          _actionController.add(ShowError(errorMsg));
+       }
+    });
   }
 
   Future<bool> get canDrawNextNumber async {

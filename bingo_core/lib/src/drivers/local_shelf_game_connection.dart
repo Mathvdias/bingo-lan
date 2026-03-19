@@ -5,14 +5,24 @@ import 'dart:io';
 
 import 'package:bingo_core/bingo_core.dart';
 import 'package:bingo_core/src/services/jwt_service.dart';
+import 'package:bingo_core/src/logic/access_control_service.dart';
+import 'package:bingo_core/src/drivers/i_config_driver.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class LocalShelfGameConnection implements IGameConnection {
+  final AccessControlService _accessControl;
+  final IConfigDriver _configDriver;
+
   HttpServer? _server;
   String? _secretToken;
+
+  LocalShelfGameConnection({
+    required AccessControlService accessControl,
+    required IConfigDriver configDriver,
+  }) : _accessControl = accessControl, _configDriver = configDriver;
 
   // HOST State
   final Map<WebSocketChannel, String> _connectedPlayers = {};
@@ -24,6 +34,10 @@ class LocalShelfGameConnection implements IGameConnection {
   final _gameEventController = StreamController<GameEvent>.broadcast();
   final _connectedPlayersController =
       StreamController<List<String>>.broadcast();
+  final _errorController = StreamController<String>.broadcast();
+
+  @override
+  Stream<String> get errorStream => _errorController.stream;
 
   @override
   Stream<GameEvent> get eventStream => _gameEventController.stream;
@@ -122,7 +136,25 @@ class LocalShelfGameConnection implements IGameConnection {
       return webSocketHandler((
         WebSocketChannel webSocketChannel,
         String? protocol,
-      ) {
+      ) async {
+        // Enforce the Paywall Room Capacity (Caminho A)
+        final revenueModel = _configDriver.getString('revenue_model');
+        if (revenueModel == 'paywall_host' || revenueModel == 'variant_a') {
+          final maxPlayers = _configDriver.getInt('max_free_players_path_a');
+          final limit = maxPlayers > 0 ? maxPlayers : 10;
+          
+          if (_connectedPlayers.length >= limit) {
+             // Let's assume the Pro upgrade is tied to a feature flag checking user premium sub
+             final isPremium = await _accessControl.canAccess('is_host_premium');
+             if (!isPremium) {
+                _errorController.add('PAYWALL_TRIGGERED');
+                log('Connection rejected: Room capacity limit reached.');
+                webSocketChannel.sink.close(1008, 'Room Full / Premium Required');
+                return;
+             }
+          }
+        }
+
         final playerName = 'Player_${_connectedPlayers.length + 1}';
         _connectedPlayers[webSocketChannel] = playerName;
         log('Player $playerName connected to room $roomName');

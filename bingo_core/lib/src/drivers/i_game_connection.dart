@@ -36,6 +36,9 @@ abstract class IGameConnection {
   /// Required for the Host to know who is in the room.
   Stream<List<String>> get connectedPlayersStream;
 
+  /// A stream of system error messages (e.g. 'PAYWALL_TRIGGERED') intended for the Host.
+  Stream<String> get errorStream;
+
   /// Disconnects from the game room.
   Future<void> disconnect();
 }
