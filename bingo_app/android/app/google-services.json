@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:46563147810:android:804d935d20f877b6f34a7b",
         "android_client_info": {
-          "package_name": "com.matheus.bingo"
+          "package_name": "com.example.bingo_app"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "46563147810-vacji9h95h9iafv206gbedrb0mjh1roo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.matheus.bingo",
+            "package_name": "com.example.bingo_app",
             "certificate_hash": "e4ca91b9df7790b9f186ebbe038c78910db0338e"
           }
         },
@@ -39,7 +39,7 @@
               "client_type": 3
             },
             {
-              "client_id": "46563147810-haakeq4k319kdvksvd1fj2htl8qhdrqa.apps.googleusercontent.com",
+              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.matheus.bingo"
@@ -53,7 +53,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:46563147810:android:0828379abce7b79ff34a7b",
         "android_client_info": {
-          "package_name": "com.matheus.bingo.dev"
+          "package_name": "com.example.bingo_app.dev"
         }
       },
       "oauth_client": [
@@ -61,7 +61,7 @@
           "client_id": "46563147810-mncbcv1qv24qgeb9ennoj4d8m18n3rb6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.matheus.bingo.dev",
+            "package_name": "com.example.bingo_app.dev",
             "certificate_hash": "e4ca91b9df7790b9f186ebbe038c78910db0338e"
           }
         },
@@ -83,7 +83,79 @@
               "client_type": 3
             },
             {
-              "client_id": "46563147810-haakeq4k319kdvksvd1fj2htl8qhdrqa.apps.googleusercontent.com",
+              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.matheus.bingo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46563147810:android:5e31b17bbb929462f34a7b",
+        "android_client_info": {
+          "package_name": "com.matheus.bingo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REDACTED_GOOGLE_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.matheus.bingo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46563147810:android:7eb36b8b3bdca22df34a7b",
+        "android_client_info": {
+          "package_name": "com.matheus.bingo.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REDACTED_GOOGLE_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.matheus.bingo"
