@@ -1,4 +1,5 @@
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
+import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/flippable_card.dart';
@@ -50,11 +51,38 @@ class HostSetupScreen extends StatelessWidget {
                           errorText: viewModel.errorMessage,
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.error.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.error),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.wifi_rounded,
+                              color: AppColors.error,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Aviso: Todos os jogadores DEVEM estar conectados à MESMA REDE WI-FI para conseguir entrar na sala.',
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.error,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 32),
                       FlippableCard(
                         image: 'assets/images/bingo_local.png',
-                        text: 'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.',
+                        text:
+                            'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.',
                       ),
                       const SizedBox(height: 32),
                       BingoButton(

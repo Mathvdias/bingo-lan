@@ -23,5 +23,35 @@
   "playersInRoom": "人のプレイヤー",
   "shoutedBingo": "がビンゴと叫びました！",
   "cardId": "カードID:",
-  "manualInputInstruction": "物理的なグローブで引かれた番号を入力してください"
+  "manualInputInstruction": "物理的なグローブで引かれた番号を入力してください",
+  "lobbySubtitle": "あなたのパーティー、あなたのルール",
+  "lobbyWifiShowcase": "ビンゴはローカルでのみ動作します！ゲストと同じWi-Fiネットワークに接続していることを確認してください。",
+  "lobbyWifiBannerDefault": "ホストのWi-Fiネットワークでプレイしましょう！",
+  "lobbyWifiBannerConnected": "現在のネットワーク：{wifiName}\nホストのネットワークでプレイしましょう！",
+  "@lobbyWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "buttonWifi": "Wi-Fi",
+  "lobbyHostShowcase": "あなたがホストでビンゴの球を引きたい場合はここをクリックしてください。",
+  "lobbyJoinShowcase": "QRコードをスキャンして電話のカードでプレイする場合はここをクリックしてください。",
+  "lobbySoloShowcase": "オフラインで一人でプレイを試したいですか？このモードを使用してください！",
+  "soloButton": "ソロビンゴ",
+  "buttonConfig": "設定",
+  "scanWifiBannerDefault": "ホストのWi-Fiネットワークに接続します。",
+  "scanWifiBannerConnected": "ネットワーク：{wifiName}\nホストのネットワークに接続します。",
+  "@scanWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanManualButton": "手動でコードを入力",
+  "revealNetwork": "ネットワークを表示",
+  "privacyPolicy": "プライバシーポリシー",
+  "termsOfUse": "利用規約"
 }

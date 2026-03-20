@@ -1,6 +1,7 @@
 import 'package:bingo_app/features/host/host_room_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
-import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
+import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
@@ -238,29 +239,30 @@ class HostRoomScreen extends StatelessWidget {
                                           : AppColors.primary,
                                     ),
                                     const SizedBox(height: 16),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          'Globo Automático (Premium): ',
-                                        ),
-                                        Switch(
-                                          value: viewModel.isAutoPlaying,
-                                          onChanged: (value) =>
-                                              viewModel.toggleAutoPlay(),
-                                          activeColor: AppColors.primary,
-                                        ),
-                                        if (viewModel.isAutoPlaying)
-                                          const SizedBox(
-                                            height: 16,
-                                            width: 16,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
+                                    if (RevenueConfigService.purchasesEnabled)
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Globo Automático (Premium): ',
                                           ),
-                                      ],
-                                    ),
+                                          Switch(
+                                            value: viewModel.isAutoPlaying,
+                                            onChanged: (value) =>
+                                                viewModel.toggleAutoPlay(),
+                                            activeThumbColor: AppColors.primary,
+                                          ),
+                                          if (viewModel.isAutoPlaying)
+                                            const SizedBox(
+                                              height: 16,
+                                              width: 16,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
                                   ],
                                 ),
 

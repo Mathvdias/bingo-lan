@@ -23,5 +23,35 @@
   "playersInRoom": "giocatori nella stanza",
   "shoutedBingo": "ha gridato BINGO!",
   "cardId": "ID Cartella:",
-  "manualInputInstruction": "Scrivi il numero estratto sul globo fisico"
+  "manualInputInstruction": "Scrivi il numero estratto sul globo fisico",
+  "lobbySubtitle": "La tua festa, le tue regole",
+  "lobbyWifiShowcase": "Il Bingo funziona solo localmente! Assicurati di essere sulla stessa rete Wi-Fi dei tuoi ospiti.",
+  "lobbyWifiBannerDefault": "Gioca sulla rete Wi-Fi dell'host!",
+  "lobbyWifiBannerConnected": "Rete attuale: {wifiName}\nGioca sulla rete dell'host!",
+  "@lobbyWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "buttonWifi": "WIFI",
+  "lobbyHostShowcase": "Clicca qui se TU sei l'host e vuoi estrarre i numeri del bingo.",
+  "lobbyJoinShowcase": "Clicca qui per scansionare il codice QR e giocare con una cartella sul tuo telefono.",
+  "lobbySoloShowcase": "Vuoi provare a giocare offline da solo? Usa questa modalità!",
+  "soloButton": "Bingo Singolo",
+  "buttonConfig": "CONFIG",
+  "scanWifiBannerDefault": "Connettiti alla rete Wi-Fi dell'host.",
+  "scanWifiBannerConnected": "Rete: {wifiName}\nConnettiti alla rete dell'host.",
+  "@scanWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanManualButton": "Inserisci Codice Manualmente",
+  "revealNetwork": "Rivela Rete",
+  "privacyPolicy": "Informativa sulla privacy",
+  "termsOfUse": "Termini di utilizzo"
 }

@@ -4,8 +4,8 @@ import 'package:bingo_app/main_common.dart';
 void main() {
   final devConfig = AppConfig(
     flavor: Flavor.dev,
-    appTitle: 'Bingo Lucca (Dev)',
-    apiBaseUrl: 'https://dev-api.bingolucca.com',
+    appTitle: 'Bingo (Dev)',
+    apiBaseUrl: 'https://dev-api.bingo.com',
   );
 
   mainCommon(devConfig);

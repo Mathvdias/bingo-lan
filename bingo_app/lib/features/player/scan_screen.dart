@@ -4,9 +4,14 @@ import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // Import go_router
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:bingo_core/bingo_core.dart';
+import 'package:get_it/get_it.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 
 class PlayerScanScreen extends StatefulWidget {
   final String? initialData;
@@ -18,20 +23,23 @@ class PlayerScanScreen extends StatefulWidget {
 }
 
 class _PlayerScanScreenState extends State<PlayerScanScreen> {
-  late MobileScannerController _scannerController;
+  late final MobileScannerController controller;
+  String? _wifiName;
 
   @override
   void initState() {
     super.initState();
-    _scannerController = MobileScannerController(
+    controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.normal,
+      facing: CameraFacing.back,
+      torchEnabled: false,
       returnImage: false,
     );
   }
 
   @override
   void dispose() {
-    _scannerController.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -42,7 +50,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
 
     if (cardId != null && mounted) {
       try {
-        await _scannerController.stop();
+        await controller.stop();
         if (!mounted) return;
         final playerName = await _showNameEntryDialog(context);
         if (playerName != null && playerName.isNotEmpty && mounted) {
@@ -133,9 +141,33 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     );
   }
 
+  Future<void> _fetchWifiName() async {
+    try {
+      final status = await Permission.locationWhenInUse.request();
+      if (status.isGranted) {
+        final name = await GetIt.I.get<INetworkInfoDriver>().getWifiName();
+        if (mounted) {
+          setState(() {
+            _wifiName = name?.replaceAll('"', '');
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching Wi-Fi name: $e');
+    }
+  }
+
+  void _onDetect(BarcodeCapture capture, PlayerScanViewModel viewModel) {
+    final List<Barcode> barcodes = capture.barcodes;
+    if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
+      _handleScan(viewModel, barcodes.first.rawValue!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return ViewModelProvider<PlayerScanViewModel>(
       onReady: (viewModel) {
@@ -161,13 +193,8 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
           body: Stack(
             children: [
               MobileScanner(
-                controller: _scannerController,
-                onDetect: (capture) async {
-                  final List<Barcode> barcodes = capture.barcodes;
-                  if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
-                    _handleScan(viewModel, barcodes.first.rawValue!);
-                  }
-                },
+                controller: controller,
+                onDetect: (capture) => _onDetect(capture, viewModel),
               ),
               Center(
                 child: Column(
@@ -207,12 +234,50 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                   ],
                 ),
               ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.wifi_rounded, color: Colors.white, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _wifiName != null 
+                                ? l10n.scanWifiBannerConnected(_wifiName!) 
+                                : l10n.scanWifiBannerDefault,
+                            style: const TextStyle(color: Colors.white, fontSize: 13),
+                          ),
+                        ),
+                        if (_wifiName == null)
+                          TextButton(
+                            onPressed: _fetchWifiName,
+                            child: Text(l10n.revealNetwork, style: const TextStyle(color: AppColors.primary)),
+                          )
+                        else
+                          TextButton(
+                            onPressed: () => AppSettings.openAppSettings(type: AppSettingsType.wifi),
+                            child: Text(l10n.buttonConfig, style: const TextStyle(color: AppColors.primary)),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               Positioned(
                 bottom: 24,
                 left: 24,
                 right: 24,
                 child: BingoButton(
-                  label: 'Digitar Código Manualmente',
+                  label: l10n.scanManualButton,
                   onPressed: () {
                     _showManualEntryDialog(context, viewModel);
                   },

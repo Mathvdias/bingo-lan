@@ -23,5 +23,35 @@
   "playersInRoom": "jugadores en la sala",
   "shoutedBingo": "gritó ¡BINGO!",
   "cardId": "ID de Cartón:",
-  "manualInputInstruction": "Escribe el número sorteado en el globo físico"
+  "manualInputInstruction": "Escribe el número sorteado en el globo físico",
+  "lobbySubtitle": "Tu fiesta, tus reglas",
+  "lobbyWifiShowcase": "¡El Bingo solo funciona localmente! Asegúrate de estar en la misma red Wi-Fi que tus invitados.",
+  "lobbyWifiBannerDefault": "¡Juega en la red Wi-Fi del anfitrión!",
+  "lobbyWifiBannerConnected": "Red actual: {wifiName}\n¡Juega en la red del anfitrión!",
+  "@lobbyWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "buttonWifi": "WIFI",
+  "lobbyHostShowcase": "Haz clic aquí si TÚ eres el anfitrión y quieres sacar las bolas de bingo.",
+  "lobbyJoinShowcase": "Haz clic aquí para escanear el código QR y jugar usando un cartón en tu teléfono.",
+  "lobbySoloShowcase": "¿Quieres probar jugar solo sin conexión? ¡Usa este modo!",
+  "soloButton": "Bingo Individual",
+  "buttonConfig": "CONFIG",
+  "scanWifiBannerDefault": "Conéctate a la red Wi-Fi del anfitrión.",
+  "scanWifiBannerConnected": "Red: {wifiName}\nConéctate a la red del anfitrión.",
+  "@scanWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanManualButton": "Ingresar Código Manualmente",
+  "revealNetwork": "Revelar Red",
+  "privacyPolicy": "Política de Privacidad",
+  "termsOfUse": "Condiciones de Uso"
 }

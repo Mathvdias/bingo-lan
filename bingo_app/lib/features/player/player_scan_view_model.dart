@@ -24,8 +24,8 @@ class PlayerScanViewModel extends BaseViewModel {
     try {
       String payloadToDecode = rawData;
 
-      // Handle Deep Link format: bingolucca://join?data=BASE64...
-      if (rawData.startsWith('bingolucca://') || rawData.startsWith('http')) {
+      // Handle Deep Link format: bingo://join?data=BASE64...
+      if (rawData.startsWith('bingo://') || rawData.startsWith('http')) {
         final uri = Uri.tryParse(rawData);
         if (uri != null && uri.queryParameters.containsKey('data')) {
           payloadToDecode = uri.queryParameters['data']!;

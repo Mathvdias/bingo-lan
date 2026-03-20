@@ -1,25 +1,27 @@
-import 'dart:io';
 import 'dart:developer';
+import 'dart:io';
+
 import 'package:bingo_app/core/config/env.dart';
 import 'package:bingo_app/l10n/app_localizations.dart' show AppLocalizations;
 import 'package:bingo_app/shared/di/service_locator.dart';
+import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/router.dart';
+import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/clarity_service.dart';
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/app_theme.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
+import 'package:bingo_core/bingo_core.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:bingo_core/bingo_core.dart';
-import 'package:bingo_app/shared/services/ad_service.dart';
-import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'firebase_options.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'flavors/app_config.dart';
 
 Future<void> mainCommon(AppConfig appConfig) async {
@@ -86,8 +88,13 @@ Future<void> mainCommon(AppConfig appConfig) async {
   await AdService.initialize();
   await RevenueConfigService.initialize();
 
-  // Run the main Flutter application wrapped with Clarity
-  runApp(ClarityService.wrapApp(BingoApp(appConfig: appConfig)));
+  // Run the main Flutter application wrapped with Clarity and Provider
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LocaleProvider(),
+      child: ClarityService.wrapApp(BingoApp(appConfig: appConfig)),
+    ),
+  );
 }
 
 class BingoApp extends StatelessWidget {
@@ -97,10 +104,13 @@ class BingoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = context.watch<LocaleProvider>();
+
     return MaterialApp.router(
       restorationScopeId: 'bingo_app_root',
       debugShowCheckedModeBanner: false,
       title: appConfig.appTitle,
+      locale: localeProvider.locale,
 
       // Localization Configuration
       localizationsDelegates: const [
@@ -124,4 +134,3 @@ class BingoApp extends StatelessWidget {
     );
   }
 }
-

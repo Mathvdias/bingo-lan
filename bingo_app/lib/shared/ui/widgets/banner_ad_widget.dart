@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:bingo_app/shared/services/ad_service.dart';
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
 
 class BannerAdWidget extends StatefulWidget {
   final AdSize size;
@@ -26,6 +27,11 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   }
 
   void _loadAd() {
+    if (!RevenueConfigService.adsEnabled) {
+      debugPrint('BannerAd skipped: Ads are disabled via Remote Config.');
+      return;
+    }
+
     _bannerAd = BannerAd(
       adUnitId: AdService.bannerAdUnitId,
       request: const AdRequest(),

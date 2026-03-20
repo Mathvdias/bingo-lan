@@ -82,4 +82,57 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get manualInputInstruction => '物理的なグローブで引かれた番号を入力してください';
+
+  @override
+  String get lobbySubtitle => 'あなたのパーティー、あなたのルール';
+
+  @override
+  String get lobbyWifiShowcase =>
+      'ビンゴはローカルでのみ動作します！ゲストと同じWi-Fiネットワークに接続していることを確認してください。';
+
+  @override
+  String get lobbyWifiBannerDefault => 'ホストのWi-Fiネットワークでプレイしましょう！';
+
+  @override
+  String lobbyWifiBannerConnected(String wifiName) {
+    return '現在のネットワーク：$wifiName\nホストのネットワークでプレイしましょう！';
+  }
+
+  @override
+  String get buttonWifi => 'Wi-Fi';
+
+  @override
+  String get lobbyHostShowcase => 'あなたがホストでビンゴの球を引きたい場合はここをクリックしてください。';
+
+  @override
+  String get lobbyJoinShowcase => 'QRコードをスキャンして電話のカードでプレイする場合はここをクリックしてください。';
+
+  @override
+  String get lobbySoloShowcase => 'オフラインで一人でプレイを試したいですか？このモードを使用してください！';
+
+  @override
+  String get soloButton => 'ソロビンゴ';
+
+  @override
+  String get buttonConfig => '設定';
+
+  @override
+  String get scanWifiBannerDefault => 'ホストのWi-Fiネットワークに接続します。';
+
+  @override
+  String scanWifiBannerConnected(String wifiName) {
+    return 'ネットワーク：$wifiName\nホストのネットワークに接続します。';
+  }
+
+  @override
+  String get scanManualButton => '手動でコードを入力';
+
+  @override
+  String get revealNetwork => 'ネットワークを表示';
+
+  @override
+  String get privacyPolicy => 'プライバシーポリシー';
+
+  @override
+  String get termsOfUse => '利用規約';
 }

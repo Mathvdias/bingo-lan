@@ -85,4 +85,62 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get manualInputInstruction =>
       'Digite o número sorteado no globo físico';
+
+  @override
+  String get lobbySubtitle => 'Sua festa, suas regras';
+
+  @override
+  String get lobbyWifiShowcase =>
+      'O Bingo funciona apenas localmente! Certifique-se de estar na mesma rede Wi-Fi que seus convidados.';
+
+  @override
+  String get lobbyWifiBannerDefault =>
+      'Jogue na mesma rede Wi-Fi do anfitrião!';
+
+  @override
+  String lobbyWifiBannerConnected(String wifiName) {
+    return 'Rede atual: $wifiName\nJogue na mesma rede do anfitrião!';
+  }
+
+  @override
+  String get buttonWifi => 'WIFI';
+
+  @override
+  String get lobbyHostShowcase =>
+      'Clique aqui se VOCÊ for o organizador e quiser sortear as bolas do bingo.';
+
+  @override
+  String get lobbyJoinShowcase =>
+      'Clique aqui para scanear o QR Code e jogar usando uma cartela no seu celular.';
+
+  @override
+  String get lobbySoloShowcase =>
+      'Quer testar jogar offline sozinho? Use este modo!';
+
+  @override
+  String get soloButton => 'Bingo Individual';
+
+  @override
+  String get buttonConfig => 'CONFIG';
+
+  @override
+  String get scanWifiBannerDefault =>
+      'Conecte-se à mesma rede Wi-Fi do anfitrião.';
+
+  @override
+  String scanWifiBannerConnected(String wifiName) {
+    return 'Rede: $wifiName\nConecte-se na rede do anfitrião.';
+  }
+
+  @override
+  String get scanManualButton => 'Digitar Código Manualmente';
+
+  @override
+  String get revealNetwork => 'Revelar Rede';
+
+  @override
+  String get privacyPolicy => 'Política de Privacidade';
+
+  @override
+  String get termsOfUse => 'Termos de Uso';
 }

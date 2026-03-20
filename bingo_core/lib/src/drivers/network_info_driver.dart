@@ -6,4 +6,9 @@ class NetworkInfoDriver implements INetworkInfoDriver {
   Future<String?> getWifiIP() {
     return NetworkInfo().getWifiIP();
   }
+
+  @override
+  Future<String?> getWifiName() {
+    return NetworkInfo().getWifiName();
+  }
 }

@@ -51,6 +51,8 @@
 		<string>Precisamos do acesso ao Bluetooth para conectar a caixas de som.</string>
 		<key>NSBluetoothPeripheralUsageDescription</key>
 		<string>Precisamos do acesso ao Bluetooth para conectar a caixas de som.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Sua localização é usada apenas para ler o nome da rede Wi-Fi e ajudar você a encontrar a sala do Bingo local.</string>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>

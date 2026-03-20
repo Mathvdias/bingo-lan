@@ -1,11 +1,12 @@
 import 'package:bingo_app/features/splash/splash_screen.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/lobby/lobby_screen.dart';
+
+import '../../features/about/about_screen.dart';
 import '../../features/host/invite_screen.dart';
 import '../../features/host/room_screen.dart';
 import '../../features/host/setup_screen.dart';
+import '../../features/lobby/lobby_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/player/game_screen.dart';
 import '../../features/player/scan_screen.dart';
@@ -19,6 +20,7 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
+    GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
 
     GoRoute(
       path: '/paywall',
@@ -60,10 +62,6 @@ final GoRouter router = GoRouter(
         return PlayerGameScreen(cardId: cardId, playerName: 'Player');
       },
     ),
-    GoRoute(
-      path: '/solo',
-      builder: (context, state) => const SoloGameScreen(),
-    ),
+    GoRoute(path: '/solo', builder: (context, state) => const SoloGameScreen()),
   ],
 );
-

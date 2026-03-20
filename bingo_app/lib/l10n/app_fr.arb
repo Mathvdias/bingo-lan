@@ -23,5 +23,35 @@
   "playersInRoom": "joueurs dans la salle",
   "shoutedBingo": "a crié BINGO !",
   "cardId": "ID de Carte :",
-  "manualInputInstruction": "Tapez le numéro tiré sur le globe physique"
+  "manualInputInstruction": "Tapez le numéro tiré sur le globe physique",
+  "lobbySubtitle": "Votre fête, vos règles",
+  "lobbyWifiShowcase": "Le Bingo fonctionne uniquement localement ! Assurez-vous d'être sur le même réseau Wi-Fi que vos invités.",
+  "lobbyWifiBannerDefault": "Jouez sur le réseau Wi-Fi de l'hôte !",
+  "lobbyWifiBannerConnected": "Réseau actuel: {wifiName}\nJouez sur le réseau de l'hôte !",
+  "@lobbyWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "buttonWifi": "WIFI",
+  "lobbyHostShowcase": "Cliquez ici si VOUS êtes l'hôte et que vous voulez tirer les boules de bingo.",
+  "lobbyJoinShowcase": "Cliquez ici pour scanner le code QR et jouer avec une carte sur votre téléphone.",
+  "lobbySoloShowcase": "Vous voulez tester le jeu en solo hors ligne ? Utilisez ce mode !",
+  "soloButton": "Bingo Solo",
+  "buttonConfig": "CONFIG",
+  "scanWifiBannerDefault": "Connectez-vous au réseau Wi-Fi de l'hôte.",
+  "scanWifiBannerConnected": "Réseau: {wifiName}\nConnectez-vous au réseau de l'hôte.",
+  "@scanWifiBannerConnected": {
+    "placeholders": {
+      "wifiName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanManualButton": "Entrer le code manuellement",
+  "revealNetwork": "Révéler le réseau",
+  "privacyPolicy": "Politique de confidentialité",
+  "termsOfUse": "Conditions d'utilisation"
 }

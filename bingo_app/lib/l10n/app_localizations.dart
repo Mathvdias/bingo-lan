@@ -255,6 +255,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type the number drawn on the physical globe'**
   String get manualInputInstruction;
+
+  /// No description provided for @lobbySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your party, your rules'**
+  String get lobbySubtitle;
+
+  /// No description provided for @lobbyWifiShowcase.
+  ///
+  /// In en, this message translates to:
+  /// **'Bingo only works locally! Make sure you are on the same Wi-Fi network as your guests.'**
+  String get lobbyWifiShowcase;
+
+  /// No description provided for @lobbyWifiBannerDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Play on the host\'s Wi-Fi network!'**
+  String get lobbyWifiBannerDefault;
+
+  /// No description provided for @lobbyWifiBannerConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Current network: {wifiName}\nPlay on the host\'s network!'**
+  String lobbyWifiBannerConnected(String wifiName);
+
+  /// No description provided for @buttonWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'WIFI'**
+  String get buttonWifi;
+
+  /// No description provided for @lobbyHostShowcase.
+  ///
+  /// In en, this message translates to:
+  /// **'Click here if YOU are the host and want to draw the bingo balls.'**
+  String get lobbyHostShowcase;
+
+  /// No description provided for @lobbyJoinShowcase.
+  ///
+  /// In en, this message translates to:
+  /// **'Click here to scan the QR Code and play using a card on your phone.'**
+  String get lobbyJoinShowcase;
+
+  /// No description provided for @lobbySoloShowcase.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to test playing offline alone? Use this mode!'**
+  String get lobbySoloShowcase;
+
+  /// No description provided for @soloButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo Bingo'**
+  String get soloButton;
+
+  /// No description provided for @buttonConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'CONFIG'**
+  String get buttonConfig;
+
+  /// No description provided for @scanWifiBannerDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the host\'s Wi-Fi network.'**
+  String get scanWifiBannerDefault;
+
+  /// No description provided for @scanWifiBannerConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Network: {wifiName}\nConnect to the host\'s network.'**
+  String scanWifiBannerConnected(String wifiName);
+
+  /// No description provided for @scanManualButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Code Manually'**
+  String get scanManualButton;
+
+  /// No description provided for @revealNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal Network'**
+  String get revealNetwork;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get termsOfUse;
 }
 
 class _AppLocalizationsDelegate

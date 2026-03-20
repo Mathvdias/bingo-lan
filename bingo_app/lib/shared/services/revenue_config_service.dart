@@ -18,11 +18,12 @@ class RevenueConfigService {
         minimumFetchInterval: const Duration(hours: 1), // Default interval
       ));
 
-      // Default to adSupported (Caminho B)
       await _remoteConfig.setDefaults(const {
         'revenue_model': 'ad_supported',
         'max_free_players_path_a': 10,
-        'solo_mode_enabled': false,
+        'solo_mode_enabled': true,
+        'ads_enabled': false,
+        'purchases_enabled': false,
       });
 
       await _remoteConfig.fetchAndActivate();
@@ -46,5 +47,13 @@ class RevenueConfigService {
   }
   static bool get soloModeEnabled {
     return _remoteConfig.getBool('solo_mode_enabled');
+  }
+
+  static bool get adsEnabled {
+    return _remoteConfig.getBool('ads_enabled');
+  }
+
+  static bool get purchasesEnabled {
+    return _remoteConfig.getBool('purchases_enabled');
   }
 }
