@@ -119,5 +119,6 @@
   "hostSetupNameLabel": "ルームに名前を付ける",
   "hostSetupWifiWarning": "警告：すべてのプレーヤーは、ルームに参加するには同じWi-Fiネットワークに接続されている必要があります。",
   "hostSetupWifiDesc": "同じWi-Fiネットワーク上の人々と遊ぶ。パーティーや集まりに最適です。",
-  "playerScanCameraHint": "ホストのQRコードにカメラを向けてください"
+  "playerScanCameraHint": "ホストのQRコードにカメラを向けてください",
+  "splashSubtitle": "最も楽しい遊び方！"
 }

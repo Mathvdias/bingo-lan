@@ -1,5 +1,6 @@
 import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -60,16 +61,16 @@ class _SplashScreenState extends State<SplashScreen>
                   border: Border.all(color: AppColors.outline, width: 4),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       offset: const Offset(4, 4),
                       blurRadius: 10,
                     ),
                   ],
                 ),
-                child: Center(
+                child: ClipOval(
                   child: Image.asset(
                     'assets/images/logo.png',
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -79,9 +80,9 @@ class _SplashScreenState extends State<SplashScreen>
                 style: TextStyle(fontSize: 48, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 8),
-              const Text(
-                "O jeito mais divertido de jogar!",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              Text(
+                AppLocalizations.of(context)!.splashSubtitle,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ],
           ),

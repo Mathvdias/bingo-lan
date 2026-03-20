@@ -72,6 +72,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -124,11 +125,14 @@ class _LobbyScreenState extends State<LobbyScreen> {
             ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
+      body: Stack(
+        children: [
+          _LobbyBackground(),
+          SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -183,6 +187,79 @@ class _LobbyScreenState extends State<LobbyScreen> {
             ),
           ),
         ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LobbyBackground extends StatefulWidget {
+  @override
+  State<_LobbyBackground> createState() => _LobbyBackgroundState();
+}
+
+class _LobbyBackgroundState extends State<_LobbyBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        duration: const Duration(seconds: 20), vsync: this)
+      ..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final value = _controller.value;
+        return Stack(
+          children: [
+            Positioned(
+              left: -50 + (value * 100),
+              top: -50 + (value * 50),
+              child: _buildBubble(250, Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)),
+            ),
+            Positioned(
+              right: -100 + (value * 150),
+              bottom: 100 + (value * 100),
+              child: _buildBubble(350, Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)),
+            ),
+            Positioned(
+              left: 100 + ((1 - value) * 100),
+              bottom: -50 + ((1 - value) * 100),
+              child: _buildBubble(250, Colors.amber.withValues(alpha: 0.1)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildBubble(double size, Color color) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.5),
+            blurRadius: 50,
+            spreadRadius: 10,
+          )
+        ],
       ),
     );
   }

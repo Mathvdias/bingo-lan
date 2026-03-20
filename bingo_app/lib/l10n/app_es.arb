@@ -119,5 +119,6 @@
   "hostSetupNameLabel": "Nombra tu sala",
   "hostSetupWifiWarning": "Aviso: Todos los jugadores DEBEN estar conectados a la MISMA RED WI-FI para unirse a la sala.",
   "hostSetupWifiDesc": "Juega con personas en la misma red Wi-Fi. Ideal para fiestas y reuniones.",
-  "playerScanCameraHint": "Apunta tu cámara al código QR del anfitrión"
+  "playerScanCameraHint": "Apunta tu cámara al código QR del anfitrión",
+  "splashSubtitle": "¡La forma más divertida de jugar!"
 }

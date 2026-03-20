@@ -291,4 +291,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get playerScanCameraHint =>
       'Apunta tu cámara al código QR del anfitrión';
+
+  @override
+  String get splashSubtitle => '¡La forma más divertida de jugar!';
 }
