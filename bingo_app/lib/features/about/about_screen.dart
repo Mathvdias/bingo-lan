@@ -1,10 +1,10 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
-import 'package:flutter/material.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:bingo_core/bingo_core.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -83,7 +83,9 @@ class _AboutScreenState extends State<AboutScreen> {
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
@@ -115,7 +117,9 @@ class _AboutScreenState extends State<AboutScreen> {
                     )
                   else
                     TextButton(
-                      onPressed: () => AppSettings.openAppSettings(type: AppSettingsType.wifi),
+                      onPressed: () => AppSettings.openAppSettings(
+                        type: AppSettingsType.wifi,
+                      ),
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.error,
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -209,7 +213,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 title: Text(l10n.privacyPolicy),
                 trailing: const Icon(Icons.open_in_new),
                 onTap: () => _launchUrl(
-                  'https://mathvdias.github.io/bingo-privacy-policy/',
+                  'https://bingo-policy-and-terms.vercel.app/privacy',
                 ),
               ),
             ),
@@ -226,7 +230,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 title: Text(l10n.termsOfUse),
                 trailing: const Icon(Icons.open_in_new),
                 onTap: () => _launchUrl(
-                  'https://mathvdias.github.io/bingo-terms-of-use/',
+                  'https://bingo-policy-and-terms.vercel.app/terms',
                 ),
               ),
             ),
