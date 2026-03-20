@@ -1,16 +1,11 @@
-import 'package:app_settings/app_settings.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
-import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:bingo_core/bingo_core.dart';
-import 'package:get_it/get_it.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:bingo_app/l10n/app_localizations.dart';
 
 class LobbyScreen extends StatefulWidget {
   const LobbyScreen({super.key});
@@ -23,17 +18,13 @@ class _LobbyScreenState extends State<LobbyScreen> {
   bool _isPremium = false;
   bool _checkingSubscription = true;
 
-  final GlobalKey _wifiKey = GlobalKey();
   final GlobalKey _hostKey = GlobalKey();
   final GlobalKey _joinKey = GlobalKey();
   final GlobalKey _soloKey = GlobalKey();
 
-  String? _wifiName;
-
   @override
   void initState() {
     super.initState();
-    ShowcaseView.register();
     _checkSubscription();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkFirstLaunch();
@@ -42,7 +33,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
 
   @override
   void dispose() {
-    ShowcaseView.get().unregister();
     super.dispose();
   }
 
@@ -50,27 +40,11 @@ class _LobbyScreenState extends State<LobbyScreen> {
     final prefs = await SharedPreferences.getInstance();
     final bool isFirstTime = prefs.getBool('first_launch_showcase') ?? true;
     if (isFirstTime && mounted) {
-      final keys = [_wifiKey, _hostKey, _joinKey];
+      final keys = [_hostKey, _joinKey];
       if (RevenueConfigService.soloModeEnabled) keys.add(_soloKey);
 
       ShowcaseView.get().startShowCase(keys);
       await prefs.setBool('first_launch_showcase', false);
-    }
-  }
-
-  Future<void> _fetchWifiName() async {
-    try {
-      final status = await Permission.locationWhenInUse.request();
-      if (status.isGranted) {
-        final name = await GetIt.I.get<INetworkInfoDriver>().getWifiName();
-        if (mounted) {
-          setState(() {
-            _wifiName = name?.replaceAll('"', '');
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('Error fetching Wi-Fi name: $e');
     }
   }
 
@@ -103,7 +77,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline, color: AppColors.primary),
+            icon: const Icon(Icons.help_outline),
             onPressed: () => context.push('/about'),
           ),
           // Premium badge or upgrade button
@@ -130,7 +104,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   return Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Chip(
-                      label: const Text('PREMIUM'),
+                      label: Text(l10n.lobbyPremiumTag),
                       backgroundColor: Colors.amber,
                       labelStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -143,7 +117,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 return TextButton.icon(
                   onPressed: () => context.push('/paywall'),
                   icon: const Icon(Icons.star, color: Colors.amber),
-                  label: const Text('Upgrade'),
+                  label: Text(l10n.lobbyUpgradeButton),
                   style: TextButton.styleFrom(foregroundColor: Colors.amber),
                 );
               },
@@ -158,56 +132,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Showcase(
-                  key: _wifiKey,
-                  description: l10n.lobbyWifiShowcase,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    margin: const EdgeInsets.only(bottom: 24),
-                    decoration: BoxDecoration(
-                      color: AppColors.error.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.wifi_rounded, color: AppColors.error),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            _wifiName != null 
-                                ? l10n.lobbyWifiBannerConnected(_wifiName!) 
-                                : l10n.lobbyWifiBannerDefault,
-                            style: textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.error,
-                            ),
-                          ),
-                        ),
-                        if (_wifiName == null)
-                          TextButton(
-                            onPressed: _fetchWifiName,
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppColors.error,
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              minimumSize: Size.zero,
-                            ),
-                            child: Text(l10n.revealNetwork, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          )
-                        else
-                          TextButton(
-                            onPressed: () => AppSettings.openAppSettings(type: AppSettingsType.wifi),
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppColors.error,
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              minimumSize: Size.zero,
-                            ),
-                            child: Text(l10n.buttonWifi, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
                 Text(
                   'Bingo',
                   textAlign: TextAlign.center,

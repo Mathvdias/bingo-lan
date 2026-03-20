@@ -1,16 +1,13 @@
+import 'package:bingo_app/shared/services/ad_service.dart';
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:bingo_app/shared/services/ad_service.dart';
-import 'package:bingo_app/shared/services/revenue_config_service.dart';
 
 class BannerAdWidget extends StatefulWidget {
   final AdSize size;
 
-  const BannerAdWidget({
-    Key? key,
-    this.size = AdSize.banner,
-  }) : super(key: key);
+  const BannerAdWidget({super.key, this.size = AdSize.banner});
 
   @override
   State<BannerAdWidget> createState() => _BannerAdWidgetState();

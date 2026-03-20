@@ -53,5 +53,71 @@
   "scanManualButton": "Entrer le code manuellement",
   "revealNetwork": "Révéler le réseau",
   "privacyPolicy": "Politique de confidentialité",
-  "termsOfUse": "Conditions d'utilisation"
+  "termsOfUse": "Conditions d'utilisation",
+  "aboutDeveloper": "Développeur (GitHub)",
+  "aboutTitle": "À propos du Bingo",
+  "aboutImportantTitle": "⚠️ Important : Même réseau Wi-Fi",
+  "aboutImportantBody": "Le Bingo fonctionne via une connexion locale sécurisée. Pour que les joueurs trouvent votre salle, TOUT LE MONDE (y compris l'hôte) doit être connecté au même réseau Wi-Fi.",
+  "aboutHowToPlayTitle": "📖 Comment jouer (Étape par étape)",
+  "aboutStep1Title": "Choisissez l'Hôte",
+  "aboutStep1Desc": "Une personne démarre la partie en cliquant sur 'Organiser un Bingo' et partage le Code de la Salle.",
+  "aboutStep2Title": "Joueurs dans la Salle",
+  "aboutStep2Desc": "Les autres participants cliquent sur 'Rejoindre' et tapent le code (ou pointent leur caméra sur le Code QR).",
+  "aboutStep3Title": "Marquer la Carte",
+  "aboutStep3Desc": "L'hôte tire les boules. Touchez le numéro sur la carte de votre téléphone pour le marquer.",
+  "aboutStep4Title": "BINGO !",
+  "aboutStep4Desc": "Carte complétée ? Appuyez sur le bouton 'CRIER BINGO' avant tout le monde pour gagner !",
+  "aboutLanguage": "🌐 Langue",
+  "scanEnterName": "Entrez votre nom",
+  "scanJoin": "Rejoindre",
+  "scanManualTitle": "Entrer manuellement",
+  "scanManualHint": "Collez le code ou le lien de la salle ci-dessous :",
+  "scanCancel": "Annuler",
+  "scanShowcaseScanner": "Pointez votre caméra vers le Code QR de l'hôte pour rejoindre rapidement la salle.",
+  "inviteRoomCode": "Code de la Salle",
+  "inviteShareLink": "Partager le lien d'invitation",
+  "inviteTitle": "Inviter des joueurs",
+  "inviteScanDesc": "Scannez pour rejoindre la salle !",
+  "inviteShareCodeMessage": "Jouons au Bingo ! Notre code de salle est : {qrData}",
+  "@inviteShareCodeMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareCodeTooltip": "Partager le code",
+  "inviteShareLinkMessage": "Viens jouer au Bingo ! Clique simplement depuis ton téléphone : bingo://room/{qrData}",
+  "@inviteShareLinkMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteConnectedPlayers": "Joueurs Connectés : {count}",
+  "@inviteConnectedPlayers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteWaitingPlayers": "En attente de joueurs...",
+  "inviteStartBingo": "Démarrer le Bingo !",
+  "lobbyPremiumTag": "PREMIUM",
+  "lobbyUpgradeButton": "Améliorer",
+  "playerGameTitle": "Votre Carte",
+  "playerGameShout": "Crier BINGO!",
+  "playerScanNameHint": "Ex: Mathieu",
+  "playerScanTitle": "Rejoindre un Bingo",
+  "soloGameTitle": "Bingo Solo",
+  "soloGameDraw": "Tirer un Numéro",
+  "hostSetupTitle": "Héberger un Bingo",
+  "hostSetupRoomHint": "Ex: Bingo de l'Oncle Joe",
+  "hostSetupCreate": "Créer une Salle",
+  "hostSetupNameLabel": "Nommez votre salle",
+  "hostSetupWifiWarning": "Avertissement: Tous les joueurs DOIVENT être connectés au MÊME RÉSEAU WI-FI pour rejoindre la salle.",
+  "hostSetupWifiDesc": "Jouez avec des personnes sur le même réseau Wi-Fi. Idéal pour les fêtes et les rassemblements.",
+  "playerScanCameraHint": "Pointez votre appareil photo sur le code QR de l'hôte"
 }

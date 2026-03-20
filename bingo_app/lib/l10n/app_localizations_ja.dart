@@ -135,4 +135,147 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get termsOfUse => '利用規約';
+
+  @override
+  String get aboutDeveloper => '開発者 (GitHub)';
+
+  @override
+  String get aboutTitle => 'ビンゴについて';
+
+  @override
+  String get aboutImportantTitle => '⚠️ 重要：同じWi-Fiネットワーク';
+
+  @override
+  String get aboutImportantBody =>
+      'ビンゴは安全なローカル接続で機能します。プレイヤーがあなたのルームを見つけるには、全員（ホストを含む）が全く同じWi-Fiネットワークに接続している必要があります。';
+
+  @override
+  String get aboutHowToPlayTitle => '📖 遊び方 (ステップバイステップ)';
+
+  @override
+  String get aboutStep1Title => 'ホストを選ぶ';
+
+  @override
+  String get aboutStep1Desc => '一人が「ビンゴを主催」をクリックしてゲームを開始し、ルームコードを共有します。';
+
+  @override
+  String get aboutStep2Title => 'ルームのプレイヤー';
+
+  @override
+  String get aboutStep2Desc => '他の参加者は「参加」をクリックし、コードを入力します（またはカメラをQRコードに向けます）。';
+
+  @override
+  String get aboutStep3Title => 'カードのマーク';
+
+  @override
+  String get aboutStep3Desc => 'ホストが球を引きます。電話のカードの番号をタップしてマークします。';
+
+  @override
+  String get aboutStep4Title => 'ビンゴ！';
+
+  @override
+  String get aboutStep4Desc => 'カードが完成しましたか？誰よりも早く「ビンゴと叫ぶ」ボタンを押して勝ちましょう！';
+
+  @override
+  String get aboutLanguage => '🌐 言語';
+
+  @override
+  String get scanEnterName => '名前を入力';
+
+  @override
+  String get scanJoin => '参加';
+
+  @override
+  String get scanManualTitle => '手動で入力';
+
+  @override
+  String get scanManualHint => '下にコードまたはルームリンクを貼り付けてください：';
+
+  @override
+  String get scanCancel => 'キャンセル';
+
+  @override
+  String get scanShowcaseScanner => 'ホストのQRコードにカメラを向けて、すぐにルームに参加します。';
+
+  @override
+  String get inviteRoomCode => 'ルームコード';
+
+  @override
+  String get inviteShareLink => '招待リンクを共有';
+
+  @override
+  String get inviteTitle => 'プレイヤーを招待';
+
+  @override
+  String get inviteScanDesc => 'スキャンしてルームに参加！';
+
+  @override
+  String inviteShareCodeMessage(String qrData) {
+    return 'ビンゴをしよう！ルームコードは：$qrData';
+  }
+
+  @override
+  String get inviteShareCodeTooltip => 'コードを共有';
+
+  @override
+  String inviteShareLinkMessage(String qrData) {
+    return 'ビンゴをしに来て！ここをクリック：bingo://room/$qrData';
+  }
+
+  @override
+  String inviteConnectedPlayers(int count) {
+    return '接続中のプレイヤー：$count';
+  }
+
+  @override
+  String get inviteWaitingPlayers => 'プレイヤーを待っています...';
+
+  @override
+  String get inviteStartBingo => 'ビンゴを開始！';
+
+  @override
+  String get lobbyPremiumTag => 'プレミアム';
+
+  @override
+  String get lobbyUpgradeButton => 'アップグレード';
+
+  @override
+  String get playerGameTitle => 'あなたのカード';
+
+  @override
+  String get playerGameShout => 'ビンゴと叫ぶ！';
+
+  @override
+  String get playerScanNameHint => '例：マテウス';
+
+  @override
+  String get playerScanTitle => 'ビンゴに参加する';
+
+  @override
+  String get soloGameTitle => 'ソロビンゴ';
+
+  @override
+  String get soloGameDraw => '番号を引く';
+
+  @override
+  String get hostSetupTitle => 'ビンゴを主催する';
+
+  @override
+  String get hostSetupRoomHint => '例：ジョーおじさんのビンゴ';
+
+  @override
+  String get hostSetupCreate => 'ルームを作成';
+
+  @override
+  String get hostSetupNameLabel => 'ルームに名前を付ける';
+
+  @override
+  String get hostSetupWifiWarning =>
+      '警告：すべてのプレーヤーは、ルームに参加するには同じWi-Fiネットワークに接続されている必要があります。';
+
+  @override
+  String get hostSetupWifiDesc => '同じWi-Fiネットワーク上の人々と遊ぶ。パーティーや集まりに最適です。';
+
+  @override
+  String get playerScanCameraHint => 'ホストのQRコードにカメラを向けてください';
 }

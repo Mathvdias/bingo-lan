@@ -5,6 +5,7 @@ import 'package:bingo_app/features/host/host_setup_view_model.dart';
 import 'package:bingo_app/features/paywall/paywall_view_model.dart';
 import 'package:bingo_app/features/player/player_game_view_model.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
+import 'package:bingo_app/features/solo/solo_game_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:get_it/get_it.dart';
 
@@ -52,4 +53,7 @@ void setupServiceLocator() {
 
   // Paywall ViewModel (Nova versão sem paymentDriver)
   serviceLocator.registerFactory(() => PaywallViewModel());
+
+  // SoloGame ViewModel
+  serviceLocator.registerFactory(() => SoloGameViewModel());
 }

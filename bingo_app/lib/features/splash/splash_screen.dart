@@ -66,27 +66,22 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ],
                 ),
-                child: const Center(
-                  child: Text('🎉', style: TextStyle(fontSize: 60)),
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
               const Text(
                 "Bingo",
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.text,
-                ),
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 8),
               const Text(
                 "O jeito mais divertido de jogar!",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ],
           ),

@@ -53,5 +53,71 @@
   "scanManualButton": "Enter Code Manually",
   "revealNetwork": "Reveal Network",
   "privacyPolicy": "Privacy Policy",
-  "termsOfUse": "Terms of Use"
+  "termsOfUse": "Terms of Use",
+  "aboutDeveloper": "Developer (GitHub)",
+  "aboutTitle": "About Bingo",
+  "aboutImportantTitle": "⚠️ Important: Same Wi-Fi Network",
+  "aboutImportantBody": "Bingo works over a secure local connection. For players to find your room, EVERYONE (including the host) must be connected to the exact same Wi-Fi network.",
+  "aboutHowToPlayTitle": "📖 How to Play (Step by Step)",
+  "aboutStep1Title": "Choose the Host",
+  "aboutStep1Desc": "One person starts the game by clicking 'Host a Bingo' and shares the Room Code.",
+  "aboutStep2Title": "Players in the Room",
+  "aboutStep2Desc": "Other participants click 'Join' and type the code (or point their camera at the QR Code).",
+  "aboutStep3Title": "Marking the Card",
+  "aboutStep3Desc": "The host draws the balls. Tap the number on your phone's card to mark it.",
+  "aboutStep4Title": "BINGO!",
+  "aboutStep4Desc": "Completed your card? Press the 'SHOUT BINGO' button before everyone else to win!",
+  "aboutLanguage": "🌐 Language",
+  "scanEnterName": "Enter your name",
+  "scanJoin": "Join",
+  "scanManualTitle": "Enter Manually",
+  "scanManualHint": "Paste the code or room link below:",
+  "scanCancel": "Cancel",
+  "scanShowcaseScanner": "Point your camera at the host's QR Code to quickly join the room.",
+  "inviteRoomCode": "Room Code",
+  "inviteShareLink": "Share Invite Link",
+  "inviteTitle": "Invite Players",
+  "inviteScanDesc": "Scan to join the room!",
+  "inviteShareCodeMessage": "Let's play Bingo! Our room code is: {qrData}",
+  "@inviteShareCodeMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareCodeTooltip": "Share Code",
+  "inviteShareLinkMessage": "Come play Bingo! Just click from your phone: bingo://room/{qrData}",
+  "@inviteShareLinkMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteConnectedPlayers": "Connected Players: {count}",
+  "@inviteConnectedPlayers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteWaitingPlayers": "Waiting for players...",
+  "inviteStartBingo": "Start Bingo!",
+  "lobbyPremiumTag": "PREMIUM",
+  "lobbyUpgradeButton": "Upgrade",
+  "playerGameTitle": "Your Card",
+  "playerGameShout": "Shout BINGO!",
+  "playerScanNameHint": "E.g. Matthew",
+  "playerScanTitle": "Join a Bingo",
+  "soloGameTitle": "Solo Bingo",
+  "soloGameDraw": "Draw Number",
+  "hostSetupTitle": "Host a Bingo",
+  "hostSetupRoomHint": "E.g. Uncle Joe's Bingo",
+  "hostSetupCreate": "Create Room",
+  "hostSetupNameLabel": "Name your room",
+  "hostSetupWifiWarning": "Warning: All players MUST be connected to the SAME WI-FI NETWORK to join the room.",
+  "hostSetupWifiDesc": "Play with people on the same Wi-Fi network. Ideal for parties and gatherings.",
+  "playerScanCameraHint": "Point your camera at the Host's QR Code"
 }

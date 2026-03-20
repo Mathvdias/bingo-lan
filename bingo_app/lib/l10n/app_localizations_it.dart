@@ -141,4 +141,155 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get termsOfUse => 'Termini di utilizzo';
+
+  @override
+  String get aboutDeveloper => 'Sviluppatore (GitHub)';
+
+  @override
+  String get aboutTitle => 'Informazioni sul Bingo';
+
+  @override
+  String get aboutImportantTitle => '⚠️ Importante: Stessa Rete Wi-Fi';
+
+  @override
+  String get aboutImportantBody =>
+      'Il Bingo funziona tramite una connessione locale sicura. Affinché i giocatori trovino la tua stanza, TUTTI (incluso l\'host) devono essere connessi alla stessa rete Wi-Fi.';
+
+  @override
+  String get aboutHowToPlayTitle => '📖 Come Giocare (Passo dopo Passo)';
+
+  @override
+  String get aboutStep1Title => 'Scegli l\'Host';
+
+  @override
+  String get aboutStep1Desc =>
+      'Una persona inizia la partita cliccando su \'Organizza un Bingo\' e condivide il Codice della Stanza.';
+
+  @override
+  String get aboutStep2Title => 'Giocatori nella Stanza';
+
+  @override
+  String get aboutStep2Desc =>
+      'Gli altri partecipanti cliccano su \'Entra\' e digitano il codice (o puntano la fotocamera sul Codice QR).';
+
+  @override
+  String get aboutStep3Title => 'Marcare la Cartella';
+
+  @override
+  String get aboutStep3Desc =>
+      'L\'host estrae le palline. Tocca il numero sulla cartella del tuo telefono per marcarlo.';
+
+  @override
+  String get aboutStep4Title => 'BINGO!';
+
+  @override
+  String get aboutStep4Desc =>
+      'Cartella completata? Premi il pulsante \'GRIDA BINGO\' prima di tutti per vincere!';
+
+  @override
+  String get aboutLanguage => '🌐 Lingua';
+
+  @override
+  String get scanEnterName => 'Inserisci il tuo nome';
+
+  @override
+  String get scanJoin => 'Entra';
+
+  @override
+  String get scanManualTitle => 'Inserisci Manualmente';
+
+  @override
+  String get scanManualHint =>
+      'Incolla il codice o il link della stanza qui sotto:';
+
+  @override
+  String get scanCancel => 'Annulla';
+
+  @override
+  String get scanShowcaseScanner =>
+      'Punta la fotocamera sul Codice QR dell\'host per unirti rapidamente alla stanza.';
+
+  @override
+  String get inviteRoomCode => 'Codice della Stanza';
+
+  @override
+  String get inviteShareLink => 'Condividi Link di Invito';
+
+  @override
+  String get inviteTitle => 'Invita Giocatori';
+
+  @override
+  String get inviteScanDesc => 'Scansiona per unirti alla stanza!';
+
+  @override
+  String inviteShareCodeMessage(String qrData) {
+    return 'Giochiamo a Bingo! Il nostro codice stanza è: $qrData';
+  }
+
+  @override
+  String get inviteShareCodeTooltip => 'Condividi Codice';
+
+  @override
+  String inviteShareLinkMessage(String qrData) {
+    return 'Vieni a giocare a Bingo! Clicca dal tuo telefono: bingo://room/$qrData';
+  }
+
+  @override
+  String inviteConnectedPlayers(int count) {
+    return 'Giocatori Connessi: $count';
+  }
+
+  @override
+  String get inviteWaitingPlayers => 'In attesa di giocatori...';
+
+  @override
+  String get inviteStartBingo => 'Inizia Bingo!';
+
+  @override
+  String get lobbyPremiumTag => 'PREMIUM';
+
+  @override
+  String get lobbyUpgradeButton => 'Potenzia';
+
+  @override
+  String get playerGameTitle => 'La Tua Cartella';
+
+  @override
+  String get playerGameShout => 'Urla BINGO!';
+
+  @override
+  String get playerScanNameHint => 'Es: Matteo';
+
+  @override
+  String get playerScanTitle => 'Partecipa a un Bingo';
+
+  @override
+  String get soloGameTitle => 'Bingo Singolo';
+
+  @override
+  String get soloGameDraw => 'Estrai Numero';
+
+  @override
+  String get hostSetupTitle => 'Ospitare un Bingo';
+
+  @override
+  String get hostSetupRoomHint => 'Es: Bingo dello Zio Joe';
+
+  @override
+  String get hostSetupCreate => 'Crea Stanza';
+
+  @override
+  String get hostSetupNameLabel => 'Dai un nome alla stanza';
+
+  @override
+  String get hostSetupWifiWarning =>
+      'Avviso: Tutti i giocatori DEVONO essere connessi alla STESSA RETE WI-FI per unirsi alla stanza.';
+
+  @override
+  String get hostSetupWifiDesc =>
+      'Gioca con persone sulla stessa rete Wi-Fi. Ideale per feste e riunioni.';
+
+  @override
+  String get playerScanCameraHint =>
+      'Punta la tua fotocamera sul codice QR dell\'Host';
 }

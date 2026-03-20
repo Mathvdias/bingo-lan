@@ -4,9 +4,6 @@ import 'dart:developer'; // Import for log
 import 'dart:io';
 
 import 'package:bingo_core/bingo_core.dart';
-import 'package:bingo_core/src/services/jwt_service.dart';
-import 'package:bingo_core/src/logic/access_control_service.dart';
-import 'package:bingo_core/src/drivers/i_config_driver.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_web_socket/shelf_web_socket.dart';
@@ -22,7 +19,8 @@ class LocalShelfGameConnection implements IGameConnection {
   LocalShelfGameConnection({
     required AccessControlService accessControl,
     required IConfigDriver configDriver,
-  }) : _accessControl = accessControl, _configDriver = configDriver;
+  }) : _accessControl = accessControl,
+       _configDriver = configDriver;
 
   // HOST State
   final Map<WebSocketChannel, String> _connectedPlayers = {};
@@ -142,16 +140,16 @@ class LocalShelfGameConnection implements IGameConnection {
         if (revenueModel == 'paywall_host' || revenueModel == 'variant_a') {
           final maxPlayers = _configDriver.getInt('max_free_players_path_a');
           final limit = maxPlayers > 0 ? maxPlayers : 10;
-          
+
           if (_connectedPlayers.length >= limit) {
-             // Let's assume the Pro upgrade is tied to a feature flag checking user premium sub
-             final isPremium = await _accessControl.canAccess('is_host_premium');
-             if (!isPremium) {
-                _errorController.add('PAYWALL_TRIGGERED');
-                log('Connection rejected: Room capacity limit reached.');
-                webSocketChannel.sink.close(1008, 'Room Full / Premium Required');
-                return;
-             }
+            // Let's assume the Pro upgrade is tied to a feature flag checking user premium sub
+            final isPremium = await _accessControl.canAccess('is_host_premium');
+            if (!isPremium) {
+              _errorController.add('PAYWALL_TRIGGERED');
+              log('Connection rejected: Room capacity limit reached.');
+              webSocketChannel.sink.close(1008, 'Room Full / Premium Required');
+              return;
+            }
           }
         }
 

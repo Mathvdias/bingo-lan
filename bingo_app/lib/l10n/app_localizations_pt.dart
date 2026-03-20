@@ -143,4 +143,153 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get termsOfUse => 'Termos de Uso';
+
+  @override
+  String get aboutDeveloper => 'Desenvolvedor (GitHub)';
+
+  @override
+  String get aboutTitle => 'Sobre o Bingo';
+
+  @override
+  String get aboutImportantTitle => '⚠️ Importante: Mesma Rede Wi-Fi';
+
+  @override
+  String get aboutImportantBody =>
+      'O Bingo funciona através de uma conexão local segura. Para que os jogadores encontrem a sua sala, TODOS (inclusive o organizador) devem estar conectados à mesma rede Wi-Fi.';
+
+  @override
+  String get aboutHowToPlayTitle => '📖 Como Jogar (Passo a Passo)';
+
+  @override
+  String get aboutStep1Title => 'Escolha o Organizador';
+
+  @override
+  String get aboutStep1Desc =>
+      'Uma pessoa inicia a partida clicando em \'Organizar um Bingo\' e compartilha o Código da Sala.';
+
+  @override
+  String get aboutStep2Title => 'Jogadores na Sala';
+
+  @override
+  String get aboutStep2Desc =>
+      'Os demais participantes clicam em \'Entrar\' e digitam o código (ou apontam a câmera pro QR Code).';
+
+  @override
+  String get aboutStep3Title => 'Marcando a Cartela';
+
+  @override
+  String get aboutStep3Desc =>
+      'O organizador sorteia as bolas. Toque no número da sua cartela no celular para marcá-lo.';
+
+  @override
+  String get aboutStep4Title => 'BINGO!';
+
+  @override
+  String get aboutStep4Desc =>
+      'Completou a cartela? Aperte o botão \'GRITAR BINGO\' antes de todo mundo para vencer!';
+
+  @override
+  String get aboutLanguage => '🌐 Idioma / Language';
+
+  @override
+  String get scanEnterName => 'Digite seu nome';
+
+  @override
+  String get scanJoin => 'Entrar';
+
+  @override
+  String get scanManualTitle => 'Entrar Manualmente';
+
+  @override
+  String get scanManualHint => 'Cole o código ou link da sala abaixo:';
+
+  @override
+  String get scanCancel => 'Cancelar';
+
+  @override
+  String get scanShowcaseScanner =>
+      'Aponte a câmera para o QR Code do anfitrião para entrar na sala rapidamente.';
+
+  @override
+  String get inviteRoomCode => 'Código da Sala';
+
+  @override
+  String get inviteShareLink => 'Compartilhar Link de Convite';
+
+  @override
+  String get inviteTitle => 'Convide os Jogadores';
+
+  @override
+  String get inviteScanDesc => 'Escaneie para entrar na sala!';
+
+  @override
+  String inviteShareCodeMessage(String qrData) {
+    return 'Bora pro Bingo da Galera! Nosso código da sala é: $qrData';
+  }
+
+  @override
+  String get inviteShareCodeTooltip => 'Compartilhar Código';
+
+  @override
+  String inviteShareLinkMessage(String qrData) {
+    return 'Vem pro Bingo da Galera! Só clicar pelo celular: bingo://room/$qrData';
+  }
+
+  @override
+  String inviteConnectedPlayers(int count) {
+    return 'Jogadores Conectados: $count';
+  }
+
+  @override
+  String get inviteWaitingPlayers => 'Aguardando jogadores...';
+
+  @override
+  String get inviteStartBingo => 'Iniciar Bingo!';
+
+  @override
+  String get lobbyPremiumTag => 'PREMIUM';
+
+  @override
+  String get lobbyUpgradeButton => 'Upgrade';
+
+  @override
+  String get playerGameTitle => 'Sua Cartela';
+
+  @override
+  String get playerGameShout => 'Gritar BINGO!';
+
+  @override
+  String get playerScanNameHint => 'Ex: Matheus';
+
+  @override
+  String get playerScanTitle => 'Entrar em um Bingo';
+
+  @override
+  String get soloGameTitle => 'Bingo Individual';
+
+  @override
+  String get soloGameDraw => 'Sortear Número';
+
+  @override
+  String get hostSetupTitle => 'Organizar um Bingo';
+
+  @override
+  String get hostSetupRoomHint => 'Ex: Bingo do Tio Zé';
+
+  @override
+  String get hostSetupCreate => 'Criar Sala';
+
+  @override
+  String get hostSetupNameLabel => 'Dê um nome para a sala';
+
+  @override
+  String get hostSetupWifiWarning =>
+      'Aviso: Todos os jogadores DEVEM estar conectados à MESMA REDE WI-FI para conseguir entrar na sala.';
+
+  @override
+  String get hostSetupWifiDesc =>
+      'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.';
+
+  @override
+  String get playerScanCameraHint => 'Aponte a câmera para o QR Code do Host';
 }

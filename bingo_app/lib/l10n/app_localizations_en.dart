@@ -140,4 +140,153 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsOfUse => 'Terms of Use';
+
+  @override
+  String get aboutDeveloper => 'Developer (GitHub)';
+
+  @override
+  String get aboutTitle => 'About Bingo';
+
+  @override
+  String get aboutImportantTitle => '⚠️ Important: Same Wi-Fi Network';
+
+  @override
+  String get aboutImportantBody =>
+      'Bingo works over a secure local connection. For players to find your room, EVERYONE (including the host) must be connected to the exact same Wi-Fi network.';
+
+  @override
+  String get aboutHowToPlayTitle => '📖 How to Play (Step by Step)';
+
+  @override
+  String get aboutStep1Title => 'Choose the Host';
+
+  @override
+  String get aboutStep1Desc =>
+      'One person starts the game by clicking \'Host a Bingo\' and shares the Room Code.';
+
+  @override
+  String get aboutStep2Title => 'Players in the Room';
+
+  @override
+  String get aboutStep2Desc =>
+      'Other participants click \'Join\' and type the code (or point their camera at the QR Code).';
+
+  @override
+  String get aboutStep3Title => 'Marking the Card';
+
+  @override
+  String get aboutStep3Desc =>
+      'The host draws the balls. Tap the number on your phone\'s card to mark it.';
+
+  @override
+  String get aboutStep4Title => 'BINGO!';
+
+  @override
+  String get aboutStep4Desc =>
+      'Completed your card? Press the \'SHOUT BINGO\' button before everyone else to win!';
+
+  @override
+  String get aboutLanguage => '🌐 Language';
+
+  @override
+  String get scanEnterName => 'Enter your name';
+
+  @override
+  String get scanJoin => 'Join';
+
+  @override
+  String get scanManualTitle => 'Enter Manually';
+
+  @override
+  String get scanManualHint => 'Paste the code or room link below:';
+
+  @override
+  String get scanCancel => 'Cancel';
+
+  @override
+  String get scanShowcaseScanner =>
+      'Point your camera at the host\'s QR Code to quickly join the room.';
+
+  @override
+  String get inviteRoomCode => 'Room Code';
+
+  @override
+  String get inviteShareLink => 'Share Invite Link';
+
+  @override
+  String get inviteTitle => 'Invite Players';
+
+  @override
+  String get inviteScanDesc => 'Scan to join the room!';
+
+  @override
+  String inviteShareCodeMessage(String qrData) {
+    return 'Let\'s play Bingo! Our room code is: $qrData';
+  }
+
+  @override
+  String get inviteShareCodeTooltip => 'Share Code';
+
+  @override
+  String inviteShareLinkMessage(String qrData) {
+    return 'Come play Bingo! Just click from your phone: bingo://room/$qrData';
+  }
+
+  @override
+  String inviteConnectedPlayers(int count) {
+    return 'Connected Players: $count';
+  }
+
+  @override
+  String get inviteWaitingPlayers => 'Waiting for players...';
+
+  @override
+  String get inviteStartBingo => 'Start Bingo!';
+
+  @override
+  String get lobbyPremiumTag => 'PREMIUM';
+
+  @override
+  String get lobbyUpgradeButton => 'Upgrade';
+
+  @override
+  String get playerGameTitle => 'Your Card';
+
+  @override
+  String get playerGameShout => 'Shout BINGO!';
+
+  @override
+  String get playerScanNameHint => 'E.g. Matthew';
+
+  @override
+  String get playerScanTitle => 'Join a Bingo';
+
+  @override
+  String get soloGameTitle => 'Solo Bingo';
+
+  @override
+  String get soloGameDraw => 'Draw Number';
+
+  @override
+  String get hostSetupTitle => 'Host a Bingo';
+
+  @override
+  String get hostSetupRoomHint => 'E.g. Uncle Joe\'s Bingo';
+
+  @override
+  String get hostSetupCreate => 'Create Room';
+
+  @override
+  String get hostSetupNameLabel => 'Name your room';
+
+  @override
+  String get hostSetupWifiWarning =>
+      'Warning: All players MUST be connected to the SAME WI-FI NETWORK to join the room.';
+
+  @override
+  String get hostSetupWifiDesc =>
+      'Play with people on the same Wi-Fi network. Ideal for parties and gatherings.';
+
+  @override
+  String get playerScanCameraHint => 'Point your camera at the Host\'s QR Code';
 }

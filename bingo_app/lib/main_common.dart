@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import 'firebase_options.dart';
 import 'flavors/app_config.dart';
@@ -87,6 +88,9 @@ Future<void> mainCommon(AppConfig appConfig) async {
   // 4. Initialize AdMob and A/B Testing Config
   await AdService.initialize();
   await RevenueConfigService.initialize();
+
+  // 5. Initialize global Showcase scope for app tours
+  ShowcaseView.register();
 
   // Run the main Flutter application wrapped with Clarity and Provider
   runApp(

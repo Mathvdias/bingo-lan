@@ -53,5 +53,71 @@
   "scanManualButton": "Digitar Código Manualmente",
   "revealNetwork": "Revelar Rede",
   "privacyPolicy": "Política de Privacidade",
-  "termsOfUse": "Termos de Uso"
+  "termsOfUse": "Termos de Uso",
+  "aboutDeveloper": "Desenvolvedor (GitHub)",
+  "aboutTitle": "Sobre o Bingo",
+  "aboutImportantTitle": "⚠️ Importante: Mesma Rede Wi-Fi",
+  "aboutImportantBody": "O Bingo funciona através de uma conexão local segura. Para que os jogadores encontrem a sua sala, TODOS (inclusive o organizador) devem estar conectados à mesma rede Wi-Fi.",
+  "aboutHowToPlayTitle": "📖 Como Jogar (Passo a Passo)",
+  "aboutStep1Title": "Escolha o Organizador",
+  "aboutStep1Desc": "Uma pessoa inicia a partida clicando em 'Organizar um Bingo' e compartilha o Código da Sala.",
+  "aboutStep2Title": "Jogadores na Sala",
+  "aboutStep2Desc": "Os demais participantes clicam em 'Entrar' e digitam o código (ou apontam a câmera pro QR Code).",
+  "aboutStep3Title": "Marcando a Cartela",
+  "aboutStep3Desc": "O organizador sorteia as bolas. Toque no número da sua cartela no celular para marcá-lo.",
+  "aboutStep4Title": "BINGO!",
+  "aboutStep4Desc": "Completou a cartela? Aperte o botão 'GRITAR BINGO' antes de todo mundo para vencer!",
+  "aboutLanguage": "🌐 Idioma / Language",
+  "scanEnterName": "Digite seu nome",
+  "scanJoin": "Entrar",
+  "scanManualTitle": "Entrar Manualmente",
+  "scanManualHint": "Cole o código ou link da sala abaixo:",
+  "scanCancel": "Cancelar",
+  "scanShowcaseScanner": "Aponte a câmera para o QR Code do anfitrião para entrar na sala rapidamente.",
+  "inviteRoomCode": "Código da Sala",
+  "inviteShareLink": "Compartilhar Link de Convite",
+  "inviteTitle": "Convide os Jogadores",
+  "inviteScanDesc": "Escaneie para entrar na sala!",
+  "inviteShareCodeMessage": "Bora pro Bingo da Galera! Nosso código da sala é: {qrData}",
+  "@inviteShareCodeMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareCodeTooltip": "Compartilhar Código",
+  "inviteShareLinkMessage": "Vem pro Bingo da Galera! Só clicar pelo celular: bingo://room/{qrData}",
+  "@inviteShareLinkMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteConnectedPlayers": "Jogadores Conectados: {count}",
+  "@inviteConnectedPlayers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteWaitingPlayers": "Aguardando jogadores...",
+  "inviteStartBingo": "Iniciar Bingo!",
+  "lobbyPremiumTag": "PREMIUM",
+  "lobbyUpgradeButton": "Upgrade",
+  "playerGameTitle": "Sua Cartela",
+  "playerGameShout": "Gritar BINGO!",
+  "playerScanNameHint": "Ex: Matheus",
+  "playerScanTitle": "Entrar em um Bingo",
+  "soloGameTitle": "Bingo Individual",
+  "soloGameDraw": "Sortear Número",
+  "hostSetupTitle": "Organizar um Bingo",
+  "hostSetupRoomHint": "Ex: Bingo do Tio Zé",
+  "hostSetupCreate": "Criar Sala",
+  "hostSetupNameLabel": "Dê um nome para a sala",
+  "hostSetupWifiWarning": "Aviso: Todos os jogadores DEVEM estar conectados à MESMA REDE WI-FI para conseguir entrar na sala.",
+  "hostSetupWifiDesc": "Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.",
+  "playerScanCameraHint": "Aponte a câmera para o QR Code do Host"
 }

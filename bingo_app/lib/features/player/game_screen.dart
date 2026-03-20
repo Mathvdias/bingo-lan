@@ -5,6 +5,7 @@ import 'package:bingo_app/shared/ui/widgets/bingo_grid_header.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:bingo_app/shared/ui/widgets/banner_ad_widget.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class PlayerGameScreen extends StatelessWidget {
@@ -16,11 +17,13 @@ class PlayerGameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return ViewModelProvider<PlayerGameViewModel>(
       param1: cardId, // Pass cardId as param1
       builder: (context, viewModel, child) {
         return BingoScaffold(
-          title: 'Sua Cartela',
+          title: l10n.playerGameTitle,
           body: CustomScrollView(
             slivers: [
               const SliverToBoxAdapter(
@@ -41,7 +44,7 @@ class PlayerGameScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: BingoButton(
-                    label: 'Gritar BINGO!',
+                    label: l10n.playerGameShout,
                     onPressed: viewModel.shoutBingo,
                   ),
                 ),

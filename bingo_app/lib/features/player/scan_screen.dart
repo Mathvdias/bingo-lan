@@ -12,6 +12,8 @@ import 'package:bingo_core/bingo_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayerScanScreen extends StatefulWidget {
   final String? initialData;
@@ -24,6 +26,7 @@ class PlayerScanScreen extends StatefulWidget {
 
 class _PlayerScanScreenState extends State<PlayerScanScreen> {
   late final MobileScannerController controller;
+  final GlobalKey _scannerShowcaseKey = GlobalKey();
   String? _wifiName;
 
   @override
@@ -35,6 +38,18 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
       torchEnabled: false,
       returnImage: false,
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkFirstLaunch();
+    });
+  }
+
+  Future<void> _checkFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasShown = prefs.getBool('first_launch_scan') ?? false;
+    if (!hasShown && mounted) {
+      ShowcaseView.get().startShowCase([_scannerShowcaseKey]);
+      await prefs.setBool('first_launch_scan', true);
+    }
   }
 
   @override
@@ -63,29 +78,36 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
   }
 
   Future<String?> _showNameEntryDialog(BuildContext context) async {
-    final TextEditingController controller = TextEditingController();
-
+    String name = '';
+    final l10n = AppLocalizations.of(context)!;
+    
     return showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Digite seu nome'),
+          title: Text(l10n.scanEnterName),
           content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'Nome',
-              border: OutlineInputBorder(),
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+            maxLength: 15,
+            decoration: InputDecoration(
+              hintText: l10n.playerScanNameHint,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
+            onChanged: (value) => name = value,
+            onSubmitted: (value) => Navigator.of(context).pop(value.trim()),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                final text = controller.text.trim();
-                if (text.isNotEmpty) {
-                  Navigator.pop(context, text);
-                }
-              },
-              child: const Text('Entrar'),
+              onPressed: () => Navigator.of(context).pop(null),
+              child: Text(l10n.scanCancel, style: const TextStyle(color: Colors.grey)),
+            ),
+            BingoButton(
+              label: l10n.scanJoin,
+              onPressed: () => Navigator.of(context).pop(name.trim()),
             ),
           ],
         );
@@ -97,43 +119,45 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     BuildContext context,
     PlayerScanViewModel viewModel,
   ) async {
-    final TextEditingController controller = TextEditingController();
+    String manualCode = '';
+    final l10n = AppLocalizations.of(context)!;
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Entrar Manualmente'),
+          title: Text(l10n.scanManualTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Cole o código ou link da sala abaixo:'),
+              Text(l10n.scanManualHint),
               const SizedBox(height: 16),
               TextField(
-                controller: controller,
-                decoration: const InputDecoration(
-                  labelText: 'Código / Link',
-                  border: OutlineInputBorder(),
+                controller: TextEditingController(text: manualCode),
+                decoration: InputDecoration(
+                  labelText: l10n.inviteRoomCode,
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 3,
                 minLines: 1,
+                onChanged: (value) => manualCode = value,
               ),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.scanCancel, style: const TextStyle(color: Colors.grey)),
             ),
-            TextButton(
+            BingoButton(
+              label: l10n.scanJoin,
               onPressed: () {
-                final text = controller.text.trim();
+                final text = manualCode.trim();
                 if (text.isNotEmpty) {
                   Navigator.pop(context);
                   _handleScan(viewModel, text);
                 }
               },
-              child: const Text('Entrar'),
             ),
           ],
         );
@@ -189,49 +213,50 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
       },
       builder: (context, viewModel, child) {
         return BingoScaffold(
-          title: 'Entrar em um Bingo',
+          title: l10n.playerScanTitle,
           body: Stack(
             children: [
-              MobileScanner(
-                controller: controller,
-                onDetect: (capture) => _onDetect(capture, viewModel),
+              Showcase(
+                key: _scannerShowcaseKey,
+                description: l10n.scanShowcaseScanner,
+                child: MobileScanner(
+                  controller: controller,
+                  onDetect: (capture) => _onDetect(capture, viewModel),
+                ),
+              ),
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _ScannerOverlayPainter(),
+                ),
               ),
               Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.primary, width: 4),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primary, width: 4),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              Center(
+                child: Transform.translate(
+                  offset: const Offset(0, 140),
+                  child: Text(
+                    l10n.playerScanCameraHint,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        const Shadow(
+                          offset: Offset(0, 1),
+                          blurRadius: 4,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Aponte a câmera para o QR Code do Host',
-                      style: textTheme.bodyLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          const Shadow(
-                            offset: Offset(0, 1),
-                            blurRadius: 4,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
               SafeArea(
@@ -294,4 +319,30 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
       },
     );
   }
+}
+
+class _ScannerOverlayPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.7)
+      ..style = PaintingStyle.fill;
+
+    final cutoutRect = Rect.fromCenter(
+      center: Offset(size.width / 2, size.height / 2),
+      width: 200,
+      height: 200,
+    );
+
+    final backgroundPath = Path()
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    final cutoutPath = Path()
+      ..addRRect(RRect.fromRectAndRadius(cutoutRect, const Radius.circular(16)));
+
+    final path = Path.combine(PathOperation.difference, backgroundPath, cutoutPath);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

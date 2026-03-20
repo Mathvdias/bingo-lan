@@ -1,13 +1,46 @@
+import 'package:bingo_app/l10n/app_localizations.dart';
+import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:app_settings/app_settings.dart';
+import 'package:bingo_core/bingo_core.dart';
+import 'package:get_it/get_it.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bingo_app/l10n/app_localizations.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  String? _wifiName;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWifiName();
+  }
+
+  Future<void> _fetchWifiName() async {
+    try {
+      final status = await Permission.locationWhenInUse.request();
+      if (status.isGranted) {
+        final name = await GetIt.I.get<INetworkInfoDriver>().getWifiName();
+        if (mounted) {
+          setState(() {
+            _wifiName = name?.replaceAll('"', '');
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching Wi-Fi name: $e');
+    }
+  }
 
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
@@ -22,7 +55,7 @@ class AboutScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return BingoScaffold(
-      title: 'Sobre o Bingo',
+      title: l10n.aboutTitle,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -30,36 +63,90 @@ class AboutScreen extends StatelessWidget {
           children: [
             const Icon(Icons.info_outline, size: 64, color: AppColors.primary),
             const SizedBox(height: 24),
-            
+
             Text(
-              '⚠️ Importante: Mesma Rede Wi-Fi',
+              l10n.aboutImportantTitle,
               style: textTheme.headlineSmall?.copyWith(color: AppColors.error),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              'O Bingo funciona através de uma conexão local segura. Para que os jogadores encontrem a sua sala, TODOS (inclusive o organizador) devem estar conectados à mesma rede Wi-Fi.',
+              l10n.aboutImportantBody,
               style: textTheme.bodyLarge,
               textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 32),
 
+            // Wi-Fi Status Card
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.wifi_rounded, color: AppColors.error),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _wifiName != null
+                          ? l10n.lobbyWifiBannerConnected(_wifiName!)
+                          : l10n.lobbyWifiBannerDefault,
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.error,
+                      ),
+                    ),
+                  ),
+                  if (_wifiName == null)
+                    TextButton(
+                      onPressed: _fetchWifiName,
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.error,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                      ),
+                      child: Text(
+                        l10n.revealNetwork,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  else
+                    TextButton(
+                      onPressed: () => AppSettings.openAppSettings(type: AppSettingsType.wifi),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.error,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                      ),
+                      child: Text(
+                        l10n.buttonWifi,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+
             Text(
-              '📖 Como Jogar (Passo a Passo)',
+              l10n.aboutHowToPlayTitle,
               style: textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            _buildStep(context, '1', 'Escolha o Organizador', 'Uma pessoa inicia a partida clicando em "Organizar um Bingo" e compartilha o Código da Sala.'),
-            _buildStep(context, '2', 'Jogadores na Sala', 'Os demais participantes clicam em "Entrar" e digitam o código (ou apontam a câmera pro QR Code).'),
-            _buildStep(context, '3', 'Marcando a Cartela', 'O organizador sorteia as bolas. Toque no número da sua cartela no celular para marcá-lo.'),
-            _buildStep(context, '4', 'BINGO!', 'Completou a cartela? Aperte o botão "GRITAR BINGO" antes de todo mundo para vencer!'),
+            _buildStep(context, '1', l10n.aboutStep1Title, l10n.aboutStep1Desc),
+            _buildStep(context, '2', l10n.aboutStep2Title, l10n.aboutStep2Desc),
+            _buildStep(context, '3', l10n.aboutStep3Title, l10n.aboutStep3Desc),
+            _buildStep(context, '4', l10n.aboutStep4Title, l10n.aboutStep4Desc),
             const SizedBox(height: 32),
             const Divider(),
             const SizedBox(height: 16),
-            
+
             Text(
-              '🌐 Idioma / Language',
+              l10n.aboutLanguage,
               style: textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
@@ -68,16 +155,36 @@ class AboutScreen extends StatelessWidget {
               builder: (context, localeProvider, child) {
                 return DropdownButtonFormField<String>(
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                   ),
-                  value: localeProvider.locale?.languageCode ?? 'en',
+                  initialValue: localeProvider.locale?.languageCode ?? 'en',
                   items: const [
-                    DropdownMenuItem(value: 'en', child: Text('English (US) 🤔')),
-                    DropdownMenuItem(value: 'pt', child: Text('Português (BR) 🇧🇷')),
-                    DropdownMenuItem(value: 'es', child: Text('Español (ES) 🇪🇸')),
-                    DropdownMenuItem(value: 'fr', child: Text('Français (FR) 🇫🇷')),
-                    DropdownMenuItem(value: 'it', child: Text('Italiano (IT) 🇮🇹')),
+                    DropdownMenuItem(
+                      value: 'en',
+                      child: Text('English (US) 🇺🇸'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'pt',
+                      child: Text('Português (BR) 🇧🇷'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'es',
+                      child: Text('Español (ES) 🇪🇸'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'fr',
+                      child: Text('Français (FR) 🇫🇷'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'it',
+                      child: Text('Italiano (IT) 🇮🇹'),
+                    ),
                     DropdownMenuItem(value: 'ja', child: Text('日本語 (JA) 🇯🇵')),
                   ],
                   onChanged: (String? newLocale) {
@@ -91,30 +198,46 @@ class AboutScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: ListTile(
-                leading: const Icon(Icons.privacy_tip, color: AppColors.textSecondary),
+                leading: const Icon(
+                  Icons.privacy_tip,
+                  color: AppColors.textSecondary,
+                ),
                 title: Text(l10n.privacyPolicy),
                 trailing: const Icon(Icons.open_in_new),
-                onTap: () => _launchUrl('https://mathvdias.github.io/bingo-privacy-policy/'),
+                onTap: () => _launchUrl(
+                  'https://mathvdias.github.io/bingo-privacy-policy/',
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: ListTile(
-                leading: const Icon(Icons.description, color: AppColors.textSecondary),
+                leading: const Icon(
+                  Icons.description,
+                  color: AppColors.textSecondary,
+                ),
                 title: Text(l10n.termsOfUse),
                 trailing: const Icon(Icons.open_in_new),
-                onTap: () => _launchUrl('https://mathvdias.github.io/bingo-terms-of-use/'),
+                onTap: () => _launchUrl(
+                  'https://mathvdias.github.io/bingo-terms-of-use/',
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: ListTile(
                 leading: const Icon(Icons.code, color: AppColors.textSecondary),
-                title: const Text('Desenvolvedor (GitHub)'),
+                title: Text(l10n.aboutDeveloper),
                 subtitle: const Text('@Mathvdias'),
                 trailing: const Icon(Icons.open_in_new),
                 onTap: () => _launchUrl('https://github.com/Mathvdias'),
@@ -126,7 +249,12 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStep(BuildContext context, String number, String title, String description) {
+  Widget _buildStep(
+    BuildContext context,
+    String number,
+    String title,
+    String description,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
@@ -136,16 +264,28 @@ class AboutScreen extends StatelessWidget {
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
             radius: 16,
-            child: Text(number, style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              number,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(description, style: const TextStyle(color: AppColors.textSecondary)),
+                Text(
+                  description,
+                  style: const TextStyle(color: AppColors.textSecondary),
+                ),
               ],
             ),
           ),

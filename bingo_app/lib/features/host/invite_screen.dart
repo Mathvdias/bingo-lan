@@ -1,11 +1,11 @@
 import 'package:bingo_app/features/host/host_invite_view_model.dart'; // Import ViewModel
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/di/service_locator.dart'; // Import serviceLocator
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -23,6 +23,7 @@ class HostInviteScreen extends StatelessWidget {
     viewModel.setInviteData(qrData);
 
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return ListenableBuilder(
       listenable: viewModel,
@@ -31,7 +32,7 @@ class HostInviteScreen extends StatelessWidget {
         final roomName = viewModel.roomName;
 
         return BingoScaffold(
-          title: 'Convide os Jogadores',
+          title: l10n.inviteTitle,
           body: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
@@ -50,7 +51,7 @@ class HostInviteScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Escaneie para entrar na sala!',
+                          l10n.inviteScanDesc,
                           style: textTheme.displaySmall,
                           textAlign: TextAlign.center,
                         ),
@@ -61,7 +62,9 @@ class HostInviteScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: AppColors.card,
                               border: Border.all(
-                                  color: AppColors.outline, width: 2),
+                                color: AppColors.outline,
+                                width: 2,
+                              ),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: QrImageView(
@@ -79,12 +82,16 @@ class HostInviteScreen extends StatelessWidget {
                             color: AppColors.card,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                                color: AppColors.outline, width: 2),
+                              color: AppColors.outline,
+                              width: 2,
+                            ),
                           ),
                           child: Column(
                             children: [
-                              Text('Código da Sala',
-                                  style: textTheme.labelLarge),
+                              Text(
+                                l10n.inviteRoomCode,
+                                style: textTheme.labelLarge,
+                              ),
                               const SizedBox(height: 4),
                               Row(
                                 children: [
@@ -101,10 +108,14 @@ class HostInviteScreen extends StatelessWidget {
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.share),
-                                    tooltip: 'Compartilhar Código',
+                                    tooltip: l10n.inviteShareCodeTooltip,
                                     onPressed: () {
-                                      Share.share(
-                                        'Bora pro Bingo da Galera! Nosso código da sala é: $qrData',
+                                      SharePlus.instance.share(
+                                        ShareParams(
+                                          text: l10n.inviteShareCodeMessage(
+                                            qrData,
+                                          ),
+                                        ),
                                       );
                                     },
                                   ),
@@ -116,13 +127,16 @@ class HostInviteScreen extends StatelessWidget {
                                 children: [
                                   TextButton.icon(
                                     onPressed: () {
-                                      Share.share(
-                                        'Vem pro Bingo da Galera! Só clicar pelo celular: bingo://room/$qrData',
+                                      SharePlus.instance.share(
+                                        ShareParams(
+                                          text: l10n.inviteShareLinkMessage(
+                                            qrData,
+                                          ),
+                                        ),
                                       );
                                     },
                                     icon: const Icon(Icons.share),
-                                    label:
-                                        const Text('Compartilhar Link de Convite'),
+                                    label: Text(l10n.inviteShareLink),
                                     style: TextButton.styleFrom(
                                       foregroundColor: AppColors.text,
                                     ),
@@ -133,13 +147,13 @@ class HostInviteScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Jogadores Conectados: ${players.length}',
+                          l10n.inviteConnectedPlayers(players.length),
                           style: textTheme.headlineSmall,
                           textAlign: TextAlign.center,
                         ),
                         if (players.isEmpty)
                           Text(
-                            'Aguardando jogadores...',
+                            l10n.inviteWaitingPlayers,
                             style: textTheme.bodyLarge?.copyWith(
                               fontStyle: FontStyle.italic,
                             ),
@@ -152,21 +166,18 @@ class HostInviteScreen extends StatelessWidget {
                 ),
               ),
               SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(players[index]),
-                    );
-                  },
-                  childCount: players.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return ListTile(
+                    leading: const Icon(Icons.person),
+                    title: Text(players[index]),
+                  );
+                }, childCount: players.length),
               ),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: BingoButton(
-                    label: 'Iniciar Bingo!',
+                    label: l10n.inviteStartBingo,
                     onPressed: () {
                       context.go('/host/room');
                     },

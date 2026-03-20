@@ -1,8 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:bingo_core/bingo_core.dart';
-import 'package:bingo_core/src/logic/access_control_service.dart';
-import 'package:bingo_core/src/drivers/i_config_driver.dart';
-import 'package:bingo_core/src/drivers/i_payment_driver.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 class MockConfigDriver implements IConfigDriver {
   final Map<String, dynamic> _configs = {};
@@ -53,10 +50,7 @@ void main() {
     setUp(() {
       mockConfig = MockConfigDriver();
       mockPayment = MockPaymentDriver();
-      service = AccessControlService(
-        config: mockConfig,
-        payment: mockPayment,
-      );
+      service = AccessControlService(config: mockConfig, payment: mockPayment);
     });
 
     test('canAccess returns true for free features', () async {
@@ -64,11 +58,14 @@ void main() {
       expect(await service.canAccess('is_globo_paid'), true);
     });
 
-    test('canAccess returns false for paid feature when user is not pro', () async {
-      mockConfig.setMockValue('is_globo_paid', true);
-      mockPayment.setProStatus(false);
-      expect(await service.canAccess('is_globo_paid'), false);
-    });
+    test(
+      'canAccess returns false for paid feature when user is not pro',
+      () async {
+        mockConfig.setMockValue('is_globo_paid', true);
+        mockPayment.setProStatus(false);
+        expect(await service.canAccess('is_globo_paid'), false);
+      },
+    );
 
     test('canAccess returns true for paid feature when user is pro', () async {
       mockConfig.setMockValue('is_globo_paid', true);

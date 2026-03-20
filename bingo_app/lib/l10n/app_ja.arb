@@ -53,5 +53,71 @@
   "scanManualButton": "手動でコードを入力",
   "revealNetwork": "ネットワークを表示",
   "privacyPolicy": "プライバシーポリシー",
-  "termsOfUse": "利用規約"
+  "termsOfUse": "利用規約",
+  "aboutDeveloper": "開発者 (GitHub)",
+  "aboutTitle": "ビンゴについて",
+  "aboutImportantTitle": "⚠️ 重要：同じWi-Fiネットワーク",
+  "aboutImportantBody": "ビンゴは安全なローカル接続で機能します。プレイヤーがあなたのルームを見つけるには、全員（ホストを含む）が全く同じWi-Fiネットワークに接続している必要があります。",
+  "aboutHowToPlayTitle": "📖 遊び方 (ステップバイステップ)",
+  "aboutStep1Title": "ホストを選ぶ",
+  "aboutStep1Desc": "一人が「ビンゴを主催」をクリックしてゲームを開始し、ルームコードを共有します。",
+  "aboutStep2Title": "ルームのプレイヤー",
+  "aboutStep2Desc": "他の参加者は「参加」をクリックし、コードを入力します（またはカメラをQRコードに向けます）。",
+  "aboutStep3Title": "カードのマーク",
+  "aboutStep3Desc": "ホストが球を引きます。電話のカードの番号をタップしてマークします。",
+  "aboutStep4Title": "ビンゴ！",
+  "aboutStep4Desc": "カードが完成しましたか？誰よりも早く「ビンゴと叫ぶ」ボタンを押して勝ちましょう！",
+  "aboutLanguage": "🌐 言語",
+  "scanEnterName": "名前を入力",
+  "scanJoin": "参加",
+  "scanManualTitle": "手動で入力",
+  "scanManualHint": "下にコードまたはルームリンクを貼り付けてください：",
+  "scanCancel": "キャンセル",
+  "scanShowcaseScanner": "ホストのQRコードにカメラを向けて、すぐにルームに参加します。",
+  "inviteRoomCode": "ルームコード",
+  "inviteShareLink": "招待リンクを共有",
+  "inviteTitle": "プレイヤーを招待",
+  "inviteScanDesc": "スキャンしてルームに参加！",
+  "inviteShareCodeMessage": "ビンゴをしよう！ルームコードは：{qrData}",
+  "@inviteShareCodeMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareCodeTooltip": "コードを共有",
+  "inviteShareLinkMessage": "ビンゴをしに来て！ここをクリック：bingo://room/{qrData}",
+  "@inviteShareLinkMessage": {
+    "placeholders": {
+      "qrData": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteConnectedPlayers": "接続中のプレイヤー：{count}",
+  "@inviteConnectedPlayers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteWaitingPlayers": "プレイヤーを待っています...",
+  "inviteStartBingo": "ビンゴを開始！",
+  "lobbyPremiumTag": "プレミアム",
+  "lobbyUpgradeButton": "アップグレード",
+  "playerGameTitle": "あなたのカード",
+  "playerGameShout": "ビンゴと叫ぶ！",
+  "playerScanNameHint": "例：マテウス",
+  "playerScanTitle": "ビンゴに参加する",
+  "soloGameTitle": "ソロビンゴ",
+  "soloGameDraw": "番号を引く",
+  "hostSetupTitle": "ビンゴを主催する",
+  "hostSetupRoomHint": "例：ジョーおじさんのビンゴ",
+  "hostSetupCreate": "ルームを作成",
+  "hostSetupNameLabel": "ルームに名前を付ける",
+  "hostSetupWifiWarning": "警告：すべてのプレーヤーは、ルームに参加するには同じWi-Fiネットワークに接続されている必要があります。",
+  "hostSetupWifiDesc": "同じWi-Fiネットワーク上の人々と遊ぶ。パーティーや集まりに最適です。",
+  "playerScanCameraHint": "ホストのQRコードにカメラを向けてください"
 }

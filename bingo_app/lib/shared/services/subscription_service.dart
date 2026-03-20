@@ -1,9 +1,10 @@
-import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:bingo_app/core/config/env.dart';
-import 'dart:developer';
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
+
+import 'package:bingo_app/core/config/env.dart';
 import 'package:flutter/services.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 /// Service for managing in-app purchases and subscriptions via RevenueCat
 class SubscriptionService {
@@ -126,8 +127,6 @@ class SubscriptionService {
       return null;
     }
   }
-
-
 
   /// Sign out user
   static Future<void> signOut() async {

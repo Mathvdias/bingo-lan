@@ -351,6 +351,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Terms of Use'**
   String get termsOfUse;
+
+  /// No description provided for @aboutDeveloper.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer (GitHub)'**
+  String get aboutDeveloper;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About Bingo'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutImportantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Important: Same Wi-Fi Network'**
+  String get aboutImportantTitle;
+
+  /// No description provided for @aboutImportantBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Bingo works over a secure local connection. For players to find your room, EVERYONE (including the host) must be connected to the exact same Wi-Fi network.'**
+  String get aboutImportantBody;
+
+  /// No description provided for @aboutHowToPlayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'📖 How to Play (Step by Step)'**
+  String get aboutHowToPlayTitle;
+
+  /// No description provided for @aboutStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the Host'**
+  String get aboutStep1Title;
+
+  /// No description provided for @aboutStep1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'One person starts the game by clicking \'Host a Bingo\' and shares the Room Code.'**
+  String get aboutStep1Desc;
+
+  /// No description provided for @aboutStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Players in the Room'**
+  String get aboutStep2Title;
+
+  /// No description provided for @aboutStep2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Other participants click \'Join\' and type the code (or point their camera at the QR Code).'**
+  String get aboutStep2Desc;
+
+  /// No description provided for @aboutStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Marking the Card'**
+  String get aboutStep3Title;
+
+  /// No description provided for @aboutStep3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'The host draws the balls. Tap the number on your phone\'s card to mark it.'**
+  String get aboutStep3Desc;
+
+  /// No description provided for @aboutStep4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'BINGO!'**
+  String get aboutStep4Title;
+
+  /// No description provided for @aboutStep4Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed your card? Press the \'SHOUT BINGO\' button before everyone else to win!'**
+  String get aboutStep4Desc;
+
+  /// No description provided for @aboutLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'🌐 Language'**
+  String get aboutLanguage;
+
+  /// No description provided for @scanEnterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get scanEnterName;
+
+  /// No description provided for @scanJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get scanJoin;
+
+  /// No description provided for @scanManualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Manually'**
+  String get scanManualTitle;
+
+  /// No description provided for @scanManualHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the code or room link below:'**
+  String get scanManualHint;
+
+  /// No description provided for @scanCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get scanCancel;
+
+  /// No description provided for @scanShowcaseScanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at the host\'s QR Code to quickly join the room.'**
+  String get scanShowcaseScanner;
+
+  /// No description provided for @inviteRoomCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Code'**
+  String get inviteRoomCode;
+
+  /// No description provided for @inviteShareLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Invite Link'**
+  String get inviteShareLink;
+
+  /// No description provided for @inviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Players'**
+  String get inviteTitle;
+
+  /// No description provided for @inviteScanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan to join the room!'**
+  String get inviteScanDesc;
+
+  /// No description provided for @inviteShareCodeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s play Bingo! Our room code is: {qrData}'**
+  String inviteShareCodeMessage(String qrData);
+
+  /// No description provided for @inviteShareCodeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Code'**
+  String get inviteShareCodeTooltip;
+
+  /// No description provided for @inviteShareLinkMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Come play Bingo! Just click from your phone: bingo://room/{qrData}'**
+  String inviteShareLinkMessage(String qrData);
+
+  /// No description provided for @inviteConnectedPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Players: {count}'**
+  String inviteConnectedPlayers(int count);
+
+  /// No description provided for @inviteWaitingPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for players...'**
+  String get inviteWaitingPlayers;
+
+  /// No description provided for @inviteStartBingo.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Bingo!'**
+  String get inviteStartBingo;
+
+  /// No description provided for @lobbyPremiumTag.
+  ///
+  /// In en, this message translates to:
+  /// **'PREMIUM'**
+  String get lobbyPremiumTag;
+
+  /// No description provided for @lobbyUpgradeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get lobbyUpgradeButton;
+
+  /// No description provided for @playerGameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Card'**
+  String get playerGameTitle;
+
+  /// No description provided for @playerGameShout.
+  ///
+  /// In en, this message translates to:
+  /// **'Shout BINGO!'**
+  String get playerGameShout;
+
+  /// No description provided for @playerScanNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Matthew'**
+  String get playerScanNameHint;
+
+  /// No description provided for @playerScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a Bingo'**
+  String get playerScanTitle;
+
+  /// No description provided for @soloGameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo Bingo'**
+  String get soloGameTitle;
+
+  /// No description provided for @soloGameDraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw Number'**
+  String get soloGameDraw;
+
+  /// No description provided for @hostSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Host a Bingo'**
+  String get hostSetupTitle;
+
+  /// No description provided for @hostSetupRoomHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Uncle Joe\'s Bingo'**
+  String get hostSetupRoomHint;
+
+  /// No description provided for @hostSetupCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Room'**
+  String get hostSetupCreate;
+
+  /// No description provided for @hostSetupNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name your room'**
+  String get hostSetupNameLabel;
+
+  /// No description provided for @hostSetupWifiWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: All players MUST be connected to the SAME WI-FI NETWORK to join the room.'**
+  String get hostSetupWifiWarning;
+
+  /// No description provided for @hostSetupWifiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Play with people on the same Wi-Fi network. Ideal for parties and gatherings.'**
+  String get hostSetupWifiDesc;
+
+  /// No description provided for @playerScanCameraHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at the Host\'s QR Code'**
+  String get playerScanCameraHint;
 }
 
 class _AppLocalizationsDelegate

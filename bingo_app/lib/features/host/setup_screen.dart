@@ -4,6 +4,7 @@ import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/flippable_card.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,6 +14,7 @@ class HostSetupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return ViewModelProvider<HostSetupViewModel>(
       onReady: (viewModel) {
@@ -30,7 +32,7 @@ class HostSetupScreen extends StatelessWidget {
       },
       builder: (context, viewModel, child) {
         return BingoScaffold(
-          title: 'Organizar um Bingo',
+          title: l10n.hostSetupTitle,
           body: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
@@ -40,14 +42,14 @@ class HostSetupScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Dê um nome para a sala',
+                        l10n.hostSetupNameLabel,
                         style: textTheme.bodyLarge,
                       ),
                       const SizedBox(height: 8),
                       TextField(
                         onChanged: viewModel.onRoomNameChanged,
                         decoration: InputDecoration(
-                          hintText: 'Ex: Bingo do Tio Zé',
+                          hintText: l10n.hostSetupRoomHint,
                           errorText: viewModel.errorMessage,
                         ),
                       ),
@@ -68,7 +70,7 @@ class HostSetupScreen extends StatelessWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                'Aviso: Todos os jogadores DEVEM estar conectados à MESMA REDE WI-FI para conseguir entrar na sala.',
+                                l10n.hostSetupWifiWarning,
                                 style: textTheme.bodyMedium?.copyWith(
                                   color: AppColors.error,
                                   fontWeight: FontWeight.bold,
@@ -82,11 +84,11 @@ class HostSetupScreen extends StatelessWidget {
                       FlippableCard(
                         image: 'assets/images/bingo_local.png',
                         text:
-                            'Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.',
+                            l10n.hostSetupWifiDesc,
                       ),
                       const SizedBox(height: 32),
                       BingoButton(
-                        label: 'Criar Sala',
+                        label: l10n.hostSetupCreate,
                         onPressed: () async {
                           final qrData = await viewModel.createRoom();
                           if (qrData != null && context.mounted) {
