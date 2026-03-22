@@ -44,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const ValueKey<String>('splash_screen'),
       backgroundColor: AppColors.primary,
       body: Center(
         child: ScaleTransition(

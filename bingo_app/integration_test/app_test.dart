@@ -1,24 +1,35 @@
+// E2E: `flutter test integration_test/app_test.dart` (ideal: emulador Android ou simulador iOS).
+// No alvo `flutter_tester` (VM) o Firebase não tem canal nativo — o teste falha até usar device/emulator.
+// CI típico: `flutter test` só na pasta `test/`; rode integration_test em job com emulador ou dispositivo.
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:bingo_app/main_dev.dart' as app;
+
 import 'package:bingo_app/main_common.dart';
+import 'package:bingo_app/main_dev.dart' as app_entry;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('End-to-End Test Suite', () {
-    testWidgets('verify app successfully launches to main lobby',
-        (tester) async {
-      app.main();
-      
-      // We use pumpAndSettle to wait for all animations and initial loading to finish.
-      // Note: If there are infinite animations, this will timeout.
-      await tester.pumpAndSettle(const Duration(seconds: 3));
+  group('E2E', () {
+    testWidgets('fluxo: splash → lobby → host setup', (tester) async {
+      await app_entry.main();
+      await tester.pump();
 
-      // We expect the main 'Bingo Lucca' title or a known key on the Lobby screen.
-      // Since locale might kick in, it might be the localized string. 
-      // We will just verify that the test runner successfully booted the app without crashing.
+      expect(find.byKey(const ValueKey<String>('splash_screen')), findsOneWidget);
       expect(find.byType(BingoApp), findsOneWidget);
+
+      await tester.pump(const Duration(milliseconds: 2600));
+      await tester.pump();
+
+      expect(find.byKey(const ValueKey<String>('lobby_screen')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('lobby_btn_host')));
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump();
+
+      expect(find.byKey(const Key('host_setup_screen')), findsOneWidget);
     });
   });
 }

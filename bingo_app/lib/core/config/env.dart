@@ -1,31 +1,23 @@
-/// Environment configuration manager
-///
-/// This class handles environment variables passed via --dart-define
-/// Usage: flutter run --dart-define=SUPABASE_URL=...
-class Env {
-  // Supabase Configuration completely removed
+import 'dart:developer';
 
-  // IMPORTANT: Replace these placeholders with your actual RevenueCat API Keys
-  // Found at app.revenuecat.com -> Project Settings -> API Keys
+import 'package:bingo_app/flavors/app_config.dart';
+
+/// Environment configuration via `--dart-define=KEY=value` (CI / release).
+/// Nunca commite chaves reais; use secrets no pipeline de build.
+class Env {
   static const String revenueCatAndroidKey = String.fromEnvironment(
     'RC_ANDROID_KEY',
-    defaultValue: 'REDACTED',
   );
   static const String revenueCatIosKey = String.fromEnvironment(
     'RC_IOS_KEY',
-    defaultValue: 'REDACTED',
   );
 
-  // Clarity Configuration
   static const String clarityProjectId = String.fromEnvironment(
     'CLARITY_PROJECT_ID',
-    defaultValue: 'REDACTED',
   );
 
-  // AI Configuration
   static const String geminiApiKey = String.fromEnvironment(
     'GEMINI_API_KEY',
-    defaultValue: 'REDACTED',
   );
 
   // Feature Flags / Debug
@@ -38,24 +30,33 @@ class Env {
     defaultValue: 'dev',
   );
 
-  /// Validates that all required environment variables are present
-  static void validate() {
+  /// Em [Flavor.prod] exige RC e Clarity. Em dev apenas registra avisos no log.
+  static void validate(AppConfig appConfig) {
+    if (appConfig.isDev) {
+      if (revenueCatAndroidKey.isEmpty || revenueCatIosKey.isEmpty) {
+        log(
+          'Env: RevenueCat ausente — defina RC_ANDROID_KEY e RC_IOS_KEY se precisar de compras.',
+        );
+      }
+      if (clarityProjectId.isEmpty) {
+        log('Env: CLARITY_PROJECT_ID ausente — Microsoft Clarity não será configurado.');
+      }
+      if (geminiApiKey.isEmpty) {
+        log('Env: GEMINI_API_KEY ausente — piadas de IA usam fallback local.');
+      }
+      return;
+    }
+
     final missingKeys = <String>[];
-
-
     if (revenueCatAndroidKey.isEmpty) missingKeys.add('RC_ANDROID_KEY');
     if (revenueCatIosKey.isEmpty) missingKeys.add('RC_IOS_KEY');
     if (clarityProjectId.isEmpty) missingKeys.add('CLARITY_PROJECT_ID');
-    // Gemini key is optional for now unless using AI feature, but let's check it if we enable AI
-    // For now, let's just log or treat as optional if we want to allow running without it locally
-    // If the user wants to enforce it:
-    if (geminiApiKey.isEmpty) missingKeys.add('GEMINI_API_KEY');
 
     if (missingKeys.isNotEmpty) {
       throw Exception(
-        'Missing required environment variables:\n'
+        'Build prod sem variáveis obrigatórias:\n'
         '${missingKeys.join('\n')}\n'
-        'Please Provide these via --dart-define or launch.json',
+        'Passe via --dart-define ou configure o CI.',
       );
     }
   }

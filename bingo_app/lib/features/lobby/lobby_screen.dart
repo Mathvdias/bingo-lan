@@ -72,6 +72,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: const ValueKey<String>('lobby_screen'),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -154,6 +155,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   key: _hostKey,
                   description: l10n.lobbyHostShowcase,
                   child: BingoButton(
+                    key: const Key('lobby_btn_host'),
                     label: l10n.startBingo,
                     onPressed: () {
                       context.push('/host/setup');

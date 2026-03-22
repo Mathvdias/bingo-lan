@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'i_config_driver.dart';
@@ -15,8 +17,8 @@ class RemoteConfigDriver implements IConfigDriver {
         // Firebase likely not initialized.
         // We will fallback to default values.
         if (kDebugMode) {
-          print(
-            'RemoteConfigDriver: Firebase not initialized. Using defaults. Error: $e',
+          log(
+            'RemoteConfigDriver: Firebase não inicializado; usando defaults. $e',
           );
         }
         _remoteConfig = null;
@@ -49,7 +51,7 @@ class RemoteConfigDriver implements IConfigDriver {
       await _remoteConfig!.fetchAndActivate();
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching remote config: $e');
+        log('RemoteConfigDriver: fetch falhou: $e');
       }
     }
   }

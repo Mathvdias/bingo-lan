@@ -1,21 +1,22 @@
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:crypto/crypto.dart';
-import 'dart:convert';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 /// Service responsible for creating and validating JWT tokens for game rooms
 class JwtService {
   static const String _issuer = 'bingo_app';
   static const Duration _defaultExpiration = Duration(hours: 4);
 
-  /// Generates a secure random secret key for JWT signing
-  /// This should be called once per room and stored securely
+  static final Random _secureRandom = Random.secure();
+
+  /// Secret aleatório por sala (não usar timestamp como fonte de entropia).
   static String generateSecret() {
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final random = DateTime.now().microsecondsSinceEpoch;
-    final content = '$timestamp-$random-$_issuer';
-    final bytes = utf8.encode(content);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
+    final bytes = Uint8List.fromList(
+      List<int>.generate(32, (_) => _secureRandom.nextInt(256)),
+    );
+    return sha256.convert(bytes).toString();
   }
 
   /// Generates a JWT token for a game room

@@ -32,6 +32,7 @@ class HostSetupScreen extends StatelessWidget {
       },
       builder: (context, viewModel, child) {
         return BingoScaffold(
+          key: const Key('host_setup_screen'),
           title: l10n.hostSetupTitle,
           body: CustomScrollView(
             slivers: [

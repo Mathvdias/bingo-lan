@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:bingo_app/core/config/env.dart';
 import 'package:bingo_app/l10n/app_localizations.dart' show AppLocalizations;
@@ -15,6 +16,8 @@ import 'package:bingo_app/shared/ui/app_theme.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_core/bingo_core.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -45,14 +48,20 @@ Future<void> mainCommon(AppConfig appConfig) async {
   // using appConfig.flavor.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // 1. Setup Service Locator
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+    kReleaseMode,
+  );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  GetIt.I.registerSingleton<AppConfig>(appConfig);
+
   setupServiceLocator();
 
-  // Validate Environment Variables
-  Env.validate();
-
-  // Register AppConfig in GetIt so it can be accessed anywhere
-  GetIt.I.registerSingleton<AppConfig>(appConfig);
+  Env.validate(appConfig);
 
   // 2. Initialize the Bingo SDK
   try {

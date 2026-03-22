@@ -1,5 +1,6 @@
 import 'package:bingo_app/features/splash/splash_screen.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/about/about_screen.dart';
@@ -16,6 +17,19 @@ import '../../features/solo/solo_game_screen.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/splash',
   observers: [AnalyticsService.observer],
+  errorBuilder: (context, state) => Scaffold(
+    body: SafeArea(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            state.error?.toString() ?? 'Não foi possível abrir esta rota.',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    ),
+  ),
   routes: <RouteBase>[
     GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),

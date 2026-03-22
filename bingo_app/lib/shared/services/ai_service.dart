@@ -24,8 +24,7 @@ class AiService {
 
   static void _init() {
     if (_model != null) return;
-    if (Env.geminiApiKey.isEmpty ||
-        Env.geminiApiKey == 'YOUR_GEMINI_KEY_HERE') {
+    if (Env.geminiApiKey.isEmpty) {
       log('Gemini API Key is missing. Using fallback jokes.');
       return;
     }
