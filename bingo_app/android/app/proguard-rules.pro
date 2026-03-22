@@ -12,7 +12,7 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
+# Uncomment this to preserve line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
 
@@ -22,16 +22,13 @@
 
 # Flutter specific rules
 -keep class io.flutter.app.** { *; }
--keep class io.flutter.plugin.**  { *; }
--keep class io.flutter.util.**  { *; }
--keep class io.flutter.view.**  { *; }
--keep class io.flutter.**  { *; }
+-keep class io.flutter.plugin.** { *; }
+-keep class io.flutter.util.** { *; }
+-keep class io.flutter.view.** { *; }
 -keep class io.flutter.embedding.** { *; }
--keep class io.flutter.embedding.engine.** { *; }
 
-# Firebase rules
--keep class com.google.firebase.** { *; }
--keep class com.google.android.gms.** { *; }
+# Google Play Core rules
+-keep class com.google.android.play.core.** { *; }
 -dontwarn com.google.firebase.**
 
 # Keep native methods
@@ -45,7 +42,7 @@
     public <init>(android.content.Context, android.util.AttributeSet);
     public <init>(android.content.Context, android.util.AttributeSet, int);
     public void set*(...);
-    *** get*();
+    public *** get*();
 }
 
 # Keep enums
@@ -58,3 +55,28 @@
 -keep class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+# Google Play SplitCompat rules
+-keep class com.google.android.play.core.splitcompat.** { *; }
+-keep class com.google.android.play.core.splitinstall.** { *; }
+-keep class com.google.android.play.core.splitinstallmanager.** { *; }
+-keep class com.google.android.play.core.splitinstall.** { *; }
+-keep class com.google.android.play.core.splitinstallrequest.** { *; }
+-keep class com.google.android.play.core.splitinstallsessionstate.** { *; }
+-keep class com.google.android.play.core.splitinstallstateupdatedlistener.** { *; }
+-keep class com.google.android.play.core.tasks.onfailurelistener.** { *; }
+-keep class com.google.android.play.core.tasks.onsuccesslistener.** { *; }
+-keep class com.google.android.play.core.tasks.task.** { *; }
+
+# Suppress warnings for missing Google Play Core classes
+-dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallException
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallManager
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallRequest$Builder
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallRequest
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallSessionState
+-dontwarn com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
+-dontwarn com.google.android.play.core.tasks.OnFailureListener
+-dontwarn com.google.android.play.core.tasks.OnSuccessListener
+-dontwarn com.google.android.play.core.tasks.Task
