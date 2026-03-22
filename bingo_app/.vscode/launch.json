@@ -7,10 +7,11 @@
             "type": "dart",
             "program": "lib/main_dev.dart",
             "args": [
-                "--flavor", "dev",
+                "--flavor",
+                "dev",
                 "--dart-define=RC_ANDROID_KEY=",
                 "--dart-define=RC_IOS_KEY=",
-                "--dart-define=CLARITY_PROJECT_ID=",
+                "--dart-define=CLARITY_PROJECT_ID=REDACTED_CLARITY_ID",
                 "--dart-define=GEMINI_API_KEY=",
                 "--dart-define=ENVIRONMENT=dev",
                 "--dart-define=ENABLE_DEBUG_LOGS=true"
@@ -22,10 +23,11 @@
             "type": "dart",
             "program": "lib/main_prod.dart",
             "args": [
-                "--flavor", "prod",
+                "--flavor",
+                "prod",
                 "--dart-define=RC_ANDROID_KEY=",
                 "--dart-define=RC_IOS_KEY=",
-                "--dart-define=CLARITY_PROJECT_ID=",
+                "--dart-define=CLARITY_PROJECT_ID=REDACTED_CLARITY_ID",
                 "--dart-define=GEMINI_API_KEY=",
                 "--dart-define=ENVIRONMENT=prod",
                 "--dart-define=ENABLE_DEBUG_LOGS=false"

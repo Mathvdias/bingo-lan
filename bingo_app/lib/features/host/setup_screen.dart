@@ -1,10 +1,10 @@
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/flippable_card.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
-import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -42,12 +42,10 @@ class HostSetupScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        l10n.hostSetupNameLabel,
-                        style: textTheme.bodyLarge,
-                      ),
+                      Text(l10n.hostSetupNameLabel, style: textTheme.bodyLarge),
                       const SizedBox(height: 8),
                       TextField(
+                        key: const Key('room_name_field'),
                         onChanged: viewModel.onRoomNameChanged,
                         decoration: InputDecoration(
                           hintText: l10n.hostSetupRoomHint,
@@ -84,11 +82,11 @@ class HostSetupScreen extends StatelessWidget {
                       const SizedBox(height: 32),
                       FlippableCard(
                         image: 'assets/images/bingo_local.png',
-                        text:
-                            l10n.hostSetupWifiDesc,
+                        text: l10n.hostSetupWifiDesc,
                       ),
                       const SizedBox(height: 32),
                       BingoButton(
+                        key: const Key('create_room_button'),
                         label: l10n.hostSetupCreate,
                         onPressed: () async {
                           final qrData = await viewModel.createRoom();

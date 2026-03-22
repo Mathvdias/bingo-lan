@@ -179,6 +179,7 @@ class HostInviteScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: BingoButton(
+                    key: const Key('start_room_button'),
                     label: l10n.inviteStartBingo,
                     onPressed: () {
                       context.go('/host/room');

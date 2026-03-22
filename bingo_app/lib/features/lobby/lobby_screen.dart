@@ -134,79 +134,81 @@ class _LobbyScreenState extends State<LobbyScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Semantics(
-                  header: true,
-                  child: Text(
-                    'Bingo',
-                    textAlign: TextAlign.center,
-                    style: textTheme.displayLarge,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Semantics(
-                  label: l10n.lobbySubtitle,
-                  child: Text(
-                    l10n.lobbySubtitle,
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: const Color.fromRGBO(18, 18, 18, 0.7),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 64),
-                Showcase(
-                  key: _hostKey,
-                  description: l10n.lobbyHostShowcase,
-                  child: Semantics(
-                    label: l10n.startBingo,
-                    button: true,
-                    child: BingoButton(
-                      key: const Key('lobby_btn_host'),
-                      label: l10n.startBingo,
-                      onPressed: () {
-                        context.push('/host/setup');
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Showcase(
-                  key: _joinKey,
-                  description: l10n.lobbyJoinShowcase,
-                  child: Semantics(
-                    label: l10n.joinBingo,
-                    button: true,
-                    child: BingoButton(
-                      label: l10n.joinBingo,
-                      onPressed: () {
-                        context.push('/player/scan');
-                      },
-                      color: colorScheme.secondary,
-                    ),
-                  ),
-                ),
-                if (RevenueConfigService.soloModeEnabled) ...[
-                  const SizedBox(height: 16),
-                  Showcase(
-                    key: _soloKey,
-                    description: l10n.lobbySoloShowcase,
-                    child: Semantics(
-                      label: l10n.soloButton,
-                      button: true,
-                      child: BingoButton(
-                        label: l10n.soloButton,
-                        onPressed: () => context.push('/solo'),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        'Bingo',
+                        textAlign: TextAlign.center,
+                        style: textTheme.displayLarge,
                       ),
                     ),
-                  ),
-                ],
-              ],
+                    const SizedBox(height: 8),
+                    Semantics(
+                      label: l10n.lobbySubtitle,
+                      child: Text(
+                        l10n.lobbySubtitle,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: const Color.fromRGBO(18, 18, 18, 0.7),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 64),
+                    Showcase(
+                      key: _hostKey,
+                      description: l10n.lobbyHostShowcase,
+                      child: Semantics(
+                        label: l10n.startBingo,
+                        button: true,
+                        child: BingoButton(
+                          key: const Key('lobby_btn_host'),
+                          label: l10n.startBingo,
+                          onPressed: () {
+                            context.push('/host/setup');
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Showcase(
+                      key: _joinKey,
+                      description: l10n.lobbyJoinShowcase,
+                      child: Semantics(
+                        label: l10n.joinBingo,
+                        button: true,
+                        child: BingoButton(
+                          key: const Key('lobby_btn_join'),
+                          label: l10n.joinBingo,
+                          onPressed: () {
+                            context.push('/player/scan');
+                          },
+                          color: colorScheme.secondary,
+                        ),
+                      ),
+                    ),
+                    if (RevenueConfigService.soloModeEnabled) ...[
+                      const SizedBox(height: 16),
+                      Showcase(
+                        key: _soloKey,
+                        description: l10n.lobbySoloShowcase,
+                        child: Semantics(
+                          label: l10n.soloButton,
+                          button: true,
+                          child: BingoButton(
+                            key: const Key('lobby_btn_solo'),
+                            label: l10n.soloButton,
+                            onPressed: () => context.push('/solo'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
           ),
         ],
       ),
@@ -227,8 +229,9 @@ class _LobbyBackgroundState extends State<_LobbyBackground>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        duration: const Duration(seconds: 20), vsync: this)
-      ..repeat(reverse: true);
+      duration: const Duration(seconds: 20),
+      vsync: this,
+    )..repeat(reverse: true);
   }
 
   @override
@@ -241,30 +244,38 @@ class _LobbyBackgroundState extends State<_LobbyBackground>
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final value = _controller.value;
-        return Stack(
-          children: [
-            Positioned(
-              left: -50 + (value * 100),
-              top: -50 + (value * 50),
-              child: _buildBubble(250, Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)),
-            ),
-            Positioned(
-              right: -100 + (value * 150),
-              bottom: 100 + (value * 100),
-              child: _buildBubble(350, Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)),
-            ),
-            Positioned(
-              left: 100 + ((1 - value) * 100),
-              bottom: -50 + ((1 - value) * 100),
-              child: _buildBubble(250, Colors.amber.withValues(alpha: 0.1)),
-            ),
-          ],
-        );
-      },
-    ),
+        animation: _controller,
+        builder: (context, child) {
+          final value = _controller.value;
+          return Stack(
+            children: [
+              Positioned(
+                left: -50 + (value * 100),
+                top: -50 + (value * 50),
+                child: _buildBubble(
+                  250,
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                ),
+              ),
+              Positioned(
+                right: -100 + (value * 150),
+                bottom: 100 + (value * 100),
+                child: _buildBubble(
+                  350,
+                  Theme.of(
+                    context,
+                  ).colorScheme.secondary.withValues(alpha: 0.1),
+                ),
+              ),
+              Positioned(
+                left: 100 + ((1 - value) * 100),
+                bottom: -50 + ((1 - value) * 100),
+                child: _buildBubble(250, Colors.amber.withValues(alpha: 0.1)),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -280,7 +291,7 @@ class _LobbyBackgroundState extends State<_LobbyBackground>
             color: color.withValues(alpha: 0.5),
             blurRadius: 50,
             spreadRadius: 10,
-          )
+          ),
         ],
       ),
     );

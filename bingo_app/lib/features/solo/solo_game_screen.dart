@@ -1,11 +1,11 @@
 import 'package:bingo_app/features/solo/solo_game_view_model.dart';
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_grid.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_grid_header.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
-import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class SoloGameScreen extends StatelessWidget {
@@ -18,6 +18,7 @@ class SoloGameScreen extends StatelessWidget {
     return ViewModelProvider<SoloGameViewModel>(
       builder: (context, viewModel, child) {
         return BingoScaffold(
+          key: const ValueKey<String>('solo_game_screen'),
           title: l10n.soloGameTitle,
           body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -63,6 +64,7 @@ class SoloGameScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: BingoButton(
+                        key: const Key('solo_draw_button'),
                         label: l10n.soloGameDraw,
                         onPressed: viewModel.drawNextNumber,
                       ),
