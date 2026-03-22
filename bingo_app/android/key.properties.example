@@ -1,0 +1,7 @@
+# Copie para android/key.properties (não versionado) e preencha.
+# Veja: https://docs.flutter.dev/deployment/android#signing-the-app
+
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=upload
+storeFile=../upload-keystore.jks

@@ -10,16 +10,18 @@ class PaywallScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: PaywallView(
-        onDismiss: () => context.pop(),
-        onPurchaseCompleted: (customerInfo, storeTransaction) {
-          context.go('/lobby');
-        },
-        onRestoreCompleted: (customerInfo) {
-           if (customerInfo.entitlements.all['premium']?.isActive ?? false) {
-             context.go('/lobby');
-           }
-        },
+      body: RepaintBoundary(
+        child: PaywallView(
+          onDismiss: () => context.pop(),
+          onPurchaseCompleted: (customerInfo, storeTransaction) {
+            context.go('/lobby');
+          },
+          onRestoreCompleted: (customerInfo) {
+            if (customerInfo.entitlements.all['premium']?.isActive ?? false) {
+              context.go('/lobby');
+            }
+          },
+        ),
       ),
     );
   }

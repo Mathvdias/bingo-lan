@@ -137,41 +137,55 @@ class _LobbyScreenState extends State<LobbyScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Bingo',
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayLarge,
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'Bingo',
+                    textAlign: TextAlign.center,
+                    style: textTheme.displayLarge,
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  l10n.lobbySubtitle,
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: const Color.fromRGBO(18, 18, 18, 0.7),
+                Semantics(
+                  label: l10n.lobbySubtitle,
+                  child: Text(
+                    l10n.lobbySubtitle,
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: const Color.fromRGBO(18, 18, 18, 0.7),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 64),
                 Showcase(
                   key: _hostKey,
                   description: l10n.lobbyHostShowcase,
-                  child: BingoButton(
-                    key: const Key('lobby_btn_host'),
+                  child: Semantics(
                     label: l10n.startBingo,
-                    onPressed: () {
-                      context.push('/host/setup');
-                    },
+                    button: true,
+                    child: BingoButton(
+                      key: const Key('lobby_btn_host'),
+                      label: l10n.startBingo,
+                      onPressed: () {
+                        context.push('/host/setup');
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
                 Showcase(
                   key: _joinKey,
                   description: l10n.lobbyJoinShowcase,
-                  child: BingoButton(
+                  child: Semantics(
                     label: l10n.joinBingo,
-                    onPressed: () {
-                      context.push('/player/scan');
-                    },
-                    color: colorScheme.secondary,
+                    button: true,
+                    child: BingoButton(
+                      label: l10n.joinBingo,
+                      onPressed: () {
+                        context.push('/player/scan');
+                      },
+                      color: colorScheme.secondary,
+                    ),
                   ),
                 ),
                 if (RevenueConfigService.soloModeEnabled) ...[
@@ -179,9 +193,13 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   Showcase(
                     key: _soloKey,
                     description: l10n.lobbySoloShowcase,
-                    child: BingoButton(
+                    child: Semantics(
                       label: l10n.soloButton,
-                      onPressed: () => context.push('/solo'),
+                      button: true,
+                      child: BingoButton(
+                        label: l10n.soloButton,
+                        onPressed: () => context.push('/solo'),
+                      ),
                     ),
                   ),
                 ],
@@ -221,7 +239,8 @@ class _LobbyBackgroundState extends State<_LobbyBackground>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
+    return RepaintBoundary(
+      child: AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         final value = _controller.value;
@@ -245,6 +264,7 @@ class _LobbyBackgroundState extends State<_LobbyBackground>
           ],
         );
       },
+    ),
     );
   }
 

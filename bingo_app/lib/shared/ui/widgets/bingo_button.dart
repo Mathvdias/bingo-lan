@@ -58,26 +58,30 @@ class _BingoButtonState extends State<BingoButton> {
             blurRadius: 0,
           );
 
-    return GestureDetector(
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
-        transform: _isPressed ? Matrix4.translationValues(4, 4, 0) : Matrix4.translationValues(0, 0, 0),
-        decoration: BoxDecoration(
-          color: widget.color,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.outline, width: 2),
-          boxShadow: [hardShadow],
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        child: Center(
-          child: Text(
-            widget.label.toUpperCase(),
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.text,
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTapDown: _onTapDown,
+        onTapUp: _onTapUp,
+        onTapCancel: _onTapCancel,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          transform: _isPressed
+              ? Matrix4.translationValues(4, 4, 0)
+              : Matrix4.translationValues(0, 0, 0),
+          decoration: BoxDecoration(
+            color: widget.color,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.outline, width: 2),
+            boxShadow: [hardShadow],
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          child: Center(
+            child: Text(
+              widget.label.toUpperCase(),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.text,
+              ),
             ),
           ),
         ),

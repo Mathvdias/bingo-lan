@@ -1,5 +1,6 @@
 import 'package:bingo_app/features/splash/splash_screen.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +17,7 @@ import '../../features/solo/solo_game_screen.dart';
 /// The route configuration for the application.
 final GoRouter router = GoRouter(
   initialLocation: '/splash',
+  debugLogDiagnostics: kDebugMode,
   observers: [AnalyticsService.observer],
   errorBuilder: (context, state) => Scaffold(
     body: SafeArea(

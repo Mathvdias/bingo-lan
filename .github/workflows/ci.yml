@@ -9,9 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: bingo_app
     steps:
       - uses: actions/checkout@v4
 
@@ -20,19 +17,10 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Pub get (bingo_core)
-        run: flutter pub get
-        working-directory: bingo_core
+      - name: bingo_core — pub get + test
+        run: |
+          cd bingo_core && flutter pub get && flutter test
 
-      - name: Test bingo_core
-        run: flutter test
-        working-directory: bingo_core
-
-      - name: Pub get (bingo_app)
-        run: flutter pub get
-
-      - name: Analyze bingo_app
-        run: dart analyze lib
-
-      - name: Test bingo_app
-        run: flutter test test/
+      - name: bingo_app — pub get + analyze + unit/widget tests
+        run: |
+          cd bingo_app && flutter pub get && dart analyze lib && flutter test test/

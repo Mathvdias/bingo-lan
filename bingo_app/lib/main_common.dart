@@ -9,9 +9,11 @@ import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/router.dart';
 import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
+import 'package:bingo_app/shared/services/att_service.dart';
 import 'package:bingo_app/shared/services/clarity_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
+import 'package:bingo_app/shared/ui/app_fonts.dart';
 import 'package:bingo_app/shared/ui/app_theme.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_core/bingo_core.dart';
@@ -42,6 +44,8 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   // Ensure Flutter bindings are initialized.
   WidgetsFlutterBinding.ensureInitialized();
+
+  await preloadBingoFonts();
 
   // Initialize Firebase
   // Note: If you have different firebase_options for Dev/Prod, handle switching here
@@ -90,13 +94,16 @@ Future<void> mainCommon(AppConfig appConfig) async {
     log('Analytics tracking skipped: $e');
   }
 
-  // 3. Fetch and activate remote feature flags.
+  // 3. Fetch and activate remote feature flags (core SDK).
   final config = GetIt.I.get<IConfigDriver>();
   await config.fetchAndActivate();
 
-  // 4. Initialize AdMob and A/B Testing Config
-  await AdService.initialize();
+  // 4. Remote Config da receita, ATT (iOS) se anúncios ativos, depois AdMob.
   await RevenueConfigService.initialize();
+  if (RevenueConfigService.adsEnabled) {
+    await AttService.requestIfNeeded();
+  }
+  await AdService.initialize();
 
   // 5. Initialize global Showcase scope for app tours
   ShowcaseView.register();

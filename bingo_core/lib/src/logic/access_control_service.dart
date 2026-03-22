@@ -32,8 +32,8 @@ class AccessControlService {
   /// Checks if the app is running in a secure environment.
   /// It returns `false` if the device is detected as jailbroken or rooted.
   ///
-  /// This is a security measure to prevent tampering and abuse, such as faking
-  /// in-app purchases on a compromised device.
+  /// Produto: decidir se bloqueia IAP, só avisa ou apenas registra analytics.
+  /// Esta API não bloqueia sozinha — combine com fluxo de paywall se necessário.
   Future<bool> isSecureEnvironment() async {
     try {
       final bool isJailbroken = await FlutterJailbreakDetection.jailbroken;

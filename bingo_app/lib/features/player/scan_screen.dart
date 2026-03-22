@@ -219,14 +219,18 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
               Showcase(
                 key: _scannerShowcaseKey,
                 description: l10n.scanShowcaseScanner,
-                child: MobileScanner(
-                  controller: controller,
-                  onDetect: (capture) => _onDetect(capture, viewModel),
+                child: RepaintBoundary(
+                  child: MobileScanner(
+                    controller: controller,
+                    onDetect: (capture) => _onDetect(capture, viewModel),
+                  ),
                 ),
               ),
               Positioned.fill(
-                child: CustomPaint(
-                  painter: _ScannerOverlayPainter(),
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    painter: _ScannerOverlayPainter(),
+                  ),
                 ),
               ),
               Center(

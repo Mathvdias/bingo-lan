@@ -95,74 +95,76 @@ class HostRoomScreen extends StatelessWidget {
             body: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        // Last Drawn Number
-                        Container(
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: AppColors.card,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.outline,
-                              width: 2,
+                  child: RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          // Last Drawn Number
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: AppColors.card,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: AppColors.outline,
+                                width: 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                viewModel.lastNumber?.toString() ?? '--',
+                                style: textTheme.headlineLarge,
+                              ),
                             ),
                           ),
-                          child: Center(
-                            child: Text(
-                              viewModel.lastNumber?.toString() ?? '--',
-                              style: textTheme.headlineLarge,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // Drawn Numbers History
-                        SizedBox(
-                          height: 50,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: viewModel.drawnNumbers.length,
-                            itemBuilder: (context, index) {
-                              final number = viewModel.drawnNumbers[index];
-                              return Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.success,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    number.toString(),
-                                    style: textTheme.bodyLarge?.copyWith(
-                                      color: AppColors.text,
-                                      fontWeight: FontWeight.bold,
+                          const SizedBox(height: 16),
+                          // Drawn Numbers History
+                          SizedBox(
+                            height: 50,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: viewModel.drawnNumbers.length,
+                              itemBuilder: (context, index) {
+                                final number = viewModel.drawnNumbers[index];
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                  ),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.success,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      number.toString(),
+                                      style: textTheme.bodyLarge?.copyWith(
+                                        color: AppColors.text,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // Player Count
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.people),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${viewModel.playerCount} ${AppLocalizations.of(context)!.playersInRoom}',
-                              style: textTheme.bodyLarge,
+                                );
+                              },
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+                          ),
+                          const SizedBox(height: 16),
+                          // Player Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.people),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${viewModel.playerCount} ${AppLocalizations.of(context)!.playersInRoom}',
+                                style: textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -198,80 +200,86 @@ class HostRoomScreen extends StatelessWidget {
                   }, childCount: viewModel.bingoClaims.length),
                 ),
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: DefaultTabController(
-                      length: 2,
-                      child: Column(
-                        children: [
-                          TabBar(
-                            tabs: [
-                              Tab(
-                                text: AppLocalizations.of(
-                                  context,
-                                )!.virtualGlobe,
-                              ),
-                              Tab(
-                                text: AppLocalizations.of(context)!.manualGlobe,
-                              ),
-                            ],
-                            labelColor: AppColors.primary,
-                            unselectedLabelColor: AppColors.textSecondary,
-                            indicatorColor: AppColors.primary,
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            height: 200, // Fixed height for controls
-                            child: TabBarView(
-                              children: [
-                                // Virtual Globe
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    BingoButton(
-                                      label: AppLocalizations.of(
-                                        context,
-                                      )!.drawRandom,
-                                      onPressed: viewModel.drawRandomNumber,
-                                      // Disable if auto-playing
-                                      color: viewModel.isAutoPlaying
-                                          ? Colors.grey
-                                          : AppColors.primary,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    if (RevenueConfigService.purchasesEnabled)
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Text(
-                                            'Globo Automático (Premium): ',
-                                          ),
-                                          Switch(
-                                            value: viewModel.isAutoPlaying,
-                                            onChanged: (value) =>
-                                                viewModel.toggleAutoPlay(),
-                                            activeThumbColor: AppColors.primary,
-                                          ),
-                                          if (viewModel.isAutoPlaying)
-                                            const SizedBox(
-                                              height: 16,
-                                              width: 16,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                  ],
+                  child: RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DefaultTabController(
+                        length: 2,
+                        child: Column(
+                          children: [
+                            TabBar(
+                              tabs: [
+                                Tab(
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.virtualGlobe,
                                 ),
-
-                                // Manual Input
-                                _ManualInputControl(viewModel: viewModel),
+                                Tab(
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.manualGlobe,
+                                ),
                               ],
+                              labelColor: AppColors.primary,
+                              unselectedLabelColor: AppColors.textSecondary,
+                              indicatorColor: AppColors.primary,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              height: 200, // Fixed height for controls
+                              child: TabBarView(
+                                children: [
+                                  // Virtual Globe
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      BingoButton(
+                                        label: AppLocalizations.of(
+                                          context,
+                                        )!.drawRandom,
+                                        onPressed: viewModel.drawRandomNumber,
+                                        // Disable if auto-playing
+                                        color: viewModel.isAutoPlaying
+                                            ? Colors.grey
+                                            : AppColors.primary,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      if (RevenueConfigService.purchasesEnabled)
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              'Globo Automático (Premium): ',
+                                            ),
+                                            Switch(
+                                              value: viewModel.isAutoPlaying,
+                                              onChanged: (value) =>
+                                                  viewModel.toggleAutoPlay(),
+                                              activeThumbColor:
+                                                  AppColors.primary,
+                                            ),
+                                            if (viewModel.isAutoPlaying)
+                                              const SizedBox(
+                                                height: 16,
+                                                width: 16,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                    ),
+                                              ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+
+                                  // Manual Input
+                                  _ManualInputControl(viewModel: viewModel),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

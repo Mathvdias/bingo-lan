@@ -70,5 +70,7 @@
 		<false/>
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-8371522528180957~5019350045</string>
+		<key>NSUserTrackingUsageDescription</key>
+		<string>Usamos o identificador para oferecer anúncios mais relevantes e medir campanhas. Você pode alterar isso nas Configurações do iOS.</string>
 	</dict>
 </plist>

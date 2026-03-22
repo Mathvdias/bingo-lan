@@ -1,6 +1,12 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'dart:developer';
 
+/// Chaves no Firebase Remote Config (console → Remote Config → parâmetros):
+/// - `revenue_model` (String): `ad_supported` | `paywall_host`
+/// - `max_free_players_path_a` (int)
+/// - `solo_mode_enabled` (bool)
+/// - `ads_enabled` (bool)
+/// - `purchases_enabled` (bool)
 enum RevenueModel {
   // Caminho A: Grátis até 10 jogadores; Host entra num Paywall no 11º jogador.
   paywallHost,

@@ -16,23 +16,29 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _animation;
 
+  void _goToLobby() {
+    if (!mounted) return;
+    AdService.showAppOpenAd();
+    context.go('/lobby');
+  }
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
-    )..forward();
+    );
 
     _animation = CurvedAnimation(parent: _controller, curve: Curves.elasticOut);
 
-    // After animation, go to lobby
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (mounted) {
-        AdService.showAppOpenAd();
-        context.go('/lobby');
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future<void>.delayed(const Duration(milliseconds: 400), _goToLobby);
       }
     });
+
+    _controller.forward();
   }
 
   @override
@@ -43,49 +49,65 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       key: const ValueKey<String>('splash_screen'),
       backgroundColor: AppColors.primary,
       body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Bouncing Bingo Ball
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.outline, width: 4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      offset: const Offset(4, 4),
-                      blurRadius: 10,
+        child: RepaintBoundary(
+          child: ScaleTransition(
+            scale: _animation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Semantics(
+                  label: l10n.appTitle,
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: AppColors.card,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.outline, width: 4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          offset: const Offset(4, 4),
+                          blurRadius: 10,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.cover,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                "Bingo",
-                style: TextStyle(fontSize: 48, fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                AppLocalizations.of(context)!.splashSubtitle,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ],
+                const SizedBox(height: 32),
+                Semantics(
+                  header: true,
+                  label: 'Bingo',
+                  child: const Text(
+                    'Bingo',
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.w900),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Semantics(
+                  label: l10n.splashSubtitle,
+                  child: Text(
+                    l10n.splashSubtitle,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

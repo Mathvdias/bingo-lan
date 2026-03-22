@@ -1,6 +1,5 @@
-// E2E: `flutter test integration_test/app_test.dart` (ideal: emulador Android ou simulador iOS).
-// No alvo `flutter_tester` (VM) o Firebase não tem canal nativo — o teste falha até usar device/emulator.
-// CI típico: `flutter test` só na pasta `test/`; rode integration_test em job com emulador ou dispositivo.
+// E2E: `flutter test integration_test/app_test.dart` (emulador/simulador com Firebase).
+// VM/flutter_tester: sem canal Firebase — falha. Splash ~1,9s (animação + 400ms) antes do lobby.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +19,7 @@ void main() {
       expect(find.byKey(const ValueKey<String>('splash_screen')), findsOneWidget);
       expect(find.byType(BingoApp), findsOneWidget);
 
-      await tester.pump(const Duration(milliseconds: 2600));
+      await tester.pump(const Duration(milliseconds: 2200));
       await tester.pump();
 
       expect(find.byKey(const ValueKey<String>('lobby_screen')), findsOneWidget);

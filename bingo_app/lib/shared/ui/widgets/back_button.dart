@@ -8,20 +8,22 @@ class BingoBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed ?? () => Navigator.of(context).pop(),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: backgroundColor ?? AppColors.card,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.arrow_back_ios_new,
-          color: AppColors.text,
-          size: 20,
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: onPressed ?? () => Navigator.of(context).pop(),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: backgroundColor ?? AppColors.card,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.text,
+            size: 20,
+          ),
         ),
       ),
     );

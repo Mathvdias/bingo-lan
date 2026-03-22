@@ -24,18 +24,20 @@ class SoloGameScreen extends StatelessWidget {
             child: Column(
               children: [
                 // Drawn Numbers Display
-                Container(
-                  height: 80,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: viewModel.drawnNumbers.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final number = viewModel.drawnNumbers.reversed
-                          .toList()[index];
-                      return _DrawnBall(number: number, isLatest: index == 0);
-                    },
+                RepaintBoundary(
+                  child: Container(
+                    height: 80,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: viewModel.drawnNumbers.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
+                      itemBuilder: (context, index) {
+                        final number = viewModel.drawnNumbers.reversed
+                            .toList()[index];
+                        return _DrawnBall(number: number, isLatest: index == 0);
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),

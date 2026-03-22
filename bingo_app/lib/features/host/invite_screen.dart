@@ -57,21 +57,23 @@ class HostInviteScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         Center(
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.card,
-                              border: Border.all(
-                                color: AppColors.outline,
-                                width: 2,
+                          child: RepaintBoundary(
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.card,
+                                border: Border.all(
+                                  color: AppColors.outline,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: QrImageView(
-                              data: qrData,
-                              version: QrVersions.auto,
-                              size: 200.0,
-                              backgroundColor: AppColors.card,
+                              child: QrImageView(
+                                data: qrData,
+                                version: QrVersions.auto,
+                                size: 200.0,
+                                backgroundColor: AppColors.card,
+                              ),
                             ),
                           ),
                         ),

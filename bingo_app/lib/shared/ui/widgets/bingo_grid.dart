@@ -17,6 +17,7 @@ class BingoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // addRepaintBoundaries: false — cada [CardCell] já usa RepaintBoundary.
     return SliverGrid.builder(
       addRepaintBoundaries: false,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
