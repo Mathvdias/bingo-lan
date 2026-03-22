@@ -20,30 +20,23 @@ class AdService {
     }
   }
 
-  // TODO: Replace with your actual Ad Unit IDs for production
   static String get bannerAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/6300978111'; // Google Test ID
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/2934735716'; // Google Test ID
+    if (Platform.isAndroid || Platform.isIOS) {
+      return 'ca-app-pub-8371522528180957/2105747837';
     }
     throw UnsupportedError('Unsupported platform');
   }
 
   static String get interstitialAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/1033173712'; // Google Test ID
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/4411468910'; // Google Test ID
+    if (Platform.isAndroid || Platform.isIOS) {
+      return 'ca-app-pub-8371522528180957/5761388983';
     }
     throw UnsupportedError('Unsupported platform');
   }
 
   static String get appOpenAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/9257395915'; // Google Test ID
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/5575463023'; // Google Test ID
+    if (Platform.isAndroid || Platform.isIOS) {
+      return 'ca-app-pub-8371522528180957/6264786014';
     }
     throw UnsupportedError('Unsupported platform');
   }
