@@ -30,6 +30,8 @@ class RevenueConfigService {
         'solo_mode_enabled': true,
         'ads_enabled': false,
         'purchases_enabled': false,
+        'is_globo_paid': false,
+        'is_host_premium': false,
       });
 
       await _remoteConfig.fetchAndActivate();

@@ -2,23 +2,35 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Bingo App (Dev)",
+            "name": "bingo_dev",
             "request": "launch",
             "type": "dart",
             "program": "bingo_app/lib/main_dev.dart",
             "args": [
                 "--flavor",
-                "dev"
+                "dev",
+                "--dart-define=RC_ANDROID_KEY=",
+                "--dart-define=RC_IOS_KEY=",
+                "--dart-define=CLARITY_PROJECT_ID=REDACTED",
+                "--dart-define=GEMINI_API_KEY=",
+                "--dart-define=ENVIRONMENT=dev",
+                "--dart-define=ENABLE_DEBUG_LOGS=true"
             ]
         },
         {
-            "name": "Bingo App (Prod)",
+            "name": "bingo_prod",
             "request": "launch",
             "type": "dart",
             "program": "bingo_app/lib/main_prod.dart",
             "args": [
                 "--flavor",
-                "prod"
+                "prod",
+                "--dart-define=RC_ANDROID_KEY=",
+                "--dart-define=RC_IOS_KEY=",
+                "--dart-define=CLARITY_PROJECT_ID=REDACTED",
+                "--dart-define=GEMINI_API_KEY=",
+                "--dart-define=ENVIRONMENT=prod",
+                "--dart-define=ENABLE_DEBUG_LOGS=false"
             ]
         }
     ]

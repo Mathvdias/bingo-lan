@@ -272,10 +272,7 @@ class AnalyticsService {
     try {
       await _analytics.logEvent(
         name: 'app_error',
-        parameters: {
-          'error_message': errorMessage,
-          if (stackTrace != null) 'stack_trace': stackTrace,
-        },
+        parameters: {'error_message': errorMessage, 'stack_trace': ?stackTrace},
       );
       log('Analytics: Error tracked - $errorMessage');
     } catch (e) {
@@ -297,6 +294,4 @@ class AnalyticsService {
       log('Error tracking custom event: $e');
     }
   }
-
-
 }
