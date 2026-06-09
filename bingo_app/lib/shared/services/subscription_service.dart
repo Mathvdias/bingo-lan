@@ -77,7 +77,7 @@ class SubscriptionService {
   /// Purchase a product
   static Future<CustomerInfo?> purchaseProduct(Package package) async {
     try {
-      final purchaseResult = await Purchases.purchasePackage(package);
+      final purchaseResult = await Purchases.purchase(PurchaseParams.package(package));
       final customerInfo = purchaseResult.customerInfo;
 
       log('Purchase successful: ${package.identifier}');

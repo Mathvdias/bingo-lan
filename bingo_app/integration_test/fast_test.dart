@@ -7,7 +7,7 @@ void main() {
 
   testWidgets('fast startup test', (WidgetTester tester) async {
     // Teste extremamente rápido - apenas cria um MaterialApp simples
-    print('🚀 Starting fast test...');
+    debugPrint('🚀 Starting fast test...');
     
     await tester.pumpWidget(
       MaterialApp(
@@ -27,6 +27,6 @@ void main() {
     expect(find.text('Fast Test'), findsOneWidget);
     expect(find.text('Test Running'), findsOneWidget);
     
-    print('✅ Fast test completed!');
+    debugPrint('✅ Fast test completed!');
   });
 }
