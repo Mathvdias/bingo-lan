@@ -130,7 +130,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get scanManualButton => '手動でコードを入力';
+  String get scanManualButton => 'コードを入力';
 
   @override
   String get revealNetwork => 'ネットワークを表示';

@@ -138,7 +138,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get scanManualButton => 'Digitar Código Manualmente';
+  String get scanManualButton => 'Digitar código';
 
   @override
   String get revealNetwork => 'Revelar Rede';

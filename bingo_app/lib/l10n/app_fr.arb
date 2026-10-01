@@ -49,7 +49,7 @@
       }
     }
   },
-  "scanManualButton": "Entrer le code manuellement",
+  "scanManualButton": "Saisir le code",
   "revealNetwork": "Révéler le réseau",
   "privacyPolicy": "Politique de confidentialité",
   "termsOfUse": "Conditions d'utilisation",

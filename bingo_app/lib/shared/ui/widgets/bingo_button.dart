@@ -51,7 +51,7 @@ class _BingoButtonState extends State<BingoButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // The "hard shadow" is achieved by using a second container
     // underneath the main one, which is only visible when not pressed.
     final hardShadow = _isPressed
@@ -81,12 +81,19 @@ class _BingoButtonState extends State<BingoButton> {
             boxShadow: [hardShadow],
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          // Uma linha, centralizada: rótulos longos ou escala de texto grande
+          // encolhem em vez de quebrar em duas linhas alinhadas à esquerda.
           child: Center(
-            child: Text(
-              widget.label.toUpperCase(),
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppColors.text,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                widget.label.toUpperCase(),
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.text,
+                ),
               ),
             ),
           ),
@@ -100,10 +107,7 @@ class _BingoButtonState extends State<BingoButton> {
 Widget bingoButtonPreview() {
   return Scaffold(
     body: Center(
-      child: BingoButton(
-        label: 'Start Game',
-        onPressed: () {},
-      ),
+      child: BingoButton(label: 'Start Game', onPressed: () {}),
     ),
   );
 }

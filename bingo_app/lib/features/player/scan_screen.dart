@@ -4,6 +4,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:bingo_app/features/player/player_game_args.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/features/player/widgets/camera_error_view.dart';
+import 'package:bingo_app/features/player/widgets/manual_code_dialog.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
@@ -156,50 +157,9 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     BuildContext context,
     PlayerScanViewModel viewModel,
   ) async {
-    String manualCode = '';
-    final l10n = AppLocalizations.of(context)!;
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.scanManualTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l10n.scanManualHint),
-              const SizedBox(height: 16),
-              TextField(
-                controller: TextEditingController(text: manualCode),
-                decoration: InputDecoration(
-                  labelText: l10n.inviteRoomCode,
-                  border: const OutlineInputBorder(),
-                ),
-                maxLines: 3,
-                minLines: 1,
-                onChanged: (value) => manualCode = value,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n.scanCancel),
-            ),
-            BingoButton(
-              label: l10n.scanJoin,
-              onPressed: () {
-                final text = manualCode.trim();
-                if (text.isNotEmpty) {
-                  Navigator.pop(context);
-                  _handleScan(viewModel, text);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
+    final code = await showManualCodeDialog(context);
+    if (code == null || !mounted) return;
+    await _handleScan(viewModel, code);
   }
 
   void _onDetect(BarcodeCapture capture, PlayerScanViewModel viewModel) {
@@ -345,11 +305,13 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                   ),
                 ),
               ),
+              // Acima da barra de gestos do sistema.
               Positioned(
-                bottom: 24,
+                bottom: 24 + MediaQuery.paddingOf(context).bottom,
                 left: 24,
                 right: 24,
                 child: BingoButton(
+                  key: const Key('scan_manual_button'),
                   label: l10n.scanManualButton,
                   onPressed: () {
                     _showManualEntryDialog(context, viewModel);

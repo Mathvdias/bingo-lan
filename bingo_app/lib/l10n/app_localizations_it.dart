@@ -136,7 +136,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get scanManualButton => 'Inserisci Codice Manualmente';
+  String get scanManualButton => 'Inserisci codice';
 
   @override
   String get revealNetwork => 'Rivela Rete';

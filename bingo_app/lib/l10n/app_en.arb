@@ -49,7 +49,7 @@
       }
     }
   },
-  "scanManualButton": "Enter Code Manually",
+  "scanManualButton": "Enter code",
   "revealNetwork": "Reveal Network",
   "privacyPolicy": "Privacy Policy",
   "termsOfUse": "Terms of Use",

@@ -136,7 +136,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get scanManualButton => 'Enter Code Manually';
+  String get scanManualButton => 'Enter code';
 
   @override
   String get revealNetwork => 'Reveal Network';
