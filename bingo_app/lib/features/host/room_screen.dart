@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:bingo_app/features/host/host_room_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/ad_service.dart';
@@ -6,38 +9,53 @@ import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
+import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
+import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:developer';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
-class HostRoomScreen extends StatelessWidget {
+class HostRoomScreen extends StatefulWidget {
   const HostRoomScreen({super.key});
 
-  Future<bool> _showExitDialog(
-    BuildContext context,
-    HostRoomViewModel viewModel,
-  ) async {
+  @override
+  State<HostRoomScreen> createState() => _HostRoomScreenState();
+}
+
+class _HostRoomScreenState extends State<HostRoomScreen> {
+  StreamSubscription<HostRoomAction>? _actionsSub;
+
+  @override
+  void initState() {
+    super.initState();
+    WakelockPlus.enable();
+  }
+
+  @override
+  void dispose() {
+    _actionsSub?.cancel();
+    WakelockPlus.disable();
+    super.dispose();
+  }
+
+  Future<bool> _showExitDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final result = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.stopRoomTitle),
-          content: Text(AppLocalizations.of(context)!.stopRoomMessage),
+          title: Text(l10n.stopRoomTitle),
+          content: Text(l10n.stopRoomMessage),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context)!.no),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+              child: Text(l10n.no),
+              onPressed: () => Navigator.of(dialogContext).pop(false),
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context)!.yes),
-              onPressed: () {
-                viewModel.stopGame();
-                Navigator.of(context).pop(true);
-              },
+              child: Text(l10n.yes),
+              onPressed: () => Navigator.of(dialogContext).pop(true),
             ),
           ],
         );
@@ -46,24 +64,68 @@ class HostRoomScreen extends StatelessWidget {
     return result ?? false;
   }
 
-  Future<void> _onExit(
-    BuildContext context,
-    HostRoomViewModel viewModel,
-  ) async {
-    final shouldPop = await _showExitDialog(context, viewModel);
-    if (shouldPop && context.mounted) {
-      // AdService.canShowAds já cobre ads_enabled, premium (cache) e plataforma.
-      if (AdService.canShowAds) {
-        AdService.showInterstitialAd(
-          onAdDismissed: () {
-            if (context.mounted) {
-              context.go('/lobby');
-            }
-          },
+  /// Encerra a sala (ROOM_CLOSED para todos) e volta ao lobby, passando pelo
+  /// interstitial quando os anúncios estiverem ativos.
+  Future<void> _endRoom(HostRoomViewModel viewModel) async {
+    await viewModel.stopGame();
+    if (!mounted) return;
+    // AdService.canShowAds já cobre ads_enabled, premium (cache) e plataforma.
+    if (AdService.canShowAds) {
+      AdService.showInterstitialAd(
+        onAdDismissed: () {
+          if (mounted) context.go('/lobby');
+        },
+      );
+    } else {
+      context.go('/lobby');
+    }
+  }
+
+  Future<void> _onExit(HostRoomViewModel viewModel) async {
+    // Com a rodada encerrada não há o que perder: sai sem confirmar.
+    final shouldPop = viewModel.isGameOver || await _showExitDialog(context);
+    if (shouldPop && mounted) {
+      await _endRoom(viewModel);
+    }
+  }
+
+  void _onAction(HostRoomAction action, AppLocalizations l10n) {
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    switch (action) {
+      case ShowPaywall(:final source):
+        context.push('/paywall?source=$source');
+      case ShowError(:final error):
+        final text = switch (error) {
+          HostRoomError.invalidNumber => l10n.errorInvalidNumber,
+          HostRoomError.alreadyDrawn => l10n.errorNumberDrawn,
+          HostRoomError.connection => l10n.hostRoomErrorConnection,
+        };
+        messenger.showSnackBar(
+          SnackBar(content: Text(text), backgroundColor: AppColors.error),
         );
-      } else {
-        context.go('/lobby');
-      }
+      case AnnounceNumber(:final number, :final phrase):
+        messenger
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              key: const Key('host_announce_toast'),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+              backgroundColor: AppColors.card,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: const BorderSide(color: AppColors.outline, width: 2),
+              ),
+              content: Text(
+                '${BingoCard.label(number)}  ·  $phrase',
+                style: const TextStyle(
+                  color: AppColors.text,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          );
     }
   }
 
@@ -81,7 +143,7 @@ class HostRoomScreen extends StatelessWidget {
                 viewModel.playerCount,
                 RevenueConfigService.maxFreePlayersPathA,
               )
-            : '${viewModel.playerCount} ${l10n.playersInRoom}';
+            : l10n.playersInRoom(viewModel.playerCount);
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -104,6 +166,7 @@ class HostRoomScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return ViewModelProvider<HostRoomViewModel>(
       onReady: (viewModel) {
@@ -117,226 +180,256 @@ class HostRoomScreen extends StatelessWidget {
             },
           );
         }
-        viewModel.actionStream.listen((event) {
-          if (!context.mounted) return;
-          switch (event) {
-            case ShowPaywall(:final source):
-              context.push('/paywall?source=$source');
-              break;
-            case ShowError(:final message):
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  backgroundColor: AppColors.error,
-                ),
-              );
-              break;
-          }
-        });
+        _actionsSub = viewModel.actionStream.listen(
+          (action) => _onAction(action, l10n),
+        );
       },
       builder: (context, viewModel, child) {
+        final history = viewModel.drawnNumbersNewestFirst;
+        final canDraw = viewModel.canDraw && !viewModel.isAutoPlaying;
+
         return PopScope(
           canPop: false,
-          onPopInvokedWithResult: (didPop, result) async {
-            if (!didPop) {
-              await _onExit(context, viewModel);
-            }
+          onPopInvokedWithResult: (didPop, result) {
+            if (!didPop) _onExit(viewModel);
           },
           child: BingoScaffold(
-            title: AppLocalizations.of(context)!.hostRoomTitle,
-            onBack: () => _onExit(context, viewModel),
+            title: l10n.hostRoomTitle,
+            onBack: () => _onExit(viewModel),
             actions: [
               IconButton(
                 icon: const Icon(Icons.stop),
-                onPressed: () => _onExit(context, viewModel),
+                tooltip: l10n.hostRoomEndRoom,
+                onPressed: () => _onExit(viewModel),
               ),
             ],
-            body: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          // Last Drawn Number
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: AppColors.card,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: AppColors.outline,
-                                width: 2,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                viewModel.lastNumber?.toString() ?? '--',
-                                style: textTheme.headlineLarge,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          // Drawn Numbers History
-                          SizedBox(
-                            height: 50,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: viewModel.drawnNumbers.length,
-                              itemBuilder: (context, index) {
-                                final number = viewModel.drawnNumbers[index];
-                                return Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 4,
+            body: Stack(
+              children: [
+                CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: RepaintBoundary(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              // Último número sorteado (com a letra B-I-N-G-O)
+                              Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: AppColors.card,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: AppColors.outline,
+                                    width: 2,
                                   ),
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.success,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      number.toString(),
-                                      style: textTheme.bodyLarge?.copyWith(
-                                        color: AppColors.text,
-                                        fontWeight: FontWeight.bold,
+                                ),
+                                child: Column(
+                                  children: [
+                                    StrokedText(
+                                      key: const Key('host_last_number'),
+                                      text: viewModel.lastNumber == null
+                                          ? '--'
+                                          : BingoCard.label(
+                                              viewModel.lastNumber!,
+                                            ),
+                                      style: textTheme.headlineLarge,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      l10n.drawnCount(
+                                        viewModel.drawnNumbers.length,
+                                      ),
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        color: AppColors.textSecondary,
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
+                                    if (viewModel.phase == GamePhase.waiting)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          l10n.hostRoomWaitingDraw,
+                                          textAlign: TextAlign.center,
+                                          style: textTheme.bodyMedium?.copyWith(
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Histórico: mais recente primeiro
+                              SizedBox(
+                                height: 50,
+                                child: ListView.builder(
+                                  key: const Key('host_history'),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: history.length,
+                                  itemBuilder: (context, index) {
+                                    final number = history[index];
+                                    final isLatest = index == 0;
+                                    return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 4,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isLatest
+                                            ? AppColors.primary
+                                            : AppColors.success,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: AppColors.outline,
+                                          width: isLatest ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          BingoCard.label(number),
+                                          style: textTheme.bodyLarge?.copyWith(
+                                            color: AppColors.text,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Player Count (com dica de capacidade N/M)
+                              _buildPlayerCount(context, viewModel),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Connected Players
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final playerName = viewModel.players[index];
+                        return ListTile(
+                          leading: const Icon(Icons.person),
+                          title: Text(playerName),
+                        );
+                      }, childCount: viewModel.playerCount),
+                    ),
+                    // Bingo Claims
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final claim = viewModel.bingoClaims[index];
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          child: ListTile(
+                            title: Text(
+                              '${claim.playerName} ${l10n.shoutedBingo}',
+                            ),
+                            subtitle: Text('${l10n.cardId} ${claim.cardId}'),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.check),
+                              onPressed: viewModel.isLoading
+                                  ? null
+                                  : () => viewModel.validateClaim(claim),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          // Player Count (com dica de capacidade N/M)
-                          _buildPlayerCount(context, viewModel),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+                        );
+                      }, childCount: viewModel.bingoClaims.length),
                     ),
-                  ),
-                ),
-                // Connected Players
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final playerName = viewModel.players[index];
-                    return ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(playerName),
-                    );
-                  }, childCount: viewModel.playerCount),
-                ),
-                // Bingo Claims
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final claim = viewModel.bingoClaims[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        title: Text(
-                          '${claim.playerName} ${AppLocalizations.of(context)!.shoutedBingo}',
-                        ),
-                        subtitle: Text(
-                          '${AppLocalizations.of(context)!.cardId} ${claim.cardId}',
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.check),
-                          onPressed: () => viewModel.validateClaim(claim),
-                        ),
-                      ),
-                    );
-                  }, childCount: viewModel.bingoClaims.length),
-                ),
-                SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: DefaultTabController(
-                        length: 2,
-                        child: Column(
-                          children: [
-                            TabBar(
-                              tabs: [
-                                Tab(
-                                  text: AppLocalizations.of(
-                                    context,
-                                  )!.virtualGlobe,
+                    SliverToBoxAdapter(
+                      child: RepaintBoundary(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: DefaultTabController(
+                            length: 2,
+                            child: Column(
+                              children: [
+                                TabBar(
+                                  tabs: [
+                                    Tab(text: l10n.virtualGlobe),
+                                    Tab(text: l10n.manualGlobe),
+                                  ],
+                                  labelColor: AppColors.primary,
+                                  unselectedLabelColor: AppColors.textSecondary,
+                                  indicatorColor: AppColors.primary,
                                 ),
-                                Tab(
-                                  text: AppLocalizations.of(
-                                    context,
-                                  )!.manualGlobe,
-                                ),
-                              ],
-                              labelColor: AppColors.primary,
-                              unselectedLabelColor: AppColors.textSecondary,
-                              indicatorColor: AppColors.primary,
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              height: 200, // Fixed height for controls
-                              child: TabBarView(
-                                children: [
-                                  // Virtual Globe
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  height: 200, // Fixed height for controls
+                                  child: TabBarView(
                                     children: [
-                                      BingoButton(
-                                        label: AppLocalizations.of(
-                                          context,
-                                        )!.drawRandom,
-                                        onPressed: viewModel.drawRandomNumber,
-                                        // Disable if auto-playing
-                                        color: viewModel.isAutoPlaying
-                                            ? Colors.grey
-                                            : AppColors.primary,
+                                      // Virtual Globe
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          BingoButton(
+                                            key: const Key('host_draw_button'),
+                                            label: l10n.drawRandom,
+                                            enabled: canDraw,
+                                            onPressed:
+                                                viewModel.drawRandomNumber,
+                                          ),
+                                          const SizedBox(height: 16),
+                                          if (RevenueConfigService
+                                              .purchasesEnabled)
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(l10n.autoGlobe),
+                                                ),
+                                                Switch(
+                                                  value: viewModel.isAutoPlaying,
+                                                  onChanged: viewModel.isGameOver
+                                                      ? null
+                                                      : (value) => viewModel
+                                                          .toggleAutoPlay(),
+                                                  activeThumbColor:
+                                                      AppColors.primary,
+                                                ),
+                                                if (viewModel.isAutoPlaying)
+                                                  const SizedBox(
+                                                    height: 16,
+                                                    width: 16,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                        ),
+                                                  ),
+                                              ],
+                                            ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 16),
-                                      if (RevenueConfigService.purchasesEnabled)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!.autoGlobe,
-                                              ),
-                                            ),
-                                            Switch(
-                                              value: viewModel.isAutoPlaying,
-                                              onChanged: (value) =>
-                                                  viewModel.toggleAutoPlay(),
-                                              activeThumbColor:
-                                                  AppColors.primary,
-                                            ),
-                                            if (viewModel.isAutoPlaying)
-                                              const SizedBox(
-                                                height: 16,
-                                                width: 16,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              ),
-                                          ],
-                                        ),
+
+                                      // Manual Input
+                                      _ManualInputControl(
+                                        viewModel: viewModel,
+                                        enabled: canDraw,
+                                      ),
                                     ],
                                   ),
-
-                                  // Manual Input
-                                  _ManualInputControl(viewModel: viewModel),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
+                if (viewModel.isGameOver)
+                  _WinnerOverlay(
+                    key: const Key('host_winner_overlay'),
+                    winnerName: viewModel.winnerName ?? '',
+                    onNewRound: viewModel.newRound,
+                    onEndRoom: () => _endRoom(viewModel),
+                  ),
               ],
             ),
           ),
@@ -346,9 +439,81 @@ class HostRoomScreen extends StatelessWidget {
   }
 }
 
+class _WinnerOverlay extends StatelessWidget {
+  final String winnerName;
+  final VoidCallback onNewRound;
+  final VoidCallback onEndRoom;
+
+  const _WinnerOverlay({
+    super.key,
+    required this.winnerName,
+    required this.onNewRound,
+    required this.onEndRoom,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Positioned.fill(
+      child: Container(
+        color: Colors.black.withValues(alpha: 0.6),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(24),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.outline, width: 3),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              StrokedText(
+                text: l10n.hostRoomWinnerTitle,
+                style: textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l10n.hostRoomWinnerMessage(winnerName),
+                textAlign: TextAlign.center,
+                style: textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.hostRoomRoundOverHint,
+                textAlign: TextAlign.center,
+                style: textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 24),
+              BingoButton(
+                key: const Key('host_new_round_button'),
+                label: l10n.hostRoomNewRound,
+                onPressed: onNewRound,
+                color: AppColors.success,
+              ),
+              const SizedBox(height: 12),
+              BingoButton(
+                key: const Key('host_end_room_button'),
+                label: l10n.hostRoomEndRoom,
+                onPressed: onEndRoom,
+                color: AppColors.card,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ManualInputControl extends StatefulWidget {
   final HostRoomViewModel viewModel;
-  const _ManualInputControl({required this.viewModel});
+  final bool enabled;
+
+  const _ManualInputControl({required this.viewModel, required this.enabled});
 
   @override
   State<_ManualInputControl> createState() => _ManualInputControlState();
@@ -357,9 +522,15 @@ class _ManualInputControl extends StatefulWidget {
 class _ManualInputControlState extends State<_ManualInputControl> {
   final _controller = TextEditingController();
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _submit() {
-    final text = _controller.text;
-    final number = int.tryParse(text);
+    if (!widget.enabled) return;
+    final number = int.tryParse(_controller.text);
     if (number != null) {
       widget.viewModel.drawManualNumber(number);
       _controller.clear();
@@ -368,6 +539,7 @@ class _ManualInputControlState extends State<_ManualInputControl> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -378,17 +550,18 @@ class _ManualInputControlState extends State<_ManualInputControl> {
               width: 100,
               child: TextField(
                 controller: _controller,
+                enabled: widget.enabled,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.numberInput,
-                  border: OutlineInputBorder(),
+                  labelText: l10n.numberInput,
+                  border: const OutlineInputBorder(),
                 ),
                 onSubmitted: (_) => _submit(),
               ),
             ),
             const SizedBox(width: 16),
             ElevatedButton(
-              onPressed: _submit,
+              onPressed: widget.enabled ? _submit : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(
@@ -396,13 +569,13 @@ class _ManualInputControlState extends State<_ManualInputControl> {
                   vertical: 16,
                 ),
               ),
-              child: Text(AppLocalizations.of(context)!.confirm),
+              child: Text(l10n.confirm),
             ),
           ],
         ),
         const SizedBox(height: 8),
         Text(
-          AppLocalizations.of(context)!.manualInputInstruction,
+          l10n.manualInputInstruction,
           style: const TextStyle(color: Colors.grey, fontSize: 12),
         ),
       ],
