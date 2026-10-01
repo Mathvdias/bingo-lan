@@ -188,108 +188,113 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
             ],
             body: Stack(
               children: [
-                CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: RepaintBoundary(
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: SubscriptionService.isPremium,
-                          builder: (context, isPremium, _) {
-                            final showCap =
-                                RevenueConfigService.hasFreePlayerCap &&
-                                !isPremium;
-                            return HostDrawPanel(
-                              lastNumber: viewModel.lastNumber,
-                              drawnNumbersNewestFirst:
-                                  viewModel.drawnNumbersNewestFirst,
-                              canUndo: viewModel.canUndo,
-                              onUndo: viewModel.undoLastDraw,
-                              playerCount: viewModel.playerCount,
-                              maxPlayers: showCap
-                                  ? RevenueConfigService.maxFreePlayersPathA
-                                  : null,
-                            );
-                          },
+                // SafeArea(bottom): as abas Virtual/Manual ficam no fim da
+                // rolagem e não podem cair sob a barra de gestos.
+                SafeArea(
+                  top: false,
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: RepaintBoundary(
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: SubscriptionService.isPremium,
+                            builder: (context, isPremium, _) {
+                              final showCap =
+                                  RevenueConfigService.hasFreePlayerCap &&
+                                  !isPremium;
+                              return HostDrawPanel(
+                                lastNumber: viewModel.lastNumber,
+                                drawnNumbersNewestFirst:
+                                    viewModel.drawnNumbersNewestFirst,
+                                canUndo: viewModel.canUndo,
+                                onUndo: viewModel.undoLastDraw,
+                                playerCount: viewModel.playerCount,
+                                maxPlayers: showCap
+                                    ? RevenueConfigService.maxFreePlayersPathA
+                                    : null,
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    // Connected Players
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final playerName = viewModel.players[index];
-                        return ListTile(
-                          leading: const Icon(Icons.person),
-                          title: Text(playerName),
-                        );
-                      }, childCount: viewModel.playerCount),
-                    ),
-                    // Bingo Claims
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final claim = viewModel.bingoClaims[index];
-                        return Card(
-                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                          child: ListTile(
-                            title: Text(
-                              '${claim.playerName} ${l10n.shoutedBingo}',
+                      // Connected Players
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final playerName = viewModel.players[index];
+                          return ListTile(
+                            leading: const Icon(Icons.person),
+                            title: Text(playerName),
+                          );
+                        }, childCount: viewModel.playerCount),
+                      ),
+                      // Bingo Claims
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final claim = viewModel.bingoClaims[index];
+                          return Card(
+                            margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: ListTile(
+                              title: Text(
+                                '${claim.playerName} ${l10n.shoutedBingo}',
+                              ),
+                              subtitle: Text('${l10n.cardId} ${claim.cardId}'),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.check),
+                                onPressed: viewModel.isLoading
+                                    ? null
+                                    : () => viewModel.validateClaim(claim),
+                              ),
                             ),
-                            subtitle: Text('${l10n.cardId} ${claim.cardId}'),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.check),
-                              onPressed: viewModel.isLoading
-                                  ? null
-                                  : () => viewModel.validateClaim(claim),
-                            ),
-                          ),
-                        );
-                      }, childCount: viewModel.bingoClaims.length),
-                    ),
-                    SliverToBoxAdapter(
-                      child: RepaintBoundary(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: DefaultTabController(
-                            length: 2,
-                            child: Column(
-                              children: [
-                                // Rótulos curtos (<= 12 caracteres) com ícone;
-                                // cores e indicador vêm do TabBarThemeData.
-                                TabBar(
-                                  tabs: [
-                                    Tab(
-                                      key: const Key('host_tab_virtual'),
-                                      icon: const Icon(Icons.casino),
-                                      text: l10n.virtualGlobe,
-                                    ),
-                                    Tab(
-                                      key: const Key('host_tab_manual'),
-                                      icon: const Icon(Icons.edit),
-                                      text: l10n.manualGlobe,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 240, // Altura fixa dos controles
-                                  child: TabBarView(
-                                    children: [
-                                      _VirtualGlobeControl(
-                                        viewModel: viewModel,
-                                        canDraw: canDraw,
+                          );
+                        }, childCount: viewModel.bingoClaims.length),
+                      ),
+                      SliverToBoxAdapter(
+                        child: RepaintBoundary(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: DefaultTabController(
+                              length: 2,
+                              child: Column(
+                                children: [
+                                  // Rótulos curtos (<= 12 caracteres) com ícone;
+                                  // cores e indicador vêm do TabBarThemeData.
+                                  TabBar(
+                                    tabs: [
+                                      Tab(
+                                        key: const Key('host_tab_virtual'),
+                                        icon: const Icon(Icons.casino),
+                                        text: l10n.virtualGlobe,
                                       ),
-                                      _ManualInputControl(
-                                        viewModel: viewModel,
-                                        enabled: canDraw,
+                                      Tab(
+                                        key: const Key('host_tab_manual'),
+                                        icon: const Icon(Icons.edit),
+                                        text: l10n.manualGlobe,
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    height: 240, // Altura fixa dos controles
+                                    child: TabBarView(
+                                      children: [
+                                        _VirtualGlobeControl(
+                                          viewModel: viewModel,
+                                          canDraw: canDraw,
+                                        ),
+                                        _ManualInputControl(
+                                          viewModel: viewModel,
+                                          enabled: canDraw,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 if (viewModel.isGameOver)
                   _WinnerOverlay(
