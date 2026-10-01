@@ -19,7 +19,7 @@
   "no": "No",
   "yes": "Sí",
   "hostRoomTitle": "Sala de Bingo (Host)",
-  "playersInRoom": "jugadores en la sala",
+  "playersInRoom": "{count, plural, =0{Ningún jugador en la sala} =1{1 jugador en la sala} other{{count} jugadores en la sala}}",
   "shoutedBingo": "gritó ¡BINGO!",
   "cardId": "ID de Cartón:",
   "manualInputInstruction": "Escribe el número sorteado en el globo físico",
@@ -86,7 +86,7 @@
     }
   },
   "inviteShareCodeTooltip": "Compartir Código",
-  "inviteShareLinkMessage": "¡Ven a jugar Bingo! Solo haz clic desde tu teléfono: bingo://room/{qrData}",
+  "inviteShareLinkMessage": "¡Ven a jugar Bingo! Solo toca desde tu celular: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {
@@ -94,7 +94,7 @@
       }
     }
   },
-  "inviteConnectedPlayers": "Jugadores Conectados: {count}",
+  "inviteConnectedPlayers": "{count, plural, =0{Ningún jugador conectado todavía} =1{1 jugador conectado} other{{count} jugadores conectados}}",
   "@inviteConnectedPlayers": {
     "placeholders": {
       "count": {
@@ -185,6 +185,78 @@
         "type": "int"
       },
       "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@playersInRoom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeErrorMessage": "No se pudo abrir esta pantalla.",
+  "cardFree": "LIBRE",
+  "inviteDefaultRoomName": "Sala de Bingo",
+  "hostSetupErrorEmptyName": "El nombre de la sala no puede estar vacío.",
+  "hostSetupErrorNoWifi": "No se pudo obtener la dirección Wi-Fi. Revisa tu conexión Wi-Fi.",
+  "hostSetupErrorPortUnavailable": "No hay ningún puerto de red disponible para crear la sala. Cierra otras apps que usen la red e inténtalo de nuevo.",
+  "hostSetupErrorUnexpected": "Algo salió mal al crear la sala. Inténtalo de nuevo.",
+  "hostRoomErrorConnection": "Hubo un problema de conexión con un jugador.",
+  "hostRoomWinnerTitle": "¡BINGO!",
+  "hostRoomWinnerMessage": "¡{name} ganó esta ronda!",
+  "@hostRoomWinnerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomNewRound": "Nueva ronda",
+  "hostRoomEndRoom": "Cerrar sala",
+  "hostRoomWaitingDraw": "Sortea el primer número para empezar la ronda.",
+  "hostRoomRoundOverHint": "Ronda terminada. Empieza una nueva ronda o cierra la sala.",
+  "drawnCount": "{count}/75 sorteados",
+  "@drawnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanErrorInvalidCode": "Código inválido. Pide un nuevo código QR al anfitrión.",
+  "scanErrorRejected": "El anfitrión no aceptó la conexión. Revisa la red Wi-Fi y el código de la sala.",
+  "scanErrorTimeout": "El anfitrión no respondió. Asegúrate de estar en la misma red Wi-Fi.",
+  "scanErrorUnexpected": "Error inesperado al entrar a la sala.",
+  "playerGameLastCalled": "Última bola",
+  "playerGameNoCallsYet": "Aún no hay números sorteados",
+  "connectionConnecting": "Conectando con el anfitrión...",
+  "connectionReconnecting": "Conexión perdida. Reconectando...",
+  "connectionDisconnected": "Desconectado del anfitrión.",
+  "connectionRetry": "Reintentar",
+  "playerGameYouWon": "¡BINGO! ¡Ganaste!",
+  "playerGameSomeoneWon": "{name} ganó esta ronda.",
+  "@playerGameSomeoneWon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerGameWaitNextRound": "Espera a que el anfitrión empiece una nueva ronda o vuelve al inicio.",
+  "backToLobby": "Volver al inicio",
+  "playerGameClaimRejected": "¡Todavía no es bingo! Revisa tu cartón y sigue jugando.",
+  "playerGameRoomClosedTitle": "El anfitrión cerró la sala",
+  "playerGameRoomClosedMessage": "Este juego terminó. ¡Gracias por jugar!",
+  "playerGameLeaveTitle": "¿Salir del juego?",
+  "playerGameLeaveMessage": "Perderás tu cartón y saldrás de la sala.",
+  "playerGameLeave": "Salir",
+  "playerGameStay": "Quedarme",
+  "playerGameShoutCooldown": "Espera {seconds}s",
+  "@playerGameShoutCooldown": {
+    "placeholders": {
+      "seconds": {
         "type": "int"
       }
     }

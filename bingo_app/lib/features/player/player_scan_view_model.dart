@@ -1,105 +1,95 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:developer';
-import 'dart:math' hide log;
 
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 
+/// Por que a entrada na sala falhou. A tela traduz para o idioma do usuário.
+enum PlayerScanError {
+  /// O QR/código não é um convite válido (ou é de uma versão antiga).
+  invalidCode,
+
+  /// O host recusou (token, sala cheia, limite por IP) ou não está acessível.
+  rejected,
+
+  /// Conectou mas o host não enviou `JOINED` a tempo.
+  timeout,
+
+  unexpected,
+}
+
 class PlayerScanViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
+  final Duration joinTimeout;
 
-  String? _errorMessage;
-  String? get errorMessage => _errorMessage;
+  PlayerScanError? _error;
+  PlayerScanError? get error => _error;
 
-  PlayerScanViewModel({required IGameConnection gameConnection})
-    : _gameConnection = gameConnection;
+  BingoInvite? _invite;
+  BingoInvite? get invite => _invite;
 
-  /// Called when a QR code is detected by the scanner.
-  /// Decodes the data, simulates a connection, and returns a random cardId on success.
-  Future<int?> onQrCodeScanned(String rawData) async {
-    setLoading(true);
-    _errorMessage = null;
+  PlayerScanViewModel({
+    required IGameConnection gameConnection,
+    this.joinTimeout = const Duration(seconds: 10),
+  }) : _gameConnection = gameConnection;
+
+  /// Interpreta o convite, conecta ao host e espera o `JOINED` com a
+  /// identidade atribuída pelo servidor. Retorna `null` em caso de erro
+  /// (ver [error]).
+  Future<JoinedEvent?> onQrCodeScanned(String rawData) async {
+    if (isLoading) return null;
+    setLoading(true, notify: false);
+    _error = null;
     notifyListeners();
 
     try {
-      String payloadToDecode = rawData;
+      final invite = BingoInvite.parse(rawData);
+      if (invite == null) {
+        return _fail(PlayerScanError.invalidCode);
+      }
+      _invite = invite;
 
-      // Handle Deep Link format: bingo://join?data=BASE64...
-      if (rawData.startsWith('bingo://') || rawData.startsWith('http')) {
-        final uri = Uri.tryParse(rawData);
-        if (uri != null && uri.queryParameters.containsKey('data')) {
-          payloadToDecode = uri.queryParameters['data']!;
-        }
+      // Assina antes de conectar para não perder o JOINED; nunca rejeita.
+      final joined = _gameConnection.eventStream
+          .firstWhere((e) => e is JoinedEvent)
+          .timeout(joinTimeout)
+          .then<JoinedEvent?>((e) => e as JoinedEvent, onError: (_) => null);
+
+      try {
+        await _gameConnection.joinRoom(invite.webSocketUri);
+      } catch (e) {
+        // Não loga a URI: contém o JWT.
+        log('Join refused or host unreachable: ${e.runtimeType}');
+        return _fail(PlayerScanError.rejected);
       }
 
-      // 1. Decode Base64
-      final String decodedJson = utf8.decode(base64Decode(payloadToDecode));
-
-      // 2. Parse JSON
-      final Map<String, dynamic> payload = jsonDecode(decodedJson);
-
-      // 3. Validate Payload version
-      final int version = payload['v'] ?? 1;
-
-      String connectionId;
-
-      if (version == 2) {
-        // Version 2: Using JWT token
-        if (payload['h'] == null ||
-            payload['p'] == null ||
-            payload['token'] == null) {
-          throw const FormatException('QR Code inválido ou corrompido.');
-        }
-
-        final String host = payload['h'];
-        final int port = payload['p'];
-        final String jwtToken = payload['token'];
-
-        log('QR Decoded (v2): Host=$host, Port=$port, Token=<JWT>');
-
-        // Construct WebSocket URL with JWT token
-        connectionId = 'ws://$host:$port?token=$jwtToken';
-      } else {
-        // Version 1: Legacy format (backwards compatibility)
-        if (payload['t'] == null ||
-            payload['h'] == null ||
-            payload['p'] == null ||
-            payload['s'] == null) {
-          throw const FormatException('QR Code inválido ou corrompido.');
-        }
-
-        final String host = payload['h'];
-        final int port = payload['p'];
-        final String token = payload['s'];
-
-        log('QR Decoded (v1): Host=$host, Port=$port, Token=$token');
-
-        // Construct WebSocket URL with simple token
-        connectionId = 'ws://$host:$port?token=$token';
+      final event = await joined;
+      if (event == null) {
+        await _gameConnection.disconnect();
+        return _fail(PlayerScanError.timeout);
       }
 
-      // 4. Connect to the host
-      await _gameConnection.joinRoom(connectionId);
-      AnalyticsService.trackJoinRoom(
-        (payload['n'] as String?) ?? (payload['h'] as String? ?? 'unknown'),
+      unawaited(
+        AnalyticsService.trackJoinRoom(
+          invite.roomName.isNotEmpty ? invite.roomName : invite.ip,
+        ),
       );
-
-      // 5. Generate a random seed for the bingo card
-      final cardId = Random().nextInt(999999);
-      return cardId;
-    } on FormatException catch (e) {
-      log('Error decoding QR code: $e');
-      _errorMessage = 'QR Code inválido. Tente novamente.';
-      notifyListeners();
-      return null;
+      return event;
     } catch (e) {
-      log('An unexpected error occurred: $e');
-      _errorMessage = 'Ocorreu um erro inesperado: $e';
-      notifyListeners();
-      return null;
+      log('Unexpected error while joining: $e');
+      return _fail(PlayerScanError.unexpected);
     } finally {
       setLoading(false);
     }
+  }
+
+  /// O usuário desistiu depois de conectar (ex.: cancelou o nome).
+  Future<void> cancelJoin() => _gameConnection.disconnect();
+
+  JoinedEvent? _fail(PlayerScanError error) {
+    _error = error;
+    notifyListeners();
+    return null;
   }
 }

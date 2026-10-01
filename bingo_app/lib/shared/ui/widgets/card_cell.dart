@@ -1,3 +1,4 @@
+import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
@@ -7,12 +8,16 @@ enum CardCellState { normal, marked, validated }
 class CardCell extends StatelessWidget {
   final int number;
   final CardCellState state;
+
+  /// O host já cantou este número. Mostra um anel; não marca sozinho.
+  final bool called;
   final VoidCallback? onTap;
 
   const CardCell({
     super.key,
     required this.number,
     this.state = CardCellState.normal,
+    this.called = false,
     this.onTap,
   });
 
@@ -37,6 +42,9 @@ class CardCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final showRing = called && state == CardCellState.normal;
+    // Fora de um MaterialApp com delegates (previews, testes) cai em 'FREE'.
+    final freeLabel = AppLocalizations.of(context)?.cardFree ?? 'FREE';
 
     return RepaintBoundary(
       child: GestureDetector(
@@ -46,12 +54,15 @@ class CardCell extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: _getBackgroundColor(context),
-              border: Border.all(color: AppColors.outline, width: 2),
+              border: Border.all(
+                color: showRing ? AppColors.secondary : AppColors.outline,
+                width: showRing ? 3 : 2,
+              ),
               borderRadius: BorderRadius.circular(8), // Small radius for cells
             ),
             child: Center(
               child: Text(
-                number == 0 ? 'FREE' : '$number', // 0 for FREE space
+                number == 0 ? freeLabel : '$number', // 0 for FREE space
                 style: textTheme.displaySmall?.copyWith(
                   color: _getForegroundColor(context),
                   fontWeight: FontWeight.bold,

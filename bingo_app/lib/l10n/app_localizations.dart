@@ -229,8 +229,8 @@ abstract class AppLocalizations {
   /// No description provided for @playersInRoom.
   ///
   /// In en, this message translates to:
-  /// **'players in room'**
-  String get playersInRoom;
+  /// **'{count, plural, =0{No players in the room} =1{1 player in the room} other{{count} players in the room}}'**
+  String playersInRoom(int count);
 
   /// No description provided for @shoutedBingo.
   ///
@@ -505,13 +505,13 @@ abstract class AppLocalizations {
   /// No description provided for @inviteShareLinkMessage.
   ///
   /// In en, this message translates to:
-  /// **'Come play Bingo! Just click from your phone: bingo://room/{qrData}'**
+  /// **'Come play Bingo! Just tap from your phone: {qrData}'**
   String inviteShareLinkMessage(String qrData);
 
   /// No description provided for @inviteConnectedPlayers.
   ///
   /// In en, this message translates to:
-  /// **'Connected Players: {count}'**
+  /// **'{count, plural, =0{No players connected yet} =1{1 player connected} other{{count} players connected}}'**
   String inviteConnectedPlayers(int count);
 
   /// No description provided for @inviteWaitingPlayers.
@@ -831,6 +831,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connected Players: {count}/{max} free'**
   String inviteConnectedPlayersCapacity(int count, int max);
+
+  /// No description provided for @routeErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open this page.'**
+  String get routeErrorMessage;
+
+  /// No description provided for @cardFree.
+  ///
+  /// In en, this message translates to:
+  /// **'FREE'**
+  String get cardFree;
+
+  /// No description provided for @inviteDefaultRoomName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bingo Room'**
+  String get inviteDefaultRoomName;
+
+  /// No description provided for @hostSetupErrorEmptyName.
+  ///
+  /// In en, this message translates to:
+  /// **'The room name can\'t be empty.'**
+  String get hostSetupErrorEmptyName;
+
+  /// No description provided for @hostSetupErrorNoWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t get your Wi-Fi address. Check your Wi-Fi connection.'**
+  String get hostSetupErrorNoWifi;
+
+  /// No description provided for @hostSetupErrorPortUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No network port is available to host the room. Close other apps using the network and try again.'**
+  String get hostSetupErrorPortUnavailable;
+
+  /// No description provided for @hostSetupErrorUnexpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while creating the room. Please try again.'**
+  String get hostSetupErrorUnexpected;
+
+  /// No description provided for @hostRoomErrorConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'There was a connection problem with a player.'**
+  String get hostRoomErrorConnection;
+
+  /// No description provided for @hostRoomWinnerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'BINGO!'**
+  String get hostRoomWinnerTitle;
+
+  /// No description provided for @hostRoomWinnerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} won this round!'**
+  String hostRoomWinnerMessage(String name);
+
+  /// No description provided for @hostRoomNewRound.
+  ///
+  /// In en, this message translates to:
+  /// **'New round'**
+  String get hostRoomNewRound;
+
+  /// No description provided for @hostRoomEndRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'End room'**
+  String get hostRoomEndRoom;
+
+  /// No description provided for @hostRoomWaitingDraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw the first number to start the round.'**
+  String get hostRoomWaitingDraw;
+
+  /// No description provided for @hostRoomRoundOverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Round over. Start a new round or end the room.'**
+  String get hostRoomRoundOverHint;
+
+  /// No description provided for @drawnCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/75 drawn'**
+  String drawnCount(int count);
+
+  /// No description provided for @scanErrorInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid code. Ask the host for a new QR code.'**
+  String get scanErrorInvalidCode;
+
+  /// No description provided for @scanErrorRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The host didn\'t accept the connection. Check the Wi-Fi network and the room code.'**
+  String get scanErrorRejected;
+
+  /// No description provided for @scanErrorTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The host didn\'t answer. Make sure you\'re on the same Wi-Fi network.'**
+  String get scanErrorTimeout;
+
+  /// No description provided for @scanErrorUnexpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error while joining the room.'**
+  String get scanErrorUnexpected;
+
+  /// No description provided for @playerGameLastCalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Last called'**
+  String get playerGameLastCalled;
+
+  /// No description provided for @playerGameNoCallsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No numbers called yet'**
+  String get playerGameNoCallsYet;
+
+  /// No description provided for @connectionConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to the host...'**
+  String get connectionConnecting;
+
+  /// No description provided for @connectionReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection lost. Reconnecting...'**
+  String get connectionReconnecting;
+
+  /// No description provided for @connectionDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected from the host.'**
+  String get connectionDisconnected;
+
+  /// No description provided for @connectionRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get connectionRetry;
+
+  /// No description provided for @playerGameYouWon.
+  ///
+  /// In en, this message translates to:
+  /// **'BINGO! You won!'**
+  String get playerGameYouWon;
+
+  /// No description provided for @playerGameSomeoneWon.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} won this round.'**
+  String playerGameSomeoneWon(String name);
+
+  /// No description provided for @playerGameWaitNextRound.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for the host to start a new round, or go back to the lobby.'**
+  String get playerGameWaitNextRound;
+
+  /// No description provided for @backToLobby.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to lobby'**
+  String get backToLobby;
+
+  /// No description provided for @playerGameClaimRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a bingo yet! Check your card and keep playing.'**
+  String get playerGameClaimRejected;
+
+  /// No description provided for @playerGameRoomClosedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The host closed the room'**
+  String get playerGameRoomClosedTitle;
+
+  /// No description provided for @playerGameRoomClosedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This game is over. Thanks for playing!'**
+  String get playerGameRoomClosedMessage;
+
+  /// No description provided for @playerGameLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the game?'**
+  String get playerGameLeaveTitle;
+
+  /// No description provided for @playerGameLeaveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll lose your card and leave the room.'**
+  String get playerGameLeaveMessage;
+
+  /// No description provided for @playerGameLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get playerGameLeave;
+
+  /// No description provided for @playerGameStay.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get playerGameStay;
+
+  /// No description provided for @playerGameShoutCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait {seconds}s'**
+  String playerGameShoutCooldown(int seconds);
 }
 
 class _AppLocalizationsDelegate

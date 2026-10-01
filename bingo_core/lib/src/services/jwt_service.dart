@@ -58,7 +58,7 @@ class JwtService {
     required String secret,
   }) {
     try {
-      final jwt = JWT.verify(token, SecretKey(secret));
+      final jwt = JWT.verify(token, SecretKey(secret), issuer: _issuer);
       return jwt.payload as Map<String, dynamic>;
     } on JWTExpiredException {
       throw JWTExpiredException();
@@ -69,17 +69,25 @@ class JwtService {
 
   /// Validates token and verifies it belongs to the specified room
   ///
+  /// Checks signature, expiration and issuer; when [expectedRole] is given the
+  /// `role` claim must match it (e.g. `'player'`).
+  ///
   /// Returns true if token is valid and belongs to the room
   /// Returns false otherwise
   static bool validateRoomToken({
     required String token,
     required String secret,
     required String expectedRoomId,
+    String? expectedRole,
   }) {
     try {
       final payload = validateToken(token: token, secret: secret);
       final roomId = payload['roomId'] as String?;
-      return roomId == expectedRoomId;
+      if (roomId != expectedRoomId) return false;
+      if (expectedRole != null && payload['role'] != expectedRole) {
+        return false;
+      }
+      return true;
     } catch (e) {
       return false;
     }

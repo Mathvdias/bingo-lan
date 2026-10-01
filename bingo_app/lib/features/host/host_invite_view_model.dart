@@ -1,34 +1,49 @@
+import 'dart:async';
+
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 
 class HostInviteViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
 
-  List<String> _connectedPlayers = [];
+  List<String> _connectedPlayers = const [];
   List<String> get connectedPlayers => _connectedPlayers;
 
-  BingoInvite? _inviteInfo;
-  String get roomName => _inviteInfo?.roomName ?? 'Sala de Bingo';
-  String get roomCode => _inviteInfo?.token ?? '---';
+  String _qrData = '';
+  BingoInvite? _invite;
+  StreamSubscription<List<String>>? _playersSub;
 
-  // We keep the original raw data string if needed, or rely on info.
-  // Should we expose the raw invite link? The model helper toDeepLink can regenerate it or we can store it.
+  /// Deep link exibido no QR e compartilhado.
+  String get qrData => _qrData;
+
+  /// Nome real da sala, ou `null` se o convite não pôde ser interpretado
+  /// (a tela mostra um nome padrão traduzido).
+  String? get roomName {
+    final name = _invite?.roomName;
+    return (name == null || name.isEmpty) ? null : name;
+  }
 
   HostInviteViewModel({required IGameConnection gameConnection})
     : _gameConnection = gameConnection {
-    _listenToConnections();
-  }
-
-  void setInviteData(String qrData) {
-    _inviteInfo = BingoInvite.parse(qrData);
-    // If parsing fails, we could handle error, but for now we fallback to defaults.
-    notifyListeners();
-  }
-
-  void _listenToConnections() {
-    _gameConnection.connectedPlayersStream.listen((players) {
+    _playersSub = _gameConnection.connectedPlayersStream.listen((players) {
       _connectedPlayers = players;
       notifyListeners();
     });
+  }
+
+  void setInviteData(String qrData) {
+    _qrData = qrData;
+    _invite = BingoInvite.parse(qrData);
+    notifyListeners();
+  }
+
+  /// O host voltou da tela de convite: derruba o servidor para que uma nova
+  /// sala possa ser criada.
+  Future<void> leaveRoom() => _gameConnection.disconnect();
+
+  @override
+  void dispose() {
+    _playersSub?.cancel();
+    super.dispose();
   }
 }

@@ -19,7 +19,7 @@
   "no": "Não",
   "yes": "Sim",
   "hostRoomTitle": "Sala do Bingo (Host)",
-  "playersInRoom": "jogadores na sala",
+  "playersInRoom": "{count, plural, =0{Nenhum jogador na sala} =1{1 jogador na sala} other{{count} jogadores na sala}}",
   "shoutedBingo": "gritou BINGO!",
   "cardId": "Cartela ID:",
   "manualInputInstruction": "Digite o número sorteado no globo físico",
@@ -86,7 +86,7 @@
     }
   },
   "inviteShareCodeTooltip": "Compartilhar Código",
-  "inviteShareLinkMessage": "Vem pro Bingo da Galera! Só clicar pelo celular: bingo://room/{qrData}",
+  "inviteShareLinkMessage": "Vem pro Bingo! Só tocar pelo celular: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {
@@ -94,7 +94,7 @@
       }
     }
   },
-  "inviteConnectedPlayers": "Jogadores Conectados: {count}",
+  "inviteConnectedPlayers": "{count, plural, =0{Nenhum jogador conectado ainda} =1{1 jogador conectado} other{{count} jogadores conectados}}",
   "@inviteConnectedPlayers": {
     "placeholders": {
       "count": {
@@ -185,6 +185,78 @@
         "type": "int"
       },
       "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@playersInRoom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeErrorMessage": "Não foi possível abrir esta tela.",
+  "cardFree": "LIVRE",
+  "inviteDefaultRoomName": "Sala de Bingo",
+  "hostSetupErrorEmptyName": "O nome da sala não pode ficar vazio.",
+  "hostSetupErrorNoWifi": "Não foi possível obter o endereço do Wi-Fi. Verifique sua conexão Wi-Fi.",
+  "hostSetupErrorPortUnavailable": "Nenhuma porta de rede disponível para criar a sala. Feche outros apps que usam a rede e tente de novo.",
+  "hostSetupErrorUnexpected": "Algo deu errado ao criar a sala. Tente de novo.",
+  "hostRoomErrorConnection": "Houve um problema de conexão com um jogador.",
+  "hostRoomWinnerTitle": "BINGO!",
+  "hostRoomWinnerMessage": "{name} venceu esta rodada!",
+  "@hostRoomWinnerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomNewRound": "Nova rodada",
+  "hostRoomEndRoom": "Encerrar sala",
+  "hostRoomWaitingDraw": "Sorteie o primeiro número para começar a rodada.",
+  "hostRoomRoundOverHint": "Rodada encerrada. Comece uma nova rodada ou encerre a sala.",
+  "drawnCount": "{count}/75 sorteados",
+  "@drawnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanErrorInvalidCode": "Código inválido. Peça um novo QR Code ao anfitrião.",
+  "scanErrorRejected": "O anfitrião não aceitou a conexão. Confira a rede Wi-Fi e o código da sala.",
+  "scanErrorTimeout": "O anfitrião não respondeu. Confira se você está na mesma rede Wi-Fi.",
+  "scanErrorUnexpected": "Erro inesperado ao entrar na sala.",
+  "playerGameLastCalled": "Última bola",
+  "playerGameNoCallsYet": "Nenhum número sorteado ainda",
+  "connectionConnecting": "Conectando ao anfitrião...",
+  "connectionReconnecting": "Conexão perdida. Reconectando...",
+  "connectionDisconnected": "Desconectado do anfitrião.",
+  "connectionRetry": "Tentar de novo",
+  "playerGameYouWon": "BINGO! Você venceu!",
+  "playerGameSomeoneWon": "{name} venceu esta rodada.",
+  "@playerGameSomeoneWon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerGameWaitNextRound": "Aguarde o anfitrião começar uma nova rodada ou volte ao início.",
+  "backToLobby": "Voltar ao início",
+  "playerGameClaimRejected": "Ainda não é bingo! Confira sua cartela e continue jogando.",
+  "playerGameRoomClosedTitle": "O anfitrião encerrou a sala",
+  "playerGameRoomClosedMessage": "Este jogo acabou. Obrigado por jogar!",
+  "playerGameLeaveTitle": "Sair do jogo?",
+  "playerGameLeaveMessage": "Você vai perder sua cartela e sair da sala.",
+  "playerGameLeave": "Sair",
+  "playerGameStay": "Ficar",
+  "playerGameShoutCooldown": "Aguarde {seconds}s",
+  "@playerGameShoutCooldown": {
+    "placeholders": {
+      "seconds": {
         "type": "int"
       }
     }

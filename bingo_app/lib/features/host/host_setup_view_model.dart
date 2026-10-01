@@ -1,16 +1,26 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
+
+/// Motivo da falha ao criar a sala. A tela traduz.
+enum HostSetupError { emptyName, noWifi, portUnavailable, unexpected }
 
 class HostSetupViewModel extends BaseViewModel {
   final IGameConnection _gameConnection;
   final INetworkInfoDriver _networkInfoDriver;
 
   String _roomName = '';
-  String? errorMessage;
+  HostSetupError? _error;
+  BingoInvite? _invite;
 
   String get roomName => _roomName;
+  HostSetupError? get error => _error;
+
+  /// Convite da última sala criada com sucesso.
+  BingoInvite? get invite => _invite;
 
   HostSetupViewModel({
     required IGameConnection gameConnection,
@@ -20,73 +30,56 @@ class HostSetupViewModel extends BaseViewModel {
 
   void onRoomNameChanged(String value) {
     _roomName = value;
+    if (_error == HostSetupError.emptyName && value.trim().isNotEmpty) {
+      _error = null;
+      notifyListeners();
+    }
   }
 
-  /// Creates a game room and returns the data for the QR code.
-  /// Returns null if there was an error.
+  /// Sobe o servidor e devolve o deep link do QR Code (`bingo://join?data=`).
+  /// Retorna `null` em caso de erro (ver [error]).
   Future<String?> createRoom() async {
-    if (roomName.trim().isEmpty) {
-      errorMessage = "O nome da sala não pode ser vazio!";
-      notifyListeners();
-      return null;
+    final name = roomName.trim();
+    if (name.isEmpty) {
+      return _fail(HostSetupError.emptyName);
     }
-    errorMessage = null;
+    _error = null;
     setLoading(true);
 
     try {
-      final deepLink = await _createLocalRoom();
-      if (deepLink != null) {
-        AnalyticsService.trackCreateRoom(roomName.trim());
+      final String? ip = await _networkInfoDriver.getWifiIP();
+      if (ip == null || ip.isEmpty) {
+        return _fail(HostSetupError.noWifi);
       }
-      return deepLink;
+
+      final String secret = JwtService.generateSecret();
+
+      // Porta 0: o sistema escolhe uma livre; a real vai no convite.
+      final int port = await _gameConnection.hostRoom(name, secret, ip, 0);
+
+      final String token = JwtService.generateRoomToken(
+        roomId: name,
+        role: 'player',
+        secret: secret,
+      );
+
+      _invite = BingoInvite(ip: ip, port: port, token: token, roomName: name);
+      unawaited(AnalyticsService.trackCreateRoom(name));
+      return _invite!.toDeepLink();
+    } on HostStartException catch (e) {
+      log('Could not start the room server: $e');
+      return _fail(HostSetupError.portUnavailable);
+    } catch (e) {
+      log('Unexpected error creating room: $e');
+      return _fail(HostSetupError.unexpected);
     } finally {
       setLoading(false);
     }
   }
 
-  Future<String?> _createLocalRoom() async {
-    // 1. Get Local IP Address
-    final String? ip = await _networkInfoDriver.getWifiIP();
-    if (ip == null) {
-      errorMessage =
-          "Não foi possível obter o IP. Verifique sua conexão Wi-Fi.";
-      notifyListeners();
-      return null;
-    }
-
-    // 2. Generate Secret for JWT signing
-    final String jwtSecret = JwtService.generateSecret();
-
-    // 3. Define Port
-    const int port = 8080; // As per sec.md
-
-    // 4. Host the room (pass JWT secret)
-    await _gameConnection.hostRoom(roomName.trim(), jwtSecret, ip, port);
-
-    // 5. Generate JWT token for this room
-    final String jwtToken = JwtService.generateRoomToken(
-      roomId: roomName.trim(),
-      role: 'player',
-      secret: jwtSecret,
-    );
-
-    // 6. Construct QR Code Payload (JSON) with JWT
-    final payload = {
-      "v": 2, // Version 2 - now using JWT
-      "t": "wifi",
-      "h": ip,
-      "p": port,
-      "token": jwtToken, // JWT token instead of simple secret
-      "n": roomName.trim(),
-    };
-
-    // 7. Encode to Base64
-    final String jsonPayload = jsonEncode(payload);
-    final String base64Payload = base64Encode(utf8.encode(jsonPayload));
-
-    // 8. Construct Deep Link
-    final String deepLink = 'bingo://join?data=$base64Payload';
-
-    return deepLink;
+  String? _fail(HostSetupError error) {
+    _error = error;
+    notifyListeners();
+    return null;
   }
 }

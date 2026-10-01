@@ -44,6 +44,7 @@ class BingoSDK {
       LocalShelfGameConnection(
         accessControl: getIt<AccessControlService>(),
         configDriver: getIt<IConfigDriver>(),
+        uuidDriver: getIt<IUUIDDriver>(),
       ),
     );
   }

@@ -69,7 +69,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hostRoomTitle => 'ビンゴルーム (ホスト)';
 
   @override
-  String get playersInRoom => '人のプレイヤー';
+  String playersInRoom(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ルームに$count人のプレイヤー',
+      zero: 'ルームにプレイヤーはいません',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get shoutedBingo => 'がビンゴと叫びました！';
@@ -216,12 +224,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String inviteShareLinkMessage(String qrData) {
-    return 'ビンゴをしに来て！ここをクリック：bingo://room/$qrData';
+    return 'ビンゴで遊ぼう！スマホからタップするだけ: $qrData';
   }
 
   @override
   String inviteConnectedPlayers(int count) {
-    return '接続中のプレイヤー：$count';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count人が接続中',
+      zero: 'まだプレイヤーは接続していません',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -391,5 +405,126 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String inviteConnectedPlayersCapacity(int count, int max) {
     return '接続中のプレイヤー: $count/$max（無料）';
+  }
+
+  @override
+  String get routeErrorMessage => 'この画面を開けませんでした。';
+
+  @override
+  String get cardFree => 'FREE';
+
+  @override
+  String get inviteDefaultRoomName => 'ビンゴルーム';
+
+  @override
+  String get hostSetupErrorEmptyName => 'ルーム名を入力してください。';
+
+  @override
+  String get hostSetupErrorNoWifi => 'Wi-Fiのアドレスを取得できませんでした。Wi-Fi接続を確認してください。';
+
+  @override
+  String get hostSetupErrorPortUnavailable =>
+      'ルームを作成できるネットワークポートがありません。ネットワークを使用している他のアプリを閉じてから、もう一度お試しください。';
+
+  @override
+  String get hostSetupErrorUnexpected => 'ルームの作成中に問題が発生しました。もう一度お試しください。';
+
+  @override
+  String get hostRoomErrorConnection => 'プレイヤーとの接続に問題が発生しました。';
+
+  @override
+  String get hostRoomWinnerTitle => 'ビンゴ！';
+
+  @override
+  String hostRoomWinnerMessage(String name) {
+    return '$nameさんがこのラウンドの勝者です！';
+  }
+
+  @override
+  String get hostRoomNewRound => '次のラウンド';
+
+  @override
+  String get hostRoomEndRoom => 'ルームを終了';
+
+  @override
+  String get hostRoomWaitingDraw => '最初の番号を引いてラウンドを始めましょう。';
+
+  @override
+  String get hostRoomRoundOverHint => 'ラウンド終了。次のラウンドを始めるか、ルームを終了してください。';
+
+  @override
+  String drawnCount(int count) {
+    return '$count/75 個';
+  }
+
+  @override
+  String get scanErrorInvalidCode => '無効なコードです。ホストに新しいQRコードをもらってください。';
+
+  @override
+  String get scanErrorRejected =>
+      'ホストが接続を受け付けませんでした。Wi-Fiネットワークとルームコードを確認してください。';
+
+  @override
+  String get scanErrorTimeout => 'ホストから応答がありません。同じWi-Fiネットワークに接続しているか確認してください。';
+
+  @override
+  String get scanErrorUnexpected => 'ルームへの参加中に予期しないエラーが発生しました。';
+
+  @override
+  String get playerGameLastCalled => '最新の番号';
+
+  @override
+  String get playerGameNoCallsYet => 'まだ番号は引かれていません';
+
+  @override
+  String get connectionConnecting => 'ホストに接続中...';
+
+  @override
+  String get connectionReconnecting => '接続が切れました。再接続中...';
+
+  @override
+  String get connectionDisconnected => 'ホストから切断されました。';
+
+  @override
+  String get connectionRetry => '再試行';
+
+  @override
+  String get playerGameYouWon => 'ビンゴ！あなたの勝ちです！';
+
+  @override
+  String playerGameSomeoneWon(String name) {
+    return '$nameさんがこのラウンドの勝者です。';
+  }
+
+  @override
+  String get playerGameWaitNextRound => 'ホストが次のラウンドを始めるのを待つか、ホームに戻ってください。';
+
+  @override
+  String get backToLobby => 'ホームに戻る';
+
+  @override
+  String get playerGameClaimRejected => 'まだビンゴではありません！カードを確認して続けましょう。';
+
+  @override
+  String get playerGameRoomClosedTitle => 'ホストがルームを終了しました';
+
+  @override
+  String get playerGameRoomClosedMessage => 'ゲームは終了しました。遊んでくれてありがとう！';
+
+  @override
+  String get playerGameLeaveTitle => 'ゲームを退出しますか？';
+
+  @override
+  String get playerGameLeaveMessage => 'カードを失い、ルームから退出します。';
+
+  @override
+  String get playerGameLeave => '退出';
+
+  @override
+  String get playerGameStay => '残る';
+
+  @override
+  String playerGameShoutCooldown(int seconds) {
+    return '$seconds秒待ってください';
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer'; // Import for log
 
 import 'package:app_settings/app_settings.dart';
+import 'package:bingo_app/features/player/player_game_args.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
@@ -60,20 +61,56 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
   Future<void> _handleScan(PlayerScanViewModel viewModel, String data) async {
     if (viewModel.isLoading) return;
 
-    final cardId = await viewModel.onQrCodeScanned(data);
+    final joined = await viewModel.onQrCodeScanned(data);
+    if (!mounted) return;
 
-    if (cardId != null && mounted) {
-      try {
-        await controller.stop();
-        if (!mounted) return;
-        final playerName = await _showNameEntryDialog(context);
-        if (playerName != null && playerName.isNotEmpty && mounted) {
-          context.go('/player/game/$cardId?name=$playerName');
-        }
-      } catch (e) {
-        log("Error stopping scanner: $e");
-      }
+    if (joined == null) {
+      final error = viewModel.error;
+      if (error != null) _showError(error);
+      return;
     }
+
+    try {
+      await controller.stop();
+    } catch (e) {
+      log('Error stopping scanner: $e');
+    }
+    if (!mounted) return;
+
+    final playerName = await _showNameEntryDialog(context);
+    if (!mounted) return;
+
+    if (playerName == null || playerName.isEmpty) {
+      // Desistiu depois de conectar: libera a vaga no host e volta a ler.
+      await viewModel.cancelJoin();
+      try {
+        await controller.start();
+      } catch (e) {
+        log('Error restarting scanner: $e');
+      }
+      return;
+    }
+
+    context.push(
+      '/player/game',
+      extra: PlayerGameArgs.fromJoined(joined, playerName: playerName),
+    );
+  }
+
+  void _showError(PlayerScanError error) {
+    final l10n = AppLocalizations.of(context)!;
+    final text = switch (error) {
+      PlayerScanError.invalidCode => l10n.scanErrorInvalidCode,
+      PlayerScanError.rejected => l10n.scanErrorRejected,
+      PlayerScanError.timeout => l10n.scanErrorTimeout,
+      PlayerScanError.unexpected => l10n.scanErrorUnexpected,
+    };
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
   }
 
   Future<String?> _showNameEntryDialog(BuildContext context) async {
@@ -89,7 +126,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
           content: TextField(
             autofocus: true,
             textCapitalization: TextCapitalization.words,
-            maxLength: 15,
+            maxLength: 24,
             decoration: InputDecoration(
               hintText: l10n.playerScanNameHint,
               border: OutlineInputBorder(
@@ -184,20 +221,12 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
 
     return ViewModelProvider<PlayerScanViewModel>(
       onReady: (viewModel) {
-        viewModel.addListener(() {
-          if (viewModel.errorMessage != null && mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(viewModel.errorMessage!),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
-          }
-        });
-
-        // Auto-connect if data is provided via deep link
-        if (widget.initialData != null) {
-          _handleScan(viewModel, widget.initialData!);
+        // Deep link bingo://join?data=...: entra na sala sem ler o QR.
+        final initialData = widget.initialData;
+        if (initialData != null && initialData.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _handleScan(viewModel, initialData);
+          });
         }
       },
       builder: (context, viewModel, child) {

@@ -11,26 +11,27 @@ import 'package:go_router/go_router.dart';
 class HostSetupScreen extends StatelessWidget {
   const HostSetupScreen({super.key});
 
+  static String _errorText(AppLocalizations l10n, HostSetupError error) {
+    return switch (error) {
+      HostSetupError.emptyName => l10n.hostSetupErrorEmptyName,
+      HostSetupError.noWifi => l10n.hostSetupErrorNoWifi,
+      HostSetupError.portUnavailable => l10n.hostSetupErrorPortUnavailable,
+      HostSetupError.unexpected => l10n.hostSetupErrorUnexpected,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context)!;
 
     return ViewModelProvider<HostSetupViewModel>(
-      onReady: (viewModel) {
-        // Listen for error messages to show a Snackbar
-        viewModel.addListener(() {
-          if (viewModel.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(viewModel.errorMessage!),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
-          }
-        });
-      },
       builder: (context, viewModel, child) {
+        final error = viewModel.error;
+        final fieldError = error == HostSetupError.emptyName
+            ? _errorText(l10n, error!)
+            : null;
+
         return BingoScaffold(
           key: const Key('host_setup_screen'),
           title: l10n.hostSetupTitle,
@@ -49,7 +50,7 @@ class HostSetupScreen extends StatelessWidget {
                         onChanged: viewModel.onRoomNameChanged,
                         decoration: InputDecoration(
                           hintText: l10n.hostSetupRoomHint,
-                          errorText: viewModel.errorMessage,
+                          errorText: fieldError,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -89,12 +90,23 @@ class HostSetupScreen extends StatelessWidget {
                         key: const Key('create_room_button'),
                         label: l10n.hostSetupCreate,
                         onPressed: () async {
+                          if (viewModel.isLoading) return;
                           final qrData = await viewModel.createRoom();
-                          if (qrData != null && context.mounted) {
-                            context.push(
-                              '/host/invite',
-                              extra: qrData,
-                            ); // Changed from .go to .push
+                          if (!context.mounted) return;
+                          if (qrData != null) {
+                            context.push('/host/invite', extra: qrData);
+                            return;
+                          }
+                          final error = viewModel.error;
+                          if (error != null &&
+                              error != HostSetupError.emptyName) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(_errorText(l10n, error)),
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.error,
+                              ),
+                            );
                           }
                         },
                       ),
