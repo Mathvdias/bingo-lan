@@ -1,4 +1,5 @@
 import 'package:bingo_app/features/host/widgets/host_draw_panel.dart';
+import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/players_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -76,5 +77,57 @@ void main() {
       expect(undone, 1);
       expect(tester.takeException(), isNull);
     });
+
+    for (final scale in [1.0, 1.3]) {
+      testWidgets('primeira bola não move o botão SORTEAR (escala $scale)', (
+        tester,
+      ) async {
+        Future<Rect> pumpAndMeasure({required bool drawn}) async {
+          await pumpApp(
+            tester,
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  HostDrawPanel(
+                    lastNumber: drawn ? 42 : null,
+                    drawnNumbersNewestFirst: drawn ? const [42] : const [],
+                    canUndo: drawn,
+                    onUndo: () {},
+                    playerCount: 2,
+                    maxPlayers: 10,
+                  ),
+                  BingoButton(
+                    key: const Key('host_draw_button'),
+                    label: 'Sortear',
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            textScale: scale,
+          );
+          expect(tester.takeException(), isNull);
+          return tester.getRect(find.byKey(const Key('host_draw_button')));
+        }
+
+        final emptyRect = await pumpAndMeasure(drawn: false);
+        expect(find.byKey(const Key('host_empty_state')), findsOneWidget);
+        expect(
+          find.byKey(const Key('host_history_placeholder')),
+          findsOneWidget,
+        );
+
+        final drawnRect = await pumpAndMeasure(drawn: true);
+        expect(find.byKey(const Key('host_last_number')), findsOneWidget);
+        expect(find.byKey(const Key('host_history')), findsOneWidget);
+
+        expect(drawnRect, equals(emptyRect));
+        // O painel inteiro também mantém o tamanho.
+        expect(
+          tester.getSize(find.byType(HostDrawPanel)),
+          equals(tester.getSize(find.byType(HostDrawPanel))),
+        );
+      });
+    }
   });
 }

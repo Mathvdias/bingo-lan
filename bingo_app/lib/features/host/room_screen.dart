@@ -9,6 +9,7 @@ import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
+import 'package:bingo_app/shared/ui/widgets/bingo_icon_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
@@ -173,10 +174,16 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
             title: l10n.hostRoomTitle,
             onBack: () => _onExit(viewModel),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.stop),
-                tooltip: l10n.hostRoomEndRoom,
-                onPressed: () => _onExit(viewModel),
+              // Disco rosa com contorno: ação destrutiva, visível de longe.
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: BingoIconButton(
+                  key: const Key('host_end_room_action'),
+                  icon: Icons.logout,
+                  label: l10n.hostRoomEndRoom,
+                  backgroundColor: AppColors.error,
+                  onPressed: () => _onExit(viewModel),
+                ),
               ),
             ],
             body: Stack(
