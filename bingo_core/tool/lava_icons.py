@@ -6,6 +6,9 @@ openlava_encode.py) sem alterá-lo: cada ícone é uma subclasse de `Subject` re
     LAVA_TOOL=~/Developer/portifolio/packages/lava_flutter/tool \
       python3 tool/lava_icons.py bingo_ball stills/bingo_ball.png frames/bingo_ball
     python3 $LAVA_TOOL/openlava_encode.py assets/lava/bingo_ball --webp 90 frames/bingo_ball/frame_*.png
+    python3 tool/lava_icons.py repack assets/lava/wifi_table frames/wifi_table   # 360x324 -> 270x243, 24 q @ 15 fps
+
+Ícones que precisam girar de verdade (globo, gaiola, dado...) são cenas 3D em `lava_sdf_icons.py`.
 
 Paleta do app (neo-brutalista pastel): amarelo #FFEB3B, azul #4FC3F7, verde #AED581, creme #FFFDF5,
 contorno #121212. Movimentos são funções de sin(2*pi*t) para que metade dos quadros repita a outra
@@ -30,6 +33,13 @@ SS = ai.SS
 YELLOW, BLUE, GREEN, CREAM, INK = (255, 235, 59), (79, 195, 247), (174, 213, 129), (255, 253, 245), (18, 18, 18)
 
 
+class BingoSubject(ai.Subject):
+    """Base dos ícones do app: objeto um pouco menor e mais alto no canvas para a sombra de
+    contato (desfocada) caber inteira em vez de ser cortada na borda de baixo."""
+    fill = 0.72
+    base_y = 0.80
+
+
 def rock(t, deg, phase=0.0):
     return deg * math.sin(2 * math.pi * t + phase)
 
@@ -39,26 +49,26 @@ def lift(t):
     return (1 - math.cos(4 * math.pi * t)) / 2
 
 
-class BingoBall(ai.Subject):
+class BingoBall(BingoSubject):
     """Bola azul com o 7: balança e quica de leve; a sombra encolhe quando ela sobe."""
-    fill = 0.78
+    fill = 0.70
 
     def motion(self, t):
         up = lift(t)
         return rock(t, 7.0), 0.0, -3.0 * up, 1 - 0.10 * up, 1 - 0.25 * up
 
 
-class BingoCage(ai.Subject):
+class BingoCage(BingoSubject):
     """Globo de bingo: giro lento simulado por um balanço mais amplo e um leve tremor das bolas."""
-    fill = 0.84
+    fill = 0.76
 
     def motion(self, t):
         return rock(t, 8.0), 0.0, 0.0, 1 + 0.03 * math.sin(2 * math.pi * t), 1.0
 
 
-class PremiumBadge(ai.Subject):
+class PremiumBadge(BingoSubject):
     """Roseta com estrela: balanço + um brilho diagonal que varre a medalha uma vez por volta."""
-    fill = 0.82
+    fill = 0.74
     SHINE = (0.55, 0.85)   # janela do brilho; fora dela o quadro é o still (tiles repetem)
 
     def __init__(self, obj):
@@ -86,9 +96,9 @@ class PremiumBadge(ai.Subject):
         return rock(t, 5.0), 0.0, -1.5 * lift(t), 1.0, 1.0
 
 
-class Trophy(ai.Subject):
+class Trophy(BingoSubject):
     """Taça com confete da paleta caindo em volta (o confete do still é descartado pelo recorte)."""
-    fill = 0.84
+    fill = 0.76
     PIECES = [  # (x0, fase, cor, largura, altura, giro, balanço)
         (0.08, 0.00, BLUE, 20, 12, 1.0, 0.04), (0.20, 0.35, GREEN, 16, 10, -1.3, 0.03),
         (0.30, 0.70, YELLOW, 18, 11, 0.8, 0.05), (0.42, 0.15, CREAM, 14, 9, -1.0, 0.03),
@@ -134,9 +144,9 @@ class Trophy(ai.Subject):
         return rock(t, 4.0), 0.0, -1.0 * lift(t), 0.62, 1.0
 
 
-class CameraScan(ai.Subject):
+class CameraScan(BingoSubject):
     """Celular com QR: uma linha azul de leitura varre a tela de cima a baixo (cometa) e volta."""
-    fill = 0.86
+    fill = 0.77
 
     def __init__(self, obj):
         super().__init__(obj)
@@ -169,13 +179,90 @@ class CameraScan(ai.Subject):
         return rock(t, 4.0), 0.0, 0.0, 1.0, 1.0
 
 
-class InfoBubble(ai.Subject):
+class InfoBubble(BingoSubject):
     """Balão de informação flutuando: balanço e sobe-desce suaves."""
-    fill = 0.84
+    fill = 0.76
 
     def motion(self, t):
         up = lift(t)
         return rock(t, 6.0), 0.0, -3.0 * up, 1 - 0.08 * up, 1 - 0.2 * up
+
+
+def component_masks(mask, min_px):
+    """Componentes conexos de `mask` (bool), como máscaras, do maior para o menor."""
+    img = Image.fromarray(mask.astype(np.uint8) * 255).copy()
+    out = []
+    ys, xs = np.where(mask)
+    for y, x in zip(ys[::7], xs[::7]):
+        if img.getpixel((int(x), int(y))) != 255:
+            continue
+        ImageDraw.floodfill(img, (int(x), int(y)), 128)
+        comp = np.array(img) == 128
+        ImageDraw.floodfill(img, (int(x), int(y)), 64)
+        if comp.sum() >= min_px:
+            out.append(comp)
+    return sorted(out, key=lambda m: -m.sum())
+
+
+class WarningSign(BingoSubject):
+    """Placa de aviso: balança e sobe-desce de leve."""
+    fill = 0.74
+
+    def motion(self, t):
+        up = lift(t)
+        return rock(t, 5.0), 0.0, -2.0 * up, 1 - 0.06 * up, 1 - 0.15 * up
+
+
+class OpenBook(BingoSubject):
+    """Livro aberto: só o balanço (as páginas são o still)."""
+    fill = 0.70
+
+    def motion(self, t):
+        return rock(t, 5.0), 0.0, -1.0 * lift(t), 1.0, 1.0
+
+
+class Globe(BingoSubject):
+    """Globo de mesa: balanço mais amplo, como se girasse no eixo."""
+    fill = 0.76
+
+    def motion(self, t):
+        return rock(t, 9.0), 0.0, 0.0, 1 + 0.02 * math.sin(2 * math.pi * t), 1.0
+
+
+class WifiRouter(BingoSubject):
+    """Roteador com bolas: os arcos azuis do sinal acendem um a um (3 níveis discretos, de
+    dentro para fora) e o conjunto balança de leve."""
+    fill = 0.76
+    LEVELS = (0.55, 0.78, 1.0)
+
+    def __init__(self, obj):
+        super().__init__(obj)
+        a = np.array(obj).astype(int)
+        r, g, b = a[..., 0], a[..., 1], a[..., 2]
+        blue = (a[..., 3] > 128) & (b > r + 70) & (b > 150) & (g > 120)
+        comps = component_masks(blue, min_px=200 * SS)
+        # arcos ordenados pela altura do topo: o mais baixo é o mais próximo do roteador
+        comps = sorted(comps, key=lambda m: -np.where(m.any(axis=1))[0].min())
+        self.arcs = comps[:3]
+        self.base = np.array(obj).astype(np.float32)
+
+    def layer(self, t):
+        n = len(self.arcs)
+        if n == 0:
+            return self.obj
+        # onda que atravessa os arcos: cada um fica num de 3 níveis
+        a = self.base.copy()
+        for i, m in enumerate(self.arcs):
+            ph = (t - i / (n + 1)) % 1.0
+            k = (1 - math.cos(2 * math.pi * ph)) / 2
+            lvl = self.LEVELS[min(2, int(k * 3))]
+            rgb = a[..., :3][m]
+            # escurece para o cinza-azulado quando "apagado"
+            a[..., :3][m] = rgb * lvl + np.array([200, 215, 225], np.float32) * (1 - lvl) * 0.5
+        return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+
+    def motion(self, t):
+        return rock(t, 4.0), 0.0, 0.0, 1.0, 1.0
 
 
 SUBJECTS = {
@@ -185,6 +272,10 @@ SUBJECTS = {
     "trophy": Trophy,
     "camera_scan": CameraScan,
     "info_bubble": InfoBubble,
+    "warning_sign": WarningSign,
+    "open_book": OpenBook,
+    "globe": Globe,
+    "wifi_table": WifiRouter,
 }
 # fundo branco com sombra assada: a sombra cinza neutra da metade de baixo vai junto com o fundo.
 KEY = {
@@ -192,6 +283,16 @@ KEY = {
     "premium_badge": dict(shadow_min=120),
     "trophy": dict(shadow_min=120),
 }
+
+
+def despill_magenta(cut, k=2.0):
+    """Luz magenta refletida pelo fundo no corpo branco e nas bolas (R e B acima de G): tira
+    `k` vezes o excesso, mais forte que o despill padrão do key_backdrop."""
+    rgb = cut[..., :3].astype(np.float32)
+    m = np.clip(np.minimum(rgb[..., 0], rgb[..., 2]) - rgb[..., 1], 0, None)
+    rgb[..., 0] -= k * m
+    rgb[..., 2] -= k * m
+    return np.dstack([np.clip(rgb, 0, 255).astype(np.uint8), cut[..., 3]])
 
 
 def despill_cream(cut):
@@ -206,7 +307,21 @@ def despill_cream(cut):
 ai.SUBJECTS.update(SUBJECTS)
 
 
+def repack(bundle_dir, out_dir):
+    """Reduz um bundle já codificado: metade dos quadros (um loop sin-simétrico aguenta 15 fps) e
+    270x243 (density 3), para o roteador de 220 px ficar abaixo de 250 KB. Depois:
+    openlava_encode.py <bundle> --fps 15 --webp 85 --density 3 <out_dir>/frame_*.png"""
+    from openlava_encode import decode_frames
+    frames, _ = decode_frames(bundle_dir)
+    os.makedirs(out_dir, exist_ok=True)
+    for i, f in enumerate(frames[::2]):
+        Image.fromarray(f).resize((270, 243), Image.LANCZOS).save(os.path.join(out_dir, f"frame_{i:03d}.png"))
+    print(f"{bundle_dir}: {len(frames)} -> {len(frames) // 2} frames em {out_dir}")
+
+
 def main():
+    if sys.argv[1] == "repack":
+        return repack(sys.argv[2], sys.argv[3])
     kind, src, out_dir = sys.argv[1], sys.argv[2], sys.argv[3]
     n = int(sys.argv[4]) if len(sys.argv) > 4 else None
     img = Image.open(src)
@@ -216,6 +331,8 @@ def main():
         cut = np.clip(key_backdrop(img, **KEY.get(kind, {})), 0, 255).astype(np.uint8)
     if kind == "camera_scan":
         cut = despill_cream(cut)
+    if kind == "wifi_table":
+        cut = despill_cream(despill_magenta(cut, 2.0))
     cut = ai.crop_to_alpha(cut)
     if kind == "trophy":
         cut = Trophy.pad_cut(cut)
