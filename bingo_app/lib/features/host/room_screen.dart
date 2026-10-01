@@ -431,6 +431,17 @@ class _WinnerOverlay extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const BingoLavaIconView(
+                key: Key('host_winner_trophy'),
+                icon: BingoLavaIcon.trophy,
+                size: 72,
+                fallback: Icon(
+                  Icons.emoji_events_rounded,
+                  size: 56,
+                  color: AppColors.text,
+                ),
+              ),
+              const SizedBox(height: 12),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: StrokedText(

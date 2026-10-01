@@ -5,6 +5,7 @@ import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
+import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -237,20 +238,27 @@ class _Hero extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.outline, width: 2),
-            boxShadow: const [
-              BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
-            ],
-          ),
-          child: const Icon(
-            Icons.workspace_premium,
-            size: 40,
-            color: AppColors.text,
+        // Roseta 3D (76 px, o mesmo que o disco amarelo de antes, que fica
+        // como placeholder até o bundle carregar).
+        BingoLavaIconView(
+          key: const Key('paywall_hero_badge'),
+          icon: BingoLavaIcon.premiumBadge,
+          size: 76,
+          fallback: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.outline, width: 2),
+              boxShadow: const [
+                BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
+              ],
+            ),
+            child: const Icon(
+              Icons.workspace_premium,
+              size: 40,
+              color: AppColors.text,
+            ),
           ),
         ),
         const SizedBox(height: 16),

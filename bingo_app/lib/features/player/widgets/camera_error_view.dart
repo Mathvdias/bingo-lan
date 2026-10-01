@@ -2,6 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
+import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -43,18 +44,25 @@ class CameraErrorView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: AppColors.warningBackground,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.outline, width: 2),
-                  ),
-                  child: const Icon(
-                    Icons.no_photography_outlined,
-                    size: 32,
-                    color: AppColors.warningText,
+                // Celular lendo um QR: é o que o usuário quer fazer; sem o
+                // bundle fica o disco de aviso do mesmo tamanho.
+                BingoLavaIconView(
+                  key: const Key('scan_hero_phone'),
+                  icon: BingoLavaIcon.cameraScan,
+                  size: 64,
+                  fallback: Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: AppColors.warningBackground,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.outline, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.no_photography_outlined,
+                      size: 32,
+                      color: AppColors.warningText,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
