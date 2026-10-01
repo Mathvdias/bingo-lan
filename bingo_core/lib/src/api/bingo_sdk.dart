@@ -11,6 +11,7 @@ import '../drivers/payment_driver.dart';
 import '../drivers/remote_config_driver.dart';
 import '../drivers/uuid_driver.dart';
 import '../logic/access_control_service.dart';
+import '../network/host_reachability.dart';
 
 /// Ponto de entrada do SDK do Bingo.
 ///
@@ -30,6 +31,7 @@ class BingoSDK {
     // network & uuid
     getIt.registerSingleton<INetworkInfoDriver>(NetworkInfoDriver());
     getIt.registerSingleton<IUUIDDriver>(UUIDDriver());
+    getIt.registerSingleton<IHostReachability>(const TcpHostReachability());
 
     await getIt<IPaymentDriver>().init();
 

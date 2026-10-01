@@ -26,14 +26,6 @@
   "lobbySubtitle": "La tua festa, le tue regole",
   "lobbyWifiShowcase": "Il Bingo funziona solo localmente! Assicurati di essere sulla stessa rete Wi-Fi dei tuoi ospiti.",
   "lobbyWifiBannerDefault": "Gioca sulla rete Wi-Fi dell'host!",
-  "lobbyWifiBannerConnected": "Rete attuale: {wifiName}\nGioca sulla rete dell'host!",
-  "@lobbyWifiBannerConnected": {
-    "placeholders": {
-      "wifiName": {
-        "type": "String"
-      }
-    }
-  },
   "buttonWifi": "WIFI",
   "lobbyHostShowcase": "Clicca qui se TU sei l'host e vuoi estrarre i numeri del bingo.",
   "lobbyJoinShowcase": "Clicca qui per scansionare il codice QR e giocare con una cartella sul tuo telefono.",
@@ -41,10 +33,11 @@
   "soloButton": "Bingo Singolo",
   "buttonConfig": "CONFIG",
   "scanWifiBannerDefault": "Connettiti alla rete Wi-Fi dell'host.",
-  "scanWifiBannerConnected": "Rete: {wifiName}\nConnettiti alla rete dell'host.",
-  "@scanWifiBannerConnected": {
+  "scanWifiBannerNoWifi": "Non sei connesso al Wi-Fi. Connettiti alla rete dell'host.",
+  "scanWifiBannerOnWifi": "Wi-Fi connesso ({ip}). Usa la stessa rete dell'host.",
+  "@scanWifiBannerOnWifi": {
     "placeholders": {
-      "wifiName": {
+      "ip": {
         "type": "String"
       }
     }
@@ -207,6 +200,20 @@
   "scanErrorRejected": "L'host non ha accettato la connessione. Controlla la rete Wi-Fi e il codice della sala.",
   "scanErrorTimeout": "L'host non ha risposto. Assicurati di essere sulla stessa rete Wi-Fi.",
   "scanErrorUnexpected": "Errore inatteso nell'entrare nella sala.",
+  "scanErrorNotOnWifi": "Non sei connesso al Wi-Fi. Connettiti alla rete dell'host e riprova.",
+  "scanErrorDifferentNetwork": "Sembri essere su un'altra rete (il tuo IP {playerIp}, host {hostIp}). Entra nella rete Wi-Fi dell'host.",
+  "@scanErrorDifferentNetwork": {
+    "placeholders": {
+      "playerIp": {
+        "type": "String"
+      },
+      "hostIp": {
+        "type": "String"
+      }
+    }
+  },
+  "scanErrorHostUnreachable": "Non riesco a raggiungere l'host. Controlla di essere sulla stessa rete Wi-Fi. Le reti ospiti, di hotel o di condominio spesso bloccano la comunicazione tra dispositivi; in quel caso usa l'hotspot dell'host.",
+  "scanErrorRoomClosed": "La stanza non è più aperta. Chiedi un nuovo invito all'host.",
   "playerGameLastCalled": "Ultimo numero",
   "playerGameNoCallsYet": "Nessun numero estratto finora",
   "connectionConnecting": "Connessione all'host...",

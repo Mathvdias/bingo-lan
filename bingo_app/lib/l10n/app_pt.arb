@@ -26,14 +26,6 @@
   "lobbySubtitle": "Sua festa, suas regras",
   "lobbyWifiShowcase": "O Bingo funciona apenas localmente! Certifique-se de estar na mesma rede Wi-Fi que seus convidados.",
   "lobbyWifiBannerDefault": "Jogue na mesma rede Wi-Fi do anfitrião!",
-  "lobbyWifiBannerConnected": "Rede atual: {wifiName}\nJogue na mesma rede do anfitrião!",
-  "@lobbyWifiBannerConnected": {
-    "placeholders": {
-      "wifiName": {
-        "type": "String"
-      }
-    }
-  },
   "buttonWifi": "WIFI",
   "lobbyHostShowcase": "Clique aqui se VOCÊ for o organizador e quiser sortear as bolas do bingo.",
   "lobbyJoinShowcase": "Clique aqui para scanear o QR Code e jogar usando uma cartela no seu celular.",
@@ -41,10 +33,11 @@
   "soloButton": "Bingo Individual",
   "buttonConfig": "CONFIG",
   "scanWifiBannerDefault": "Conecte-se à mesma rede Wi-Fi do anfitrião.",
-  "scanWifiBannerConnected": "Rede: {wifiName}\nConecte-se na rede do anfitrião.",
-  "@scanWifiBannerConnected": {
+  "scanWifiBannerNoWifi": "Você não está no Wi-Fi. Conecte-se à rede do anfitrião.",
+  "scanWifiBannerOnWifi": "Wi-Fi conectado ({ip}). Use a mesma rede do anfitrião.",
+  "@scanWifiBannerOnWifi": {
     "placeholders": {
-      "wifiName": {
+      "ip": {
         "type": "String"
       }
     }
@@ -207,6 +200,20 @@
   "scanErrorRejected": "O anfitrião não aceitou a conexão. Confira a rede Wi-Fi e o código da sala.",
   "scanErrorTimeout": "O anfitrião não respondeu. Confira se você está na mesma rede Wi-Fi.",
   "scanErrorUnexpected": "Erro inesperado ao entrar na sala.",
+  "scanErrorNotOnWifi": "Você não está no Wi-Fi. Conecte-se à mesma rede do anfitrião e tente de novo.",
+  "scanErrorDifferentNetwork": "Você parece estar em outra rede (seu IP {playerIp}, anfitrião {hostIp}). Entre na mesma rede Wi-Fi do anfitrião.",
+  "@scanErrorDifferentNetwork": {
+    "placeholders": {
+      "playerIp": {
+        "type": "String"
+      },
+      "hostIp": {
+        "type": "String"
+      }
+    }
+  },
+  "scanErrorHostUnreachable": "Não consegui falar com o anfitrião. Confira se estão na mesma rede Wi-Fi. Redes de convidados, hotel ou condomínio costumam bloquear; nesse caso use o hotspot do anfitrião.",
+  "scanErrorRoomClosed": "A sala não está mais aberta. Peça um novo convite ao anfitrião.",
   "playerGameLastCalled": "Última bola",
   "playerGameNoCallsYet": "Nenhum número sorteado ainda",
   "connectionConnecting": "Conectando ao anfitrião...",

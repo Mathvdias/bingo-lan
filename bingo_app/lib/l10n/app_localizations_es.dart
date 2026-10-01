@@ -102,11 +102,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lobbyWifiBannerDefault => '¡Juega en la red Wi-Fi del anfitrión!';
 
   @override
-  String lobbyWifiBannerConnected(String wifiName) {
-    return 'Red actual: $wifiName\n¡Juega en la red del anfitrión!';
-  }
-
-  @override
   String get buttonWifi => 'WIFI';
 
   @override
@@ -131,8 +126,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scanWifiBannerDefault => 'Conéctate a la red Wi-Fi del anfitrión.';
 
   @override
-  String scanWifiBannerConnected(String wifiName) {
-    return 'Red: $wifiName\nConéctate a la red del anfitrión.';
+  String get scanWifiBannerNoWifi =>
+      'No estás en Wi-Fi. Conéctate a la red del anfitrión.';
+
+  @override
+  String scanWifiBannerOnWifi(String ip) {
+    return 'Wi-Fi conectado ($ip). Usa la misma red que el anfitrión.';
   }
 
   @override
@@ -479,6 +478,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get scanErrorUnexpected => 'Error inesperado al entrar a la sala.';
+
+  @override
+  String get scanErrorNotOnWifi =>
+      'No estás en Wi-Fi. Conéctate a la misma red del anfitrión e inténtalo de nuevo.';
+
+  @override
+  String scanErrorDifferentNetwork(String playerIp, String hostIp) {
+    return 'Parece que estás en otra red (tu IP $playerIp, anfitrión $hostIp). Entra a la misma red Wi-Fi del anfitrión.';
+  }
+
+  @override
+  String get scanErrorHostUnreachable =>
+      'No pude comunicarme con el anfitrión. Verifica que estén en la misma red Wi-Fi. Las redes de invitados, de hotel o de edificio suelen bloquear la conexión entre dispositivos; en ese caso usa el hotspot del anfitrión.';
+
+  @override
+  String get scanErrorRoomClosed =>
+      'La sala ya no está abierta. Pide una nueva invitación al anfitrión.';
 
   @override
   String get playerGameLastCalled => 'Última bola';

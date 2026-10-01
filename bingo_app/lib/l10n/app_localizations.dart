@@ -268,12 +268,6 @@ abstract class AppLocalizations {
   /// **'Play on the host\'s Wi-Fi network!'**
   String get lobbyWifiBannerDefault;
 
-  /// No description provided for @lobbyWifiBannerConnected.
-  ///
-  /// In en, this message translates to:
-  /// **'Current network: {wifiName}\nPlay on the host\'s network!'**
-  String lobbyWifiBannerConnected(String wifiName);
-
   /// No description provided for @buttonWifi.
   ///
   /// In en, this message translates to:
@@ -316,11 +310,17 @@ abstract class AppLocalizations {
   /// **'Connect to the host\'s Wi-Fi network.'**
   String get scanWifiBannerDefault;
 
-  /// No description provided for @scanWifiBannerConnected.
+  /// No description provided for @scanWifiBannerNoWifi.
   ///
   /// In en, this message translates to:
-  /// **'Network: {wifiName}\nConnect to the host\'s network.'**
-  String scanWifiBannerConnected(String wifiName);
+  /// **'You\'re not on Wi-Fi. Connect to the host\'s network.'**
+  String get scanWifiBannerNoWifi;
+
+  /// No description provided for @scanWifiBannerOnWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi connected ({ip}). Use the same network as the host.'**
+  String scanWifiBannerOnWifi(String ip);
 
   /// No description provided for @scanManualButton.
   ///
@@ -915,6 +915,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unexpected error while joining the room.'**
   String get scanErrorUnexpected;
+
+  /// No description provided for @scanErrorNotOnWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re not on Wi-Fi. Connect to the host\'s network and try again.'**
+  String get scanErrorNotOnWifi;
+
+  /// No description provided for @scanErrorDifferentNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'You seem to be on a different network (your IP {playerIp}, host {hostIp}). Join the host\'s Wi-Fi network.'**
+  String scanErrorDifferentNetwork(String playerIp, String hostIp);
+
+  /// No description provided for @scanErrorHostUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach the host. Make sure you\'re on the same Wi-Fi network. Guest, hotel or building networks often block devices from talking to each other; in that case use the host\'s hotspot.'**
+  String get scanErrorHostUnreachable;
+
+  /// No description provided for @scanErrorRoomClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'The room is no longer open. Ask the host for a new invite.'**
+  String get scanErrorRoomClosed;
 
   /// No description provided for @playerGameLastCalled.
   ///

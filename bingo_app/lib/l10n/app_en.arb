@@ -26,14 +26,6 @@
   "lobbySubtitle": "Your party, your rules",
   "lobbyWifiShowcase": "Bingo only works locally! Make sure you are on the same Wi-Fi network as your guests.",
   "lobbyWifiBannerDefault": "Play on the host's Wi-Fi network!",
-  "lobbyWifiBannerConnected": "Current network: {wifiName}\nPlay on the host's network!",
-  "@lobbyWifiBannerConnected": {
-    "placeholders": {
-      "wifiName": {
-        "type": "String"
-      }
-    }
-  },
   "buttonWifi": "WIFI",
   "lobbyHostShowcase": "Click here if YOU are the host and want to draw the bingo balls.",
   "lobbyJoinShowcase": "Click here to scan the QR Code and play using a card on your phone.",
@@ -41,10 +33,11 @@
   "soloButton": "Solo Bingo",
   "buttonConfig": "CONFIG",
   "scanWifiBannerDefault": "Connect to the host's Wi-Fi network.",
-  "scanWifiBannerConnected": "Network: {wifiName}\nConnect to the host's network.",
-  "@scanWifiBannerConnected": {
+  "scanWifiBannerNoWifi": "You're not on Wi-Fi. Connect to the host's network.",
+  "scanWifiBannerOnWifi": "Wi-Fi connected ({ip}). Use the same network as the host.",
+  "@scanWifiBannerOnWifi": {
     "placeholders": {
-      "wifiName": {
+      "ip": {
         "type": "String"
       }
     }
@@ -207,6 +200,20 @@
   "scanErrorRejected": "The host didn't accept the connection. Check the Wi-Fi network and the room code.",
   "scanErrorTimeout": "The host didn't answer. Make sure you're on the same Wi-Fi network.",
   "scanErrorUnexpected": "Unexpected error while joining the room.",
+  "scanErrorNotOnWifi": "You're not on Wi-Fi. Connect to the host's network and try again.",
+  "scanErrorDifferentNetwork": "You seem to be on a different network (your IP {playerIp}, host {hostIp}). Join the host's Wi-Fi network.",
+  "@scanErrorDifferentNetwork": {
+    "placeholders": {
+      "playerIp": {
+        "type": "String"
+      },
+      "hostIp": {
+        "type": "String"
+      }
+    }
+  },
+  "scanErrorHostUnreachable": "Couldn't reach the host. Make sure you're on the same Wi-Fi network. Guest, hotel or building networks often block devices from talking to each other; in that case use the host's hotspot.",
+  "scanErrorRoomClosed": "The room is no longer open. Ask the host for a new invite.",
   "playerGameLastCalled": "Last called",
   "playerGameNoCallsYet": "No numbers called yet",
   "connectionConnecting": "Connecting to the host...",
