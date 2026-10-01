@@ -99,15 +99,19 @@ jobs:
 
       - name: Enviar para a Play (trilha ${{ github.event.inputs.track || 'internal' }})
         if: env.HAS_PLAY_SA == 'true'
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: ${{ env.PACKAGE_NAME }}
-          releaseFiles: bingo_app/build/app/outputs/bundle/prodRelease/app-prod-release.aab
-          track: ${{ github.event.inputs.track || 'internal' }}
-          status: completed
-          mappingFile: bingo_app/build/app/outputs/mapping/prodRelease/mapping.txt
-          debugSymbols: bingo_app/build/symbols
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check google-auth requests
+          python3 .github/scripts/play_upload.py \
+            --package "$PACKAGE_NAME" \
+            --aab bingo_app/build/app/outputs/bundle/prodRelease/app-prod-release.aab \
+            --track "${{ github.event.inputs.track || 'internal' }}" \
+            --status completed \
+            --mapping bingo_app/build/app/outputs/mapping/prodRelease/mapping.txt \
+            --symbols bingo_app/build/symbols \
+            --notes-pt "Versão ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})." \
+            --notes-en "Version ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})."
 
       - name: Aviso quando não houver service account
         if: env.HAS_PLAY_SA != 'true'
