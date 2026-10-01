@@ -39,10 +39,14 @@ void main() {
       );
       expect(undo.onPressed, isNull);
 
-      // Contador em duas linhas: "0/10" e o rótulo.
+      // Contador compacto ao lado de desfazer: "0/10" e o rótulo completo
+      // na semântica.
       expect(find.byType(PlayersCounter), findsOneWidget);
       expect(find.text('0/10'), findsOneWidget);
-      expect(find.text('jogadores (plano grátis)'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('0/10 jogadores (plano grátis)'),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     });
 
@@ -68,9 +72,9 @@ void main() {
       expect(find.byKey(const Key('host_last_number')), findsOneWidget);
       expect(find.byKey(const Key('host_history')), findsOneWidget);
       expect(find.text('7/75 sorteados'), findsOneWidget);
-      // Sem limite: só a contagem e "jogadores conectados".
+      // Sem limite: só a contagem; "3 jogadores conectados" na semântica.
       expect(find.text('3'), findsOneWidget);
-      expect(find.text('jogadores conectados'), findsOneWidget);
+      expect(find.bySemanticsLabel('3 jogadores conectados'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('host_undo_button')));
       await tester.pump();
