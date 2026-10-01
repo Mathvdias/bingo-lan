@@ -252,43 +252,9 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
                         child: RepaintBoundary(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: DefaultTabController(
-                              length: 2,
-                              child: Column(
-                                children: [
-                                  // Rótulos curtos (<= 12 caracteres) com ícone;
-                                  // cores e indicador vêm do TabBarThemeData.
-                                  TabBar(
-                                    tabs: [
-                                      Tab(
-                                        key: const Key('host_tab_virtual'),
-                                        icon: const Icon(Icons.casino),
-                                        text: l10n.virtualGlobe,
-                                      ),
-                                      Tab(
-                                        key: const Key('host_tab_manual'),
-                                        icon: const Icon(Icons.edit),
-                                        text: l10n.manualGlobe,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 240, // Altura fixa dos controles
-                                    child: TabBarView(
-                                      children: [
-                                        _VirtualGlobeControl(
-                                          viewModel: viewModel,
-                                          canDraw: canDraw,
-                                        ),
-                                        _ManualInputControl(
-                                          viewModel: viewModel,
-                                          enabled: canDraw,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: _DrawModeTabs(
+                              viewModel: viewModel,
+                              canDraw: canDraw,
                             ),
                           ),
                         ),
@@ -313,6 +279,89 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
 }
 
 /// Aba "Virtual": sortear, globo automático (premium) e pausar/retomar.
+/// Abas "Virtual" / "Manual" com ícones Lava no estilo Airbnb: o dado rola e
+/// o lápis escreve UMA vez quando a aba é selecionada; a outra aba fica no
+/// primeiro quadro, acinzentada. Cores e indicador vêm do TabBarThemeData.
+class _DrawModeTabs extends StatefulWidget {
+  final HostRoomViewModel viewModel;
+  final bool canDraw;
+
+  const _DrawModeTabs({required this.viewModel, required this.canDraw});
+
+  @override
+  State<_DrawModeTabs> createState() => _DrawModeTabsState();
+}
+
+class _DrawModeTabsState extends State<_DrawModeTabs>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabs = TabController(length: 2, vsync: this);
+
+  @override
+  void dispose() {
+    _tabs.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      children: [
+        // Rótulos curtos (<= 12 caracteres) com ícone. `index` muda no toque,
+        // antes da página deslizar: o ícone começa a tocar na hora.
+        AnimatedBuilder(
+          animation: _tabs,
+          builder: (context, _) {
+            return TabBar(
+              controller: _tabs,
+              tabs: [
+                Tab(
+                  key: const Key('host_tab_virtual'),
+                  icon: BingoLavaTabIcon(
+                    key: const Key('host_tab_virtual_icon'),
+                    icon: BingoLavaIcon.dice,
+                    selected: _tabs.index == 0,
+                    size: 32,
+                    fallback: const Icon(Icons.casino),
+                  ),
+                  text: l10n.virtualGlobe,
+                ),
+                Tab(
+                  key: const Key('host_tab_manual'),
+                  icon: BingoLavaTabIcon(
+                    key: const Key('host_tab_manual_icon'),
+                    icon: BingoLavaIcon.pencil,
+                    selected: _tabs.index == 1,
+                    size: 32,
+                    fallback: const Icon(Icons.edit),
+                  ),
+                  text: l10n.manualGlobe,
+                ),
+              ],
+            );
+          },
+        ),
+        SizedBox(
+          height: 240, // Altura fixa dos controles
+          child: TabBarView(
+            controller: _tabs,
+            children: [
+              _VirtualGlobeControl(
+                viewModel: widget.viewModel,
+                canDraw: widget.canDraw,
+              ),
+              _ManualInputControl(
+                viewModel: widget.viewModel,
+                enabled: widget.canDraw,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _VirtualGlobeControl extends StatelessWidget {
   final HostRoomViewModel viewModel;
   final bool canDraw;
