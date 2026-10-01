@@ -11,7 +11,7 @@
 
 | Branch | Evento | Trilha | Nome da versão | Quem recebe |
 | --- | --- | --- | --- | --- |
-| `develop` | todo push (merge de PR) | **alpha** (teste fechado) | `<pubspec>-alpha.<run_number>`, ex. `1.0.5-alpha.14` | grupo bingo-testadores, automaticamente |
+| `develop` | todo push (merge de PR) | **alpha** (teste fechado) | `<pubspec>-alpha.<run_number>`, ex. `1.0.5-alpha.14`; flavor `alpha` (ícone BETA, tela de flags) | grupo bingo-testadores, automaticamente |
 | `main` | tag `vX.Y.Z` | `RELEASE_TRACK` do workflow: `internal` hoje, `production` quando a Play liberar | `X.Y.Z` (da tag) | testadores de licença (interna) / público (produção) |
 
 O `versionCode` é o `run_number` do workflow, único e crescente nos dois caminhos. Regras:

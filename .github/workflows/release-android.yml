@@ -1,8 +1,9 @@
 name: Release Android
 
-# Dois caminhos para a Play, mesmo App Bundle prod assinado:
+# Dois caminhos para a Play, mesmo pacote e mesma assinatura:
 #   - push na `develop`  → trilha ALPHA (teste fechado, grupo de testadores),
-#     nome da versão `<pubspec>-alpha.<run_number>`;
+#     flavor `alpha` (ícone BETA + ferramentas de debug), nome da versão
+#     `<pubspec>-alpha.<run_number>`;
 #   - tag vX.Y.Z na `main` → trilha de lançamento (RELEASE_TRACK abaixo;
 #     `internal` até a conta ganhar acesso à produção, depois `production`).
 # O versionCode é o run_number deste workflow, único e crescente nos dois
@@ -34,7 +35,7 @@ env:
 
 jobs:
   aab:
-    name: App Bundle prod
+    name: App Bundle
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -66,6 +67,9 @@ jobs:
           INPUT_TRACK: ${{ github.event.inputs.track }}
         run: |
           PUBSPEC=$(grep '^version:' bingo_app/pubspec.yaml | sed -E 's/version: *([0-9.]+).*/\1/')
+          # Flavor prod por padrão; a develop usa o flavor alpha (mesmo pacote,
+          # ícone BETA, tela de feature flags).
+          FLAVOR="prod"
           if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
             NAME="${GITHUB_REF_NAME#v}"
             TRACK="$RELEASE_TRACK"
@@ -74,17 +78,26 @@ jobs:
             NAME="$PUBSPEC"
             TRACK="$INPUT_TRACK"
             LABEL="Versão"
+            [[ "$TRACK" == "alpha" ]] && FLAVOR="alpha"
           else
             # push na develop
             NAME="${PUBSPEC}-alpha.${{ github.run_number }}"
             TRACK="$ALPHA_TRACK"
             LABEL="Alpha"
+            FLAVOR="alpha"
+          fi
+          if [[ "$FLAVOR" == "alpha" ]]; then
+            TARGET="lib/main_alpha.dart"
+          else
+            TARGET="lib/main.dart"
           fi
           echo "name=$NAME"   >> "$GITHUB_OUTPUT"
           echo "number=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
           echo "track=$TRACK" >> "$GITHUB_OUTPUT"
           echo "label=$LABEL" >> "$GITHUB_OUTPUT"
-          echo "Build $NAME ($GITHUB_RUN_NUMBER) → trilha $TRACK"
+          echo "flavor=$FLAVOR" >> "$GITHUB_OUTPUT"
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "Build $NAME ($GITHUB_RUN_NUMBER) → trilha $TRACK, flavor $FLAVOR"
 
       - name: Keystore e key.properties
         working-directory: bingo_app/android
@@ -106,16 +119,17 @@ jobs:
         run: |
           test -n "$RC_ANDROID_KEY" || { echo "::error::Secret RC_ANDROID_KEY vazio: o paywall não funcionaria no build prod"; exit 1; }
 
-      - name: Build AAB (prod, ofuscado)
+      - name: Build AAB (${{ steps.ver.outputs.flavor }}, ofuscado)
         working-directory: bingo_app
         run: |
           flutter pub get
           mkdir -p build/symbols
-          flutter build appbundle --release --flavor prod -t lib/main.dart \
+          flutter build appbundle --release \
+            --flavor "${{ steps.ver.outputs.flavor }}" -t "${{ steps.ver.outputs.target }}" \
             --build-name="${{ steps.ver.outputs.name }}" \
             --build-number="${{ steps.ver.outputs.number }}" \
             --obfuscate --split-debug-info=build/symbols \
-            --dart-define=ENVIRONMENT=prod \
+            --dart-define=ENVIRONMENT=${{ steps.ver.outputs.flavor }} \
             --dart-define=RC_ANDROID_KEY="${{ secrets.RC_ANDROID_KEY }}" \
             --dart-define=RC_IOS_KEY="${{ secrets.RC_IOS_KEY }}"
 
@@ -123,8 +137,8 @@ jobs:
         with:
           name: bingo-${{ steps.ver.outputs.name }}-${{ steps.ver.outputs.number }}
           path: |
-            bingo_app/build/app/outputs/bundle/prodRelease/app-prod-release.aab
-            bingo_app/build/app/outputs/mapping/prodRelease/mapping.txt
+            bingo_app/build/app/outputs/bundle/${{ steps.ver.outputs.flavor }}Release/app-${{ steps.ver.outputs.flavor }}-release.aab
+            bingo_app/build/app/outputs/mapping/${{ steps.ver.outputs.flavor }}Release/mapping.txt
             bingo_app/build/symbols
           retention-days: 30
 
@@ -136,10 +150,10 @@ jobs:
           python3 -m pip install --quiet --disable-pip-version-check google-auth requests
           python3 .github/scripts/play_upload.py \
             --package "$PACKAGE_NAME" \
-            --aab bingo_app/build/app/outputs/bundle/prodRelease/app-prod-release.aab \
+            --aab bingo_app/build/app/outputs/bundle/${{ steps.ver.outputs.flavor }}Release/app-${{ steps.ver.outputs.flavor }}-release.aab \
             --track "${{ steps.ver.outputs.track }}" \
             --status completed \
-            --mapping bingo_app/build/app/outputs/mapping/prodRelease/mapping.txt \
+            --mapping bingo_app/build/app/outputs/mapping/${{ steps.ver.outputs.flavor }}Release/mapping.txt \
             --notes-pt "${{ steps.ver.outputs.label }} ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})." \
             --notes-en "${{ steps.ver.outputs.label == 'Alpha' && 'Alpha' || 'Version' }} ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})."
 
