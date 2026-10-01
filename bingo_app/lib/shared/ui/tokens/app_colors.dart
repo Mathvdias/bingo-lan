@@ -16,6 +16,7 @@ class AppColors {
   static const Color textSecondary = Color(
     0xFF757575,
   ); // Gray for secondary text
+  static const Color disabled = Color(0xFFBDBDBD); // Botões desabilitados
 
   // Bingo Header Pastels
   static const Color pastelRed = Color(0xFFEF9A9A);

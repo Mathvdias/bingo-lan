@@ -6,12 +6,17 @@ import 'package:flutter/widget_previews.dart';
 class BingoGrid extends StatelessWidget {
   final BingoCard bingoCard;
   final Set<int> markedNumbers;
+
+  /// Números já cantados pelo host: a célula ganha um anel discreto, mas a
+  /// marcação continua manual.
+  final Set<int> calledNumbers;
   final ValueChanged<int>? onNumberTapped;
 
   const BingoGrid({
     super.key,
     required this.bingoCard,
     required this.markedNumbers,
+    this.calledNumbers = const {},
     this.onNumberTapped,
   });
 
@@ -37,6 +42,7 @@ class BingoGrid extends StatelessWidget {
         return CardCell(
           number: number,
           state: state,
+          called: number != 0 && calledNumbers.contains(number),
           onTap: onNumberTapped == null || number == 0
               ? null
               : () => onNumberTapped!(number),

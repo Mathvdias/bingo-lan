@@ -9,11 +9,15 @@ class BingoButton extends StatefulWidget {
   final VoidCallback onPressed;
   final Color color;
 
+  /// Desabilitado: fica cinza e ignora toques.
+  final bool enabled;
+
   const BingoButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.color = AppColors.primary,
+    this.enabled = true,
   });
 
   @override
@@ -58,18 +62,20 @@ class _BingoButtonState extends State<BingoButton> {
             blurRadius: 0,
           );
 
+    final enabled = widget.enabled;
+
     return RepaintBoundary(
       child: GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
+        onTapDown: enabled ? _onTapDown : null,
+        onTapUp: enabled ? _onTapUp : null,
+        onTapCancel: enabled ? _onTapCancel : null,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
           transform: _isPressed
               ? Matrix4.translationValues(4, 4, 0)
               : Matrix4.translationValues(0, 0, 0),
           decoration: BoxDecoration(
-            color: widget.color,
+            color: enabled ? widget.color : AppColors.disabled,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.outline, width: 2),
             boxShadow: [hardShadow],
