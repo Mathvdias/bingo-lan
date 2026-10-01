@@ -83,7 +83,10 @@ class _BingoButtonState extends State<BingoButton> {
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           // Uma linha, centralizada: rótulos longos ou escala de texto grande
           // encolhem em vez de quebrar em duas linhas alinhadas à esquerda.
+          // heightFactor: 1 — o botão tem a altura do texto mesmo com altura
+          // máxima limitada (rodapé de Scaffold); sem isso o Center estica.
           child: Center(
+            heightFactor: 1,
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
