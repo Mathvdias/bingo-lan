@@ -1,12 +1,15 @@
 import 'package:bingo_app/features/host/host_room_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
+import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
+import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:developer';
 
 class HostRoomScreen extends StatelessWidget {
   const HostRoomScreen({super.key});
@@ -48,7 +51,20 @@ class HostRoomScreen extends StatelessWidget {
   ) async {
     final shouldPop = await _showExitDialog(context, viewModel);
     if (shouldPop && context.mounted) {
-      context.go('/lobby');
+      final isPremium = await SubscriptionService.checkSubscriptionStatus();
+      if (RevenueConfigService.adsEnabled && !isPremium) {
+        AdService.showInterstitialAd(
+          onAdDismissed: () {
+            if (context.mounted) {
+              context.go('/lobby');
+            }
+          },
+        );
+      } else {
+        if (context.mounted) {
+          context.go('/lobby');
+        }
+      }
     }
   }
 
@@ -58,6 +74,12 @@ class HostRoomScreen extends StatelessWidget {
 
     return ViewModelProvider<HostRoomViewModel>(
       onReady: (viewModel) {
+        if (RevenueConfigService.adsEnabled) {
+          AdService.loadInterstitialAd(
+            onAdLoaded: () => log('HostRoomScreen: Interstitial ad loaded.'),
+            onAdFailedToLoad: (error) => log('HostRoomScreen: Interstitial ad failed to load: $error'),
+          );
+        }
         viewModel.actionStream.listen((event) {
           if (!context.mounted) return;
           switch (event) {
