@@ -182,6 +182,39 @@ void main() {
       expect(vm.drawnNumbers, [12]);
     });
 
+    testWidgets('teclado aberto: o campo manual sobe acima do teclado', (
+      tester,
+    ) async {
+      await _pumpView(tester);
+      await tester.tap(tabManual);
+      await tester.pumpAndSettle();
+
+      const keyboard = 300.0;
+      tester.view.viewInsets = const FakeViewPadding(bottom: keyboard);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+
+      final field = find.byKey(const Key('host_manual_field'));
+      final confirm = find.byKey(const Key('host_manual_confirm'));
+      expect(field.hitTestable(), findsOneWidget);
+      expect(
+        tester.getRect(field).bottom,
+        lessThanOrEqualTo(_screen.height - keyboard),
+        reason: 'campo manual atrás do teclado',
+      );
+      expect(
+        tester.getRect(confirm).bottom,
+        lessThanOrEqualTo(_screen.height - keyboard),
+      );
+      expect(tester.takeException(), isNull);
+
+      // Teclado fecha: rodapé volta para o fim da tela.
+      tester.view.resetViewInsets();
+      await tester.pumpAndSettle();
+      final footer = tester.getRect(find.byKey(const Key('host_draw_footer')));
+      expect(footer.bottom, _screen.height);
+    });
+
     testWidgets('bingo validado: camada cobre tudo e o rodapé sai', (
       tester,
     ) async {
