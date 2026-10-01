@@ -1,11 +1,19 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
+/// Cartão que vira ao toque: frente com uma imagem ([image]) ou um widget
+/// ([hero], por exemplo um ícone Lava), verso com [text].
 class FlippableCard extends StatelessWidget {
-  final String image;
+  final String? image;
+  final Widget? hero;
   final String text;
 
-  const FlippableCard({super.key, required this.image, required this.text});
+  const FlippableCard({
+    super.key,
+    this.image,
+    this.hero,
+    required this.text,
+  }) : assert(image != null || hero != null, 'image ou hero');
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +26,15 @@ class FlippableCard extends StatelessWidget {
             elevation: 4.0,
             child: Stack(
               children: [
-                Image.asset(
-                  image,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
+                if (hero != null)
+                  SizedBox.expand(child: Center(child: hero))
+                else
+                  Image.asset(
+                    image!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
                 const Positioned(
                   top: 8,
                   right: 8,
