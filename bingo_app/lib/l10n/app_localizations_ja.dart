@@ -280,9 +280,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get playerScanCameraHint => 'ホストのQRコードにカメラを向けてください';
 
   @override
-  String get splashSubtitle => '最も楽しい遊び方！';
-
-  @override
   String get paywallHeroTitle => 'プレミアムになる';
 
   @override

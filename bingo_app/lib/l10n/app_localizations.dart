@@ -598,12 +598,6 @@ abstract class AppLocalizations {
   /// **'Point your camera at the Host\'s QR Code'**
   String get playerScanCameraHint;
 
-  /// No description provided for @splashSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'The most fun way to play!'**
-  String get splashSubtitle;
-
   /// No description provided for @paywallHeroTitle.
   ///
   /// In en, this message translates to:

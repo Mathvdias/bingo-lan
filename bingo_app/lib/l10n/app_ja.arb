@@ -109,7 +109,6 @@
   "hostSetupWifiWarning": "警告：すべてのプレーヤーは、ルームに参加するには同じWi-Fiネットワークに接続されている必要があります。",
   "hostSetupWifiDesc": "同じWi-Fiネットワーク上の人々と遊ぶ。パーティーや集まりに最適です。",
   "playerScanCameraHint": "ホストのQRコードにカメラを向けてください",
-  "splashSubtitle": "最も楽しい遊び方！",
   "paywallHeroTitle": "プレミアムになる",
   "paywallHeroSubtitle": "もっと大きなパーティーを、制限も広告もなしで。",
   "paywallBenefitUnlimitedPlayers": "1ルームの参加人数が無制限",

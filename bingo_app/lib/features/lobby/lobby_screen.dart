@@ -1,4 +1,5 @@
 import 'package:bingo_app/l10n/app_localizations.dart';
+import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
@@ -18,6 +19,10 @@ class LobbyScreen extends StatefulWidget {
 }
 
 class _LobbyScreenState extends State<LobbyScreen> {
+  /// O App Open é pré-carregado uma única vez por execução do app, na primeira
+  /// montagem do lobby (que agora é a tela inicial, sem splash Flutter).
+  static bool _appOpenPreloadRequested = false;
+
   final GlobalKey _hostKey = GlobalKey();
   final GlobalKey _joinKey = GlobalKey();
   final GlobalKey _soloKey = GlobalKey();
@@ -25,6 +30,12 @@ class _LobbyScreenState extends State<LobbyScreen> {
   @override
   void initState() {
     super.initState();
+    if (!_appOpenPreloadRequested) {
+      _appOpenPreloadRequested = true;
+      // O AdService exibe uma única vez quando carregar (nunca para premium
+      // nem sobre o paywall).
+      AdService.preloadAppOpenAd();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkFirstLaunch();
     });

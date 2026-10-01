@@ -296,9 +296,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pointez votre appareil photo sur le code QR de l\'hôte';
 
   @override
-  String get splashSubtitle => 'La façon la plus amusante de jouer !';
-
-  @override
   String get paywallHeroTitle => 'Passez Premium';
 
   @override

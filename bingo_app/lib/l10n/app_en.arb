@@ -109,7 +109,6 @@
   "hostSetupWifiWarning": "Warning: All players MUST be connected to the SAME WI-FI NETWORK to join the room.",
   "hostSetupWifiDesc": "Play with people on the same Wi-Fi network. Ideal for parties and gatherings.",
   "playerScanCameraHint": "Point your camera at the Host's QR Code",
-  "splashSubtitle": "The most fun way to play!",
   "paywallHeroTitle": "Go Premium",
   "paywallHeroSubtitle": "Bigger parties, zero limits, no interruptions.",
   "paywallBenefitUnlimitedPlayers": "Unlimited players per room",

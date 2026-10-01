@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bingo_app/features/player/player_game_args.dart';
-import 'package:bingo_app/features/splash/splash_screen.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_core/bingo_core.dart';
@@ -38,7 +37,7 @@ String? _deepLinkRedirect(BuildContext context, GoRouterState state) {
 
 /// The route configuration for the application.
 final GoRouter router = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: '/lobby',
   debugLogDiagnostics: kDebugMode,
   observers: [AnalyticsService.observer],
   redirect: _deepLinkRedirect,
@@ -59,8 +58,10 @@ final GoRouter router = GoRouter(
     );
   },
   routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
-    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
+    // A splash nativa (flutter_native_splash) é a única splash: o app abre
+    // direto no lobby. `/splash` segue válido só como redirecionamento.
+    GoRoute(path: '/', redirect: (context, state) => '/lobby'),
+    GoRoute(path: '/splash', redirect: (context, state) => '/lobby'),
     GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
     GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
 

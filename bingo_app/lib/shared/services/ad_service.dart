@@ -201,7 +201,7 @@ class AdService {
 
   // ------------------------------------------------------------------- App Open
 
-  /// Pré-carrega o App Open na splash e exibe uma única vez quando carregar.
+  /// Pré-carrega o App Open no lobby e exibe uma única vez quando carregar.
   static Future<void> preloadAppOpenAd() async {
     if (_appOpenShown || _appOpenLoading || _appOpenAd != null) return;
     final unitId = appOpenAdUnitId;
