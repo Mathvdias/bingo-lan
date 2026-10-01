@@ -3,8 +3,10 @@
 Cada cena é um objeto 3D de verdade, então ele pode GIRAR no próprio eixo, virar uma página ou
 rolar um dado - coisa que o still + balanço de `lava_icons.py` não faz. O globo do Sobre e o balão
 de ajuda já passaram por aqui e saíram: o globo voltou ao still com um balanço discreto (girar no
-canto de um título distraía) e o botão de ajuda ficou estático. Formas gordas e poucas
-(os ícones aparecem com 28 a 120 px), paleta do app.
+canto de um título distraía) e o botão de ajuda ficou estático. A gaiola de bingo (`BingoCage`,
+hastes finas de ouro girando num pedestal de madeira) continua aqui como candidata reserva em
+`assets/lava_candidates/bingo_cage_sdf` (fora do pubspec): o que o app usa é o still de
+`lava_icons.py`. Formas gordas e poucas (os ícones aparecem com 28 a 120 px), paleta do app.
 
     LAVA_TOOL=~/Developer/portifolio/packages/lava_flutter/tool
     python3 tool/lava_sdf_icons.py open_book --still 0.1 preview.png      # look-dev (~3 s)
@@ -159,62 +161,94 @@ class OpenBook(Scene):
 
 # --------------------------------------------------------------------------------------------
 class BingoCage(Scene):
-    """Bingo cage: a yellow ball of thick ribs turning on a horizontal axle over a black stand,
-    four coloured balls tumbling inside. The ribs repeat every 30 degrees, so a 120 degree turn
-    per loop is seamless."""
+    """Bingo cage: a sphere of eight thin round-section gold meridians and two rings turning on a
+    horizontal axle over a rounded wooden stand, a small crank on the right, four pastel balls
+    bouncing inside. The rib pattern repeats every 45 degrees, so a quarter turn per loop is
+    seamless and reads as a slow, steady spin. Everything else (crank: two turns per loop, balls:
+    an even number of beats) has period 1/2, so the second half of the loop is pixel-identical to
+    the first and the tile packer stores it once."""
 
     frames, fps = 48, 24
-    view_height, look_at, pitch = 3.35, (0.0, 1.30, 0.0), 14.0
+    ss = 4                                 # thin ribs: one more supersample than the other scenes
+    view_height, look_at, pitch = 3.35, (0.0, 1.22, 0.0), 14.0
     bound_radius = 2.4
     shadow_strength = 0.30
-    CENTRE = (0.0, 1.38, 0.0)
-    YAW = math.radians(-28.0)
-    TURN = math.radians(120.0)
-    R, RIB = 1.0, 0.085
-    BALLS = [(-0.42, 0.00, BLUE), (-0.12, 0.33, GREEN), (0.18, 0.66, PINK), (0.46, 0.17, CREAM)]
+    CENTRE = (0.0, 1.34, 0.0)
+    YAW = math.radians(-26.0)
+    TURN = math.radians(90.0)
+    R, RIB, RING = 1.0, 0.060, 0.052
+    BALL_R = 0.21
+    GOLD_HI, GOLD_LO = srgb(255, 236, 90), srgb(214, 168, 20)
+    WOOD, WOOD_LIGHT = srgb(120, 78, 48), srgb(158, 108, 68)
+    BALLS = [(-0.50, 0.00, BLUE), (-0.17, 0.31, GREEN), (0.17, 0.62, PINK), (0.50, 0.17, CREAM)]
 
     def __init__(self):
         self.ball_col = np.array([c for _, _, c in self.BALLS], F)
         self.materials = (
-            Material(YELLOW, spec=0.55, shininess=45.0, rim=0.20),
-            Material(INK, spec=0.45, shininess=36.0, rim=0.12),
-            Material(self.ball_paint, spec=0.7, shininess=60.0, rim=0.25),
+            Material(self.gold, spec=0.95, shininess=70.0, rim=0.22),
+            Material(self.wood, spec=0.30, shininess=28.0, rim=0.12),
+            Material(INK, spec=0.45, shininess=36.0, rim=0.10),
+            Material(self.ball_paint, spec=0.55, shininess=48.0, rim=0.22),
         )
 
     def frame_a(self, p):
         return sdf.rot_y(p - np.asarray(self.CENTRE, F), -self.YAW)
 
     def balls(self, t):
+        """Each ball sits low in the cage and hops on its own beat: the hop is |sin| (a bounce,
+        sharp at the floor, soft at the top) with an integer number of beats per loop, the drift
+        along and across the axle is a sin orbit; everything is periodic in t."""
         out = []
-        for x, ph, _ in self.BALLS:
-            a = -0.5 * math.pi + 0.55 * math.sin(TAU * (t + ph))
-            r = 0.64 - 0.16 * max(0.0, math.sin(TAU * (t + ph) + 1.2))
-            out.append([x + 0.05 * math.sin(TAU * (t + ph) * 1.0), r * math.sin(a), r * math.cos(a)])
+        for i, (x, ph, _) in enumerate(self.BALLS):
+            beats = 2 if i % 2 == 0 else 4
+            hop = abs(math.sin(math.pi * beats * (t + ph)))
+            y = -0.66 + 0.26 * hop
+            x = x + 0.06 * math.sin(TAU * 2 * (t + ph))
+            z = (0.20 if i % 2 else -0.16) + 0.08 * math.sin(TAU * 2 * (t + ph) + 0.8 + i)
+            out.append([x, y, z])
         return np.array(out, F)
 
+    def fold(self, t):
+        """Phase inside the half loop, quantised to the frame grid so that frame i and frame
+        i + frames/2 evaluate bit-identical geometry (a 45 degree rotation of the same ribs would
+        differ by float noise and the packer would store every tile twice)."""
+        return (round(t * self.frames) % (self.frames // 2)) / self.frames
+
     def parts(self, p, t):
+        t = self.fold(t)
         a = self.frame_a(p)
         c = sdf.rot_x(a, -self.TURN * t)
         ribs = None
-        for k in range(6):
-            rib = sd_torus_z(sdf.rot_x(c, k * math.pi / 6), v3(0, 0, 0), self.R, self.RIB)
+        for k in range(4):
+            rib = sd_torus_z(sdf.rot_x(c, k * math.pi / 4), v3(0, 0, 0), self.R, self.RIB)
             ribs = rib if ribs is None else np.minimum(ribs, rib)
-        ribs = np.minimum(ribs, sd_torus_x(c, v3(0, 0, 0), self.R, self.RIB))
-        side = math.sqrt(self.R ** 2 - 0.58 ** 2)
-        for sx in (-0.58, 0.58):
-            ribs = np.minimum(ribs, sd_torus_x(c, v3(sx, 0, 0), side, self.RIB))
-        axle = sdf.sd_capsule(a, v3(-1.32, 0, 0), v3(1.32, 0, 0), 0.07)
-        crank = np.minimum(sdf.sd_capsule(c, v3(1.28, 0, 0), v3(1.28, 0.40, 0), 0.06),
-                           sdf.sd_capsule(c, v3(1.28, 0.40, 0), v3(1.62, 0.40, 0), 0.08))
-        feet = [sdf.rot_y(np.array([[sx, 0.0, 0.0]], F), self.YAW)[0] + np.asarray(self.CENTRE, F) for sx in (-1.32, 1.32)]
-        posts = np.minimum.reduce([sdf.sd_capsule(p, f, v3(f[0], 0.12, f[2]), 0.10) for f in feet])
-        bar = sdf.sd_capsule(p, v3(feet[0][0], 0.13, feet[0][2]), v3(feet[1][0], 0.13, feet[1][2]), 0.13)
-        stand = np.minimum.reduce([axle, crank, posts, bar])
-        balls = sd_spheres(a, self.balls(t), np.full(4, 0.24, F))
-        return [(ribs, 0), (stand, 1), (balls, 2)]
+        for sx in (-0.52, 0.52):
+            ribs = np.minimum(ribs, sd_torus_x(c, v3(sx, 0, 0), math.sqrt(self.R ** 2 - sx ** 2), self.RING))
+        hubs = sd_spheres(c, np.array([[-1.0, 0, 0], [1.0, 0, 0]], F), np.full(2, 0.085, F))
+        ribs = np.minimum(ribs, hubs)
+        axle = sdf.sd_capsule(a, v3(-1.30, 0, 0), v3(1.30, 0, 0), 0.05)
+        k = sdf.rot_x(a, -TAU * 2 * t)          # crank: two turns per loop
+        arm = sdf.sd_capsule(k, v3(1.28, 0, 0), v3(1.28, 0.34, 0), 0.045)
+        knob = sdf.sd_capsule(k, v3(1.30, 0.34, 0), v3(1.56, 0.34, 0), 0.075)
+        feet = [sdf.rot_y(np.array([[sx, 0.0, 0.0]], F), self.YAW)[0] + np.asarray(self.CENTRE, F) for sx in (-1.22, 1.22)]
+        posts = np.minimum.reduce([sd_box(sdf.rot_y(p - v3(f[0], 0.0, f[2]), -self.YAW), v3(0, 0.74, 0),
+                                          (0.075, 0.62, 0.11), 0.05) for f in feet])
+        plinth = sd_box(sdf.rot_y(p, -self.YAW), v3(0, 0.11, 0), (1.42, 0.11, 0.58), 0.07)
+        wood = np.minimum(posts, plinth)
+        wood = np.minimum(wood, knob)
+        balls = sd_spheres(a, self.balls(t), np.full(4, self.BALL_R, F))
+        return [(ribs, 0), (wood, 1), (np.minimum(axle, arm), 2), (balls, 3)]
+
+    def gold(self, scene, p, n, t):
+        k = np.clip(0.5 + 0.5 * n[:, 1], 0.0, 1.0)
+        return mix(const(self.GOLD_LO, p), self.GOLD_HI, k)
+
+    def wood(self, scene, p, n, t):
+        k = np.clip(0.4 + 0.6 * n[:, 1], 0.0, 1.0)
+        return mix(const(self.WOOD, p), self.WOOD_LIGHT, k)
 
     def ball_paint(self, scene, p, n, t):
-        return self.ball_col[nearest(self.frame_a(p), self.balls(t))]
+        return self.ball_col[nearest(self.frame_a(p), self.balls(self.fold(t)))]
 
 
 # --------------------------------------------------------------------------------------------
@@ -452,11 +486,12 @@ def main(argv):
     scene = SCENES[name]()
     if "--still" in argv:
         at = argv.index("--still")
-        Image.fromarray(sdf.render_frame(scene, float(argv[at + 1]), 3)).save(argv[at + 2])
+        Image.fromarray(sdf.render_frame(scene, float(argv[at + 1]), getattr(scene, "ss", 3))).save(argv[at + 2])
         return
     frames_dir = argv[1]
     os.makedirs(frames_dir, exist_ok=True)
-    jobs = [(name, i, scene.frames, 3, os.path.join(frames_dir, f"frame_{i:03d}.png")) for i in range(scene.frames)]
+    ss = getattr(scene, "ss", 3)
+    jobs = [(name, i, scene.frames, ss, os.path.join(frames_dir, f"frame_{i:03d}.png")) for i in range(scene.frames)]
     with Pool(max(1, (os.cpu_count() or 2) - 2)) as pool:
         paths = pool.map(_render, jobs)
     print(f"{name}: {len(paths)} frames @ {scene.fps} fps -> {frames_dir}")

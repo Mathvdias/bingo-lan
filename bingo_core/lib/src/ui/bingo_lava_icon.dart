@@ -7,8 +7,8 @@ enum BingoLavaIcon {
   /// Bola azul com o 7 (herói do lobby).
   ball('bingo_ball'),
 
-  /// Globo de bingo amarelo girando no eixo, com bolas dentro (sala do host
-  /// sem sorteio).
+  /// Gaiola de bingo amarela de hastes gordas com bolas pastel pulando
+  /// dentro; o corpo só balança (sala do host sem sorteio, 120 px).
   cage('bingo_cage'),
 
   /// Roseta amarela com estrela preta (paywall).

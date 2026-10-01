@@ -8,7 +8,12 @@ openlava_encode.py) sem alterá-lo: cada ícone é uma subclasse de `Subject` re
     python3 $LAVA_TOOL/openlava_encode.py assets/lava/bingo_ball --webp 90 frames/bingo_ball/frame_*.png
     python3 tool/lava_icons.py repack assets/lava/wifi_table frames/wifi_table   # 360x324 -> 270x243, 24 q @ 15 fps
 
-Ícones que precisam girar de verdade (gaiola, livro, dado...) são cenas 3D em `lava_sdf_icons.py`.
+Ícones que precisam girar de verdade (livro, dado, lápis) são cenas 3D em `lava_sdf_icons.py`. A gaiola
+de bingo passou por lá e voltou: a cena SDF (hastes de tubo amarelo girando) parecia plástico e a emenda
+do loop aparecia; o still de hastes gordas com as bolas repintadas e pulando (`BingoCage`) ficou melhor.
+
+    LAVA_SCALE=2 python3 tool/lava_icons.py bingo_cage stills/cage.png frames/bingo_cage   # 360x324
+    python3 $LAVA_TOOL/openlava_encode.py assets/lava/bingo_cage --fps 24 --webp 88 --density 4 frames/bingo_cage/frame_*.png
 
 Paleta do app (neo-brutalista pastel): amarelo #FFEB3B, azul #4FC3F7, verde #AED581, creme #FFFDF5,
 contorno #121212. Movimentos são funções de sin(2*pi*t) para que metade dos quadros repita a outra
@@ -59,11 +64,110 @@ class BingoBall(BingoSubject):
 
 
 class BingoCage(BingoSubject):
-    """Globo de bingo: giro lento simulado por um balanço mais amplo e um leve tremor das bolas."""
+    """Gaiola de bingo (sala do host, 120 px): o still de uma gaiola de poucas hastes gordas com
+    quatro bolas pastel dentro. O corpo só balança 3 graus, sem subir; as bolas do still são
+    apagadas da camada e redesenhadas por trás dela (as hastes da frente que as cruzam ficam
+    no still, então a oclusão sai certa) e cada uma pula no seu próprio compasso, com um balanço
+    lateral pequeno. Nenhum giro falso: a gaiola parece viva sem emenda no loop."""
     fill = 0.76
+    LIGHT = (-0.40, -0.48)     # direção do brilho nas bolas, em raios (luz do alto à esquerda)
+    # (x, y, raio, cor, fase, pulos por volta) em unidades do raio da esfera a partir do centro
+    # dela, de trás para a frente, medidos no still (as bolas do still são apagadas, estas são
+    # pintadas no lugar). Fases 0 / 0.5 e pulos pares deixam o quadro t igual ao 0.5 - t, como o
+    # balanço: metade dos quadros repete e o atlas cai pela metade.
+    BALLS = [(0.38, 0.50, 0.19, (255, 250, 236), 0.5, 4), (-0.13, 0.70, 0.21, GREEN, 0.0, 2),
+             (-0.40, 0.58, 0.21, BLUE, 0.5, 2), (0.26, 0.64, 0.21, (255, 172, 166), 0.0, 4)]
+
+    def __init__(self, obj):
+        super().__init__(obj)
+        a = np.array(obj).astype(int)
+        r, g, b, al = a[..., 0], a[..., 1], a[..., 2], a[..., 3]
+        solid = al > 128
+        # hastes: amarelo e o laranja sombreado delas (vermelho acima do verde, azul bem abaixo)
+        rib = solid & (r > g + 10) & (b < 0.62 * g + 10) & (r - b > 40)
+        bright = solid & (r > 150) & (g > 110) & (b < 120) & (r - b > 80)
+        ys, xs = np.where(bright)
+        self.cage_r = 0.5 * (xs.max() - xs.min())
+        self.cage_c = (0.5 * (xs.max() + xs.min()), ys.min() + self.cage_r)
+        yy, xx = np.mgrid[0:self.oh, 0:self.ow]
+        self.inside = (xx - self.cage_c[0]) ** 2 + (yy - self.cage_c[1]) ** 2 < (0.97 * self.cage_r) ** 2
+        # só a faixa das bolas: acima dela estão o eixo e os reflexos quase brancos das hastes,
+        # que passariam no teste de "creme" e levariam a borda iluminada do eixo junto
+        lower = yy > self.cage_c[1] + 0.26 * self.cage_r
+        # preto do eixo e da base: só os blocos grandes (a sombra escura na borda das bolas não)
+        dark = np.zeros((self.oh, self.ow), bool)
+        for m in component_masks(solid & (a[..., :3].max(axis=2) < 80), min_px=int(0.05 * self.cage_r ** 2)):
+            dark |= m
+        # com a borda iluminada (cinza) do eixo junto: ela não é bola
+        dark = np.array(Image.fromarray(dark.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(4 * SS + 1))) > 0
+        # as bolas do still: os pixels pastel da metade de baixo da esfera e, à volta deles, tudo
+        # que não é haste nem preto (a sombra escura na borda de cada bola)
+        chroma = a[..., :3].max(axis=2) - a[..., :3].min(axis=2)
+        pastel = ((b > r + 30) & (b > 150)) | ((g > r + 15) & (g > b + 15) & (g > 140)) | \
+                 ((r > g + 25) & (b > g - 20) & (r > 190) & (g > 120)) | ((a[..., :3].min(axis=2) > 185) & (chroma < 45))
+        seed = solid & self.inside & lower & ~rib & ~dark & pastel
+        near = np.array(Image.fromarray(seed.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(6 * SS + 1))) > 0
+        ball_px = solid & self.inside & lower & ~rib & ~dark & near
+        # o topo das bolas coloridas sobe acima da faixa: azul, verde e rosa não existem em mais
+        # nada da gaiola, então saem em toda a metade de baixo (o creme ficaria com os reflexos)
+        tinted = ((b > r + 30) & (b > 150)) | ((g > r + 12) & (g > b + 12) & (g > 85)) | \
+                 ((r > g + 25) & (b > g - 20) & (r > 190) & (g > 120))
+        ball_px |= solid & self.inside & (yy > self.cage_c[1]) & tinted & ~rib
+        ball_px = np.array(Image.fromarray(ball_px.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(3 * SS + 1))) > 0
+        ball_px &= ~dark
+        body = np.array(obj).astype(np.float32)
+        body[..., 3] *= ~ball_px
+        self.body = Image.fromarray(body.astype(np.uint8))
+
+    def _ball(self, layer, cx, cy, rad, col):
+        """Esfera pintada fosca: lambert suave, brilho largo e discreto, borda um pouco mais escura."""
+        x0, y0 = int(cx - rad - 2), int(cy - rad - 2)
+        x1, y1 = int(cx + rad + 3), int(cy + rad + 3)
+        x0, y0, x1, y1 = max(x0, 0), max(y0, 0), min(x1, self.ow), min(y1, self.oh)
+        yy, xx = np.mgrid[y0:y1, x0:x1]
+        dx, dy = (xx - cx) / rad, (yy - cy) / rad
+        d2 = dx * dx + dy * dy
+        cover = np.clip((1.0 - np.sqrt(d2)) * rad + 0.5, 0.0, 1.0)      # borda antisserrilhada
+        nz = np.sqrt(np.clip(1.0 - d2, 0.0, 1.0))
+        lx, ly = self.LIGHT
+        ln = math.sqrt(lx * lx + ly * ly + 0.75 ** 2)
+        lamb = np.clip((dx * lx + dy * ly + nz * 0.75) / ln, 0.0, 1.0)
+        shade = 0.72 + 0.30 * lamb
+        spec = np.exp(-((dx - lx * 0.6) ** 2 + (dy - ly * 0.6) ** 2) / 0.16) * 0.16
+        rgb = np.asarray(col, np.float32)[None, None, :] * shade[..., None] + 255.0 * spec[..., None]
+        rgb = rgb * (0.88 + 0.12 * nz)[..., None]
+        alpha = cover * self.inside[y0:y1, x0:x1]
+        dst = layer[y0:y1, x0:x1]
+        a = alpha[..., None]
+        dst[..., :3] = rgb * a + dst[..., :3] * (1 - a)
+        dst[..., 3] = alpha * 255 + dst[..., 3] * (1 - alpha)
+
+    def fold(self, t):
+        """Fase dentro da meia-volta, quantizada na grade de quadros: o quadro i sai bit a bit igual
+        ao i + n/2 (sin(4*pi*t) avaliado em t e t + 0.5 difere por ruído de float e o empacotador
+        guardaria cada tile duas vezes)."""
+        n = self.n_frames
+        return (round(t * n) % (n // 2)) / n
+
+    def layer(self, t):
+        t = self.fold(t)
+        balls = np.zeros((self.oh, self.ow, 4), np.float32)
+        cx0, cy0, R = self.cage_c[0], self.cage_c[1], self.cage_r
+        for bx, by, br, col, ph, beats in self.BALLS:
+            hop = abs(math.sin(math.pi * beats * (t + ph)))
+            rad = br * R
+            x = cx0 + bx * R + 0.06 * rad * math.sin(2 * math.pi * (t + ph))
+            y = cy0 + by * R - (0.22 if beats == 2 else 0.14) * rad * hop
+            self._ball(balls, x, y, rad, col)
+        img = Image.fromarray(np.clip(balls, 0, 255).astype(np.uint8))
+        img.alpha_composite(self.body)
+        return img
 
     def motion(self, t):
-        return rock(t, 8.0), 0.0, 0.0, 1 + 0.03 * math.sin(2 * math.pi * t), 1.0
+        # duas oscilações por volta, como os pulos: o quadro i é igual ao i + 24 e o atlas cabe
+        # em 450 KB com WebP 88 (uma só oscilação dava 26 poses únicas e 518 KB)
+        t = self.fold(t)
+        return rock(2 * t, 3.0), 0.0, 0.0, 1 + 0.02 * math.sin(4 * math.pi * t), 1.0
 
 
 class PremiumBadge(BingoSubject):
@@ -281,6 +385,8 @@ SUBJECTS = {
 # fundo branco com sombra assada: a sombra cinza neutra da metade de baixo vai junto com o fundo.
 KEY = {
     "bingo_ball": dict(shadow_min=120),
+    # as hastes fecham células em 2D: o branco preso dentro da esfera não tem caminho até a borda
+    "bingo_cage": dict(shadow_min=120, neutral_pockets=225, pocket_chroma=14),
     "premium_badge": dict(shadow_min=120),
     "trophy": dict(shadow_min=120),
 }
