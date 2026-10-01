@@ -8,6 +8,7 @@ import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Layout da sala do host, sem plugins, DI nem navegação: a tela
 /// ([HostRoomScreen]) cuida de wakelock, anúncios, GetIt e rotas; aqui só
@@ -177,73 +178,80 @@ class _HostDrawFooterState extends State<HostDrawFooter>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // O Scaffold encolhe só o corpo quando o teclado abre; a barra inferior
+    // fica atrás dele. Como o campo do sorteio manual mora aqui, o rodapé
+    // sobe junto com o teclado (o corpo rolável encolhe o que faltar).
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
     return Material(
       color: AppColors.surface,
-      child: Container(
-        decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: AppColors.outline, width: 2)),
-        ),
-        child: SafeArea(
-          top: false,
-          child: AnimatedBuilder(
-            animation: _tabs,
-            builder: (context, _) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Rótulos curtos (<= 12 caracteres) com ícone. `index` muda
-                  // no toque: o ícone começa a tocar na hora.
-                  TabBar(
-                    controller: _tabs,
-                    tabs: [
-                      Tab(
-                        key: const Key('host_tab_virtual'),
-                        icon: BingoLavaTabIcon(
-                          key: const Key('host_tab_virtual_icon'),
-                          icon: BingoLavaIcon.dice,
-                          selected: _tabs.index == 0,
-                          size: 32,
-                          fallback: const Icon(Icons.casino),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: keyboard),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(top: BorderSide(color: AppColors.outline, width: 2)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: AnimatedBuilder(
+              animation: _tabs,
+              builder: (context, _) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Rótulos curtos (<= 12 caracteres) com ícone. `index` muda
+                    // no toque: o ícone começa a tocar na hora.
+                    TabBar(
+                      controller: _tabs,
+                      tabs: [
+                        Tab(
+                          key: const Key('host_tab_virtual'),
+                          icon: BingoLavaTabIcon(
+                            key: const Key('host_tab_virtual_icon'),
+                            icon: BingoLavaIcon.dice,
+                            selected: _tabs.index == 0,
+                            size: 32,
+                            fallback: const Icon(Icons.casino),
+                          ),
+                          text: l10n.virtualGlobe,
                         ),
-                        text: l10n.virtualGlobe,
-                      ),
-                      Tab(
-                        key: const Key('host_tab_manual'),
-                        icon: BingoLavaTabIcon(
-                          key: const Key('host_tab_manual_icon'),
-                          icon: BingoLavaIcon.pencil,
-                          selected: _tabs.index == 1,
-                          size: 32,
-                          fallback: const Icon(Icons.edit),
-                        ),
-                        text: l10n.manualGlobe,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    // 16 embaixo cobre a sombra dura (4 px) do botão.
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                    // IndexedStack: o rodapé tem a altura do maior controle e
-                    // não pula ao trocar de aba; o campo manual mantém o
-                    // texto digitado.
-                    child: IndexedStack(
-                      index: _tabs.index,
-                      children: [
-                        _VirtualGlobeControl(
-                          viewModel: widget.viewModel,
-                          canDraw: widget.canDraw,
-                          purchasesEnabled: widget.purchasesEnabled,
-                        ),
-                        _ManualInputControl(
-                          viewModel: widget.viewModel,
-                          enabled: widget.canDraw,
+                        Tab(
+                          key: const Key('host_tab_manual'),
+                          icon: BingoLavaTabIcon(
+                            key: const Key('host_tab_manual_icon'),
+                            icon: BingoLavaIcon.pencil,
+                            selected: _tabs.index == 1,
+                            size: 32,
+                            fallback: const Icon(Icons.edit),
+                          ),
+                          text: l10n.manualGlobe,
                         ),
                       ],
                     ),
-                  ),
-                ],
-              );
-            },
+                    Padding(
+                      // 16 embaixo cobre a sombra dura (4 px) do botão.
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                      // IndexedStack: o rodapé tem a altura do maior controle e
+                      // não pula ao trocar de aba; o campo manual mantém o
+                      // texto digitado.
+                      child: IndexedStack(
+                        index: _tabs.index,
+                        children: [
+                          _VirtualGlobeControl(
+                            viewModel: widget.viewModel,
+                            canDraw: widget.canDraw,
+                            purchasesEnabled: widget.purchasesEnabled,
+                          ),
+                          _ManualInputControl(
+                            viewModel: widget.viewModel,
+                            enabled: widget.canDraw,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -384,7 +392,18 @@ class _ManualInputControlState extends State<_ManualInputControl> {
                 key: const Key('host_manual_field'),
                 controller: _controller,
                 enabled: widget.enabled,
-                keyboardType: TextInputType.number,
+                // Só dígitos, no máximo dois (1 a 75): o teclado numérico
+                // sozinho não impede letras em teclados físicos, tablets e
+                // alguns teclados Android.
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: false,
+                  decimal: false,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(2),
+                ],
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                   labelText: l10n.numberInput,
                   border: const OutlineInputBorder(),
