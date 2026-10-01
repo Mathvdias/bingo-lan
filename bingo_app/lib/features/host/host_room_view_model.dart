@@ -173,10 +173,8 @@ class HostRoomViewModel extends BaseViewModel {
 
     // Announce AI Joke (Local or Remote)
     final joke = AiService.getJokeForNumber(number, locale: Intl.defaultLocale);
-    _actionController.add(
-      ShowError(await joke),
-    ); // Reusing ShowError as 'ShowToast' for now, or just logging.
-    // Better: Add a new Action 'AnnounceNumber'
+    // TODO(ux): trocar ShowError por uma acao AnnounceNumber (PR de UX).
+    _actionController.add(ShowError(joke));
 
     notifyListeners();
   }

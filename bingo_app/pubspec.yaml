@@ -58,7 +58,6 @@ dependencies:
   clarity_flutter: ^1.7.0
   purchases_flutter: ^9.15.0
   purchases_ui_flutter: ^9.15.0
-  google_generative_ai: ^0.4.7
   google_mobile_ads: ^5.1.0
   flutter_localizations:
     sdk: flutter
