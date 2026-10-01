@@ -11,6 +11,21 @@ class BingoCard {
 
   BingoCard({required this.id});
 
+  /// Letra da coluna (B-I-N-G-O) para um número de 1 a 75.
+  ///
+  /// B 1-15, I 16-30, N 31-45, G 46-60, O 61-75. Fora do intervalo retorna ''.
+  static String columnLetter(int number) {
+    if (number < 1 || number > 75) return '';
+    const letters = ['B', 'I', 'N', 'G', 'O'];
+    return letters[(number - 1) ~/ 15];
+  }
+
+  /// Rótulo do cantador, ex.: `B-12`.
+  static String label(int number) {
+    final letter = columnLetter(number);
+    return letter.isEmpty ? '$number' : '$letter-$number';
+  }
+
   /// Generates the 5x5 bingo matrix from the [id] seed.
   /// The center spot (index 12) is always free (represented by 0).
   List<int> get matrix => _generateMatrix(id);

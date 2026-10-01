@@ -13,7 +13,7 @@ abstract class PlayerEvent extends GameEvent {
       case 'PLAYER_NAME':
         return PlayerNameEvent.fromJson(json);
       default:
-        throw Exception('Unknown PlayerEvent type: ${json['type']}');
+        throw UnknownEventException(json['type']?.toString());
     }
   }
 }
