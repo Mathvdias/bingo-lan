@@ -57,7 +57,7 @@ class HostSetupScreen extends StatelessWidget {
                       WarningBox(text: l10n.hostSetupWifiWarning),
                       const SizedBox(height: 32),
                       FlippableCard(
-                        image: 'assets/images/bingo_local.png',
+                        image: 'assets/images/bingo_local.webp',
                         text: l10n.hostSetupWifiDesc,
                       ),
                       const SizedBox(height: 32),
