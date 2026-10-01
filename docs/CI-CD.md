@@ -21,6 +21,20 @@ O `versionCode` é o `run_number` do workflow, único e crescente nos dois camin
 - A Play não deixa um usuário "descer" de versão: quem está no grupo da Alpha só recebe a produção quando o `versionCode` dela passar o da Alpha. Com o contador único isso acontece naturalmente.
 - O primeiro envio de cada trilha para revisão ("Enviar para revisão" na Visão geral da publicação) é manual no Console; depois disso os uploads seguintes entram sozinhos.
 
+## Flavor alpha
+
+O flavor `alpha` é o build da trilha de teste fechado: mesmo `applicationId` (`com.nightstudios.bingo`), mesmo projeto Firebase (`android/app/src/alpha/google-services.json` é cópia do de prod), mesmas chaves do RevenueCat, Crashlytics, anúncios e validação de `RC_ANDROID_KEY` que a prod. O que muda: nome `Bingo β`, ícone com a faixa BETA (`android/app/src/alpha/res`, gerado por `tool/icons/make_alpha_icon.py` + `dart run flutter_launcher_icons -f flutter_launcher_icons-alpha.yaml`) e `AppConfig.hasDebugTools = true`, que liga a tela `/debug/flags` (overrides locais de Remote Config) e a entrada escondida no "Sobre" (5 toques na versão). A prod continua sem nada disso.
+
+```bash
+# App Bundle para a trilha alpha (as mesmas secrets/keystore do release prod)
+flutter build appbundle --release --flavor alpha -t lib/main_alpha.dart \
+  --dart-define=ENVIRONMENT=alpha --dart-define=RC_ANDROID_KEY=$RC_ANDROID_KEY \
+  --build-name=X.Y.Z-alpha.N --build-number=N
+
+# APK de depuração local
+flutter build apk --debug --flavor alpha -t lib/main_alpha.dart --dart-define=ENVIRONMENT=alpha
+```
+
 ## Como lançar
 
 ```bash

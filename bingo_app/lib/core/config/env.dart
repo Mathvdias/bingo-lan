@@ -30,7 +30,8 @@ class Env {
   /// Chave do RevenueCat que o app deve usar para este [appConfig] e plataforma.
   ///
   /// Em dev, se `RC_TEST_STORE_KEY` estiver definida, ela tem prioridade
-  /// (RevenueCat Test Store). Retorna string vazia quando não há chave.
+  /// (RevenueCat Test Store). Alpha usa as chaves de loja, como a prod.
+  /// Retorna string vazia quando não há chave.
   static String revenueCatKeyFor(AppConfig appConfig, {required bool isIOS}) {
     if (appConfig.isDev && revenueCatTestStoreKey.isNotEmpty) {
       return revenueCatTestStoreKey;
@@ -39,8 +40,8 @@ class Env {
   }
 
   /// Nomes das variáveis obrigatórias que faltam para [appConfig] na
-  /// plataforma atual. Em prod só a chave da plataforma em execução conta:
-  /// um build Android não precisa de `RC_IOS_KEY` e vice-versa.
+  /// plataforma atual. Em prod (e alpha) só a chave da plataforma em execução
+  /// conta: um build Android não precisa de `RC_IOS_KEY` e vice-versa.
   ///
   /// Puro para ser testável: as chaves entram por parâmetro (por padrão as
   /// constantes de `--dart-define`).
@@ -82,5 +83,11 @@ class Env {
   }
 
   static bool get isDev => environment == 'dev';
+  static bool get isAlpha => environment == 'alpha';
   static bool get isProd => environment == 'prod';
+
+  /// Ferramentas de depuração pelo `--dart-define=ENVIRONMENT`: dev e alpha.
+  /// A fonte de verdade em tempo de execução é `AppConfig.hasDebugTools`
+  /// (vem do flavor do entrypoint); esta é a versão em tempo de compilação.
+  static bool get hasDebugTools => isDev || isAlpha;
 }
