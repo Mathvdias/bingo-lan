@@ -111,7 +111,10 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
             SnackBar(
               key: const Key('host_announce_toast'),
               behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 3),
+              // Acima do botão de sortear: o toast não pode cobrir a ação
+              // principal do cantador entre uma bola e outra.
+              margin: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+              duration: const Duration(seconds: 2),
               backgroundColor: AppColors.card,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
