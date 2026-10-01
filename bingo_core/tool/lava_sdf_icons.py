@@ -277,51 +277,6 @@ class BingoCage(Scene):
 
 
 # --------------------------------------------------------------------------------------------
-class HelpBubble(Scene):
-    """Yellow speech bubble with a bold black '?': it tilts side to side like a shrug and hops."""
-
-    frames, fps = 48, 30
-    view_height, look_at, pitch = 3.1, (0.0, 1.32, 0.0), 10.0
-    bound_radius = 2.0
-    shadow_strength = 0.28
-    HALF = 0.22
-
-    def __init__(self):
-        self.materials = (
-            Material(YELLOW, spec=0.5, shininess=42.0, rim=0.22),
-            Material(INK, spec=0.4, shininess=30.0, rim=0.10),
-        )
-
-    def frame(self, p, t):
-        c = v3(0.10, 1.36 + 0.07 * lift(t), 0.0)
-        q = sdf.rot_y(p - c, -math.radians(9.0) * math.sin(TAU * t + 0.5 * math.pi))
-        return rot_z(q, -math.radians(11.0) * math.sin(TAU * t))
-
-    def glyph2d(self, x, y):
-        y = y - 0.05
-        cx, cy, R, th = 0.0, 0.27, 0.33, 0.10
-        phi = np.degrees(np.arctan2(y - cy, x - cx)) % 360.0
-        ring = np.abs(np.sqrt((x - cx) ** 2 + (y - cy) ** 2) - R) - th
-        gap = (phi > 195.0) & (phi < 272.0)
-        ends = np.array([[cx + R * math.cos(math.radians(a)), cy + R * math.sin(math.radians(a))] for a in (195.0, 272.0)], F)
-        cap = np.sqrt((x[:, None] - ends[None, :, 0]) ** 2 + (y[:, None] - ends[None, :, 1]) ** 2).min(1) - th
-        hook = np.where(gap, cap, ring)
-        sx, sy = ends[1]
-        stem = sdf.sd_capsule(np.stack([x, y, np.zeros_like(x)], -1), v3(sx, sy, 0), v3(sx, -0.24, 0), th)
-        dot = np.sqrt((x - sx) ** 2 + (y + 0.56) ** 2) - 0.135
-        return np.minimum.reduce([hook, stem, dot])
-
-    def parts(self, p, t):
-        q = self.frame(p, t)
-        body = sd_disc_z(q, v3(0, 0, 0), 1.0, self.HALF, 0.17)
-        tail = extrude(LavaKey.sd_polygon(q[:, 0], q[:, 1], [(-0.45, -0.70), (-0.98, -1.22), (-0.15, -0.88)]),
-                       q[:, 2], self.HALF - 0.06, 0.07)
-        body = sdf.smin(body, tail, 0.12)
-        glyph = extrude(self.glyph2d(q[:, 0], q[:, 1]), q[:, 2] - (self.HALF + 0.05), 0.08, 0.03)
-        return [(body, 0), (glyph, 1)]
-
-
-# --------------------------------------------------------------------------------------------
 class Players(Scene):
     """Two chunky round-headed figures side by side; the right one waves."""
 
@@ -502,8 +457,8 @@ class Pencil(Scene):
         return col
 
 
-SCENES = {"globe": Globe, "open_book": OpenBook, "bingo_cage": BingoCage, "help_bubble": HelpBubble,
-          "players": Players, "dice": Dice, "pencil": Pencil}
+SCENES = {"globe": Globe, "open_book": OpenBook, "bingo_cage": BingoCage, "players": Players, "dice": Dice,
+          "pencil": Pencil}
 ONESHOT = {"dice", "pencil"}
 
 

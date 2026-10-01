@@ -35,9 +35,6 @@ enum BingoLavaIcon {
   /// Roteador Wi-Fi com bolas de bingo (cartão da criação de sala).
   wifiRouter('wifi_table'),
 
-  /// Balão amarelo com "?" que balança (botão de ajuda do lobby).
-  helpBubble('help_bubble'),
-
   /// Dois jogadores, um acenando (contador de jogadores e paywall).
   players('players'),
 

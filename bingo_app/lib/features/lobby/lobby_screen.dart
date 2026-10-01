@@ -91,15 +91,12 @@ class _LobbyScreenState extends State<LobbyScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          // Balão "?" 3D (Lava) com o mesmo alvo de toque; o ícone Material
-          // fica até o bundle carregar.
-          IconButton(
-            icon: const BingoLavaIconView(
-              key: Key('lobby_help_icon'),
-              icon: BingoLavaIcon.helpBubble,
-              size: 40,
-              fallback: Icon(Icons.help_outline),
-            ),
+          // Ajuda: disco branco com contorno preto, no estilo do botão
+          // "Upgrade" ao lado. Estático de propósito: um ícone animado no
+          // canto da barra distrairia do herói.
+          _HelpButton(
+            key: const Key('lobby_help_button'),
+            label: l10n.aboutTitle,
             onPressed: () => context.push('/about'),
           ),
           // Selo premium ou botão de upgrade, lendo o cache do status.
@@ -283,6 +280,50 @@ class _BallFallback extends StatelessWidget {
             color: AppColors.text,
             fontSize: 28,
             fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Botão de ajuda: disco branco de 40 px com contorno preto de 2 px e o "?"
+/// Material em preto, o mesmo desenho da pílula "Upgrade". Alvo de toque de
+/// 48 px; [label] vai para o tooltip e para os leitores de tela.
+class _HelpButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  const _HelpButton({super.key, required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      child: Tooltip(
+        message: label,
+        child: InkWell(
+          onTap: onPressed,
+          customBorder: const CircleBorder(),
+          child: SizedBox.square(
+            dimension: 48,
+            child: Center(
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.card,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.outline, width: 2),
+                ),
+                child: const Icon(
+                  Icons.help_outline,
+                  color: AppColors.text,
+                  size: 24,
+                ),
+              ),
+            ),
           ),
         ),
       ),
