@@ -69,6 +69,8 @@ class HostDrawPanel extends StatelessWidget {
                     key: last == null ? const Key('host_empty_state') : null,
                     l10n: l10n,
                     textTheme: textTheme,
+                    // Escondido (já saiu bola) o globo não precisa animar.
+                    animated: last == null,
                   ),
                 ),
                 Visibility(
@@ -207,40 +209,63 @@ class _DrawnState extends StatelessWidget {
   }
 }
 
-/// Estado vazio: bola em contorno com "—", título e instrução. Substitui o
-/// "--" gigante amarelo que parecia duas pílulas.
+/// Estado vazio: globo de bingo 3D girando (bola em contorno com "—" até o
+/// bundle carregar), título e instrução. Substitui o "--" gigante amarelo que
+/// parecia duas pílulas.
 class _EmptyState extends StatelessWidget {
   final AppLocalizations l10n;
   final TextTheme textTheme;
+  final bool animated;
 
-  const _EmptyState({super.key, required this.l10n, required this.textTheme});
+  /// Lado do globo; o placeholder tem o mesmo tamanho para o cartão não mudar
+  /// de altura entre os dois estados.
+  static const double _heroSize = 88;
+
+  const _EmptyState({
+    super.key,
+    required this.l10n,
+    required this.textTheme,
+    this.animated = true,
+  });
+
+  Widget _placeholder() {
+    return Container(
+      width: _heroSize,
+      height: _heroSize,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.outline, width: 3),
+        boxShadow: const [
+          BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
+        ],
+      ),
+      child: ExcludeSemantics(
+        child: Text(
+          '—',
+          style: textTheme.headlineMedium?.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 88,
-          height: 88,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.outline, width: 3),
-            boxShadow: const [
-              BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
-            ],
-          ),
-          child: ExcludeSemantics(
-            child: Text(
-              '—',
-              style: textTheme.headlineMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-        ),
+        if (animated)
+          BingoLavaIconView(
+            key: const Key('host_empty_cage'),
+            icon: BingoLavaIcon.cage,
+            size: _heroSize,
+            fallback: _placeholder(),
+          )
+        else
+          SizedBox.square(dimension: _heroSize, child: _placeholder()),
         const SizedBox(height: 12),
         Text(
           l10n.hostRoomEmptyTitle,

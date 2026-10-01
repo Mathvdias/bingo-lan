@@ -4,6 +4,7 @@ import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/warning_box.dart';
+import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,23 +41,32 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Ícone preto sobre disco amarelo: o amarelo é fundo, não traço.
+            // Balão de informação 3D; até carregar, o ícone preto sobre disco
+            // amarelo (o amarelo é fundo, não traço) do mesmo tamanho.
             Center(
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.outline, width: 2),
-                  boxShadow: const [
-                    BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.info_outline,
-                  size: 40,
-                  color: AppColors.text,
+              child: BingoLavaIconView(
+                key: const Key('about_hero_bubble'),
+                icon: BingoLavaIcon.infoBubble,
+                size: 72,
+                fallback: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.outline, width: 2),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.outline,
+                        offset: Offset(4, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.info_outline,
+                    size: 40,
+                    color: AppColors.text,
+                  ),
                 ),
               ),
             ),

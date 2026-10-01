@@ -25,3 +25,7 @@ export 'src/models/game_event.dart';
 export 'src/models/game_events.dart'; // New export
 export 'src/models/player_event.dart';
 export 'src/models/player_events.dart'; // New export
+
+// UI
+export 'package:lava_flutter/lava_flutter.dart' show LavaBundle;
+export 'src/ui/bingo_lava_icon.dart';

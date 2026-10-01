@@ -4,6 +4,7 @@ import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/banner_ad_widget.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
+import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,14 +134,29 @@ class _LobbyScreenState extends State<LobbyScreen> {
       body: Stack(
         children: [
           _LobbyBackground(),
+          // Rolável: em 360x640 dp com banner e botão solo o conteúdo não
+          // cabe inteiro, e com escala de texto grande menos ainda.
           SafeArea(
             child: Center(
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // Herói: bola 3D animada (toque inclina). Enquanto o
+                    // bundle decodifica fica uma bola desenhada do mesmo
+                    // tamanho, então nada pula.
+                    const Center(
+                      child: BingoLavaIconView(
+                        key: Key('lobby_hero_ball'),
+                        icon: BingoLavaIcon.ball,
+                        size: 104,
+                        interactive: true,
+                        fallback: _BallFallback(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     Semantics(
                       header: true,
                       child: Text(
@@ -160,7 +176,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 64),
+                    const SizedBox(height: 40),
                     Showcase(
                       key: _hostKey,
                       description: l10n.lobbyHostShowcase,
@@ -226,8 +242,51 @@ class _LobbyScreenState extends State<LobbyScreen> {
   }
 }
 
+/// Bola azul com o 7 desenhada em Flutter: ocupa o lugar do herói Lava até o
+/// bundle carregar (ou se ele faltar).
+class _BallFallback extends StatelessWidget {
+  const _BallFallback();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 96,
+      height: 96,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: AppColors.secondary,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.outline, width: 3),
+        boxShadow: const [
+          BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
+        ],
+      ),
+      child: Container(
+        width: 52,
+        height: 52,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.outline, width: 2),
+        ),
+        child: const Text(
+          '7',
+          style: TextStyle(
+            color: AppColors.text,
+            fontSize: 28,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Botão "Upgrade": pílula branca com contorno preto, estrela amarela com
 /// contorno e rótulo em âmbar escuro. Amarelo nunca vira texto sobre o creme.
+/// A estrela segue Material: a 22 px a roseta Lava (textura de 180 px) viraria
+/// um borrão amarelo e o ícone animado ao lado do rótulo distrairia do botão.
 class _UpgradePill extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;

@@ -90,6 +90,16 @@ class PlayerGameView extends StatelessWidget {
               accent: viewModel.isWinner
                   ? AppColors.primary
                   : AppColors.secondary,
+              hero: const BingoLavaIconView(
+                key: Key('player_winner_trophy'),
+                icon: BingoLavaIcon.trophy,
+                size: 72,
+                fallback: Icon(
+                  Icons.emoji_events_rounded,
+                  size: 56,
+                  color: AppColors.text,
+                ),
+              ),
             ),
         ],
       ),
@@ -274,6 +284,9 @@ class _Overlay extends StatelessWidget {
   final VoidCallback onPressed;
   final Color accent;
 
+  /// Ícone acima do título (a taça do BINGO validado).
+  final Widget? hero;
+
   const _Overlay({
     super.key,
     required this.title,
@@ -281,6 +294,7 @@ class _Overlay extends StatelessWidget {
     required this.buttonLabel,
     required this.onPressed,
     this.accent = AppColors.primary,
+    this.hero,
   });
 
   @override
@@ -303,6 +317,7 @@ class _Overlay extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (hero != null) ...[hero!, const SizedBox(height: 12)],
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: StrokedText(
