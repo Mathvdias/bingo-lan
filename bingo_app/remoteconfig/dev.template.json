@@ -1,0 +1,60 @@
+{
+  "parameters": {
+    "purchases_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "valueType": "BOOLEAN",
+      "description": "Mostra botão de upgrade, paywall e auto-globo."
+    },
+    "ads_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "valueType": "BOOLEAN",
+      "description": "Liga todos os anúncios. Prod fica false até o paywall ser validado no teste fechado."
+    },
+    "revenue_model": {
+      "defaultValue": {
+        "value": "paywall_host"
+      },
+      "valueType": "STRING",
+      "description": "paywall_host: host paga acima do limite de jogadores. ad_supported: tudo grátis com anúncios."
+    },
+    "max_free_players_path_a": {
+      "defaultValue": {
+        "value": "10"
+      },
+      "valueType": "NUMBER",
+      "description": "Jogadores grátis por sala no modelo paywall_host."
+    },
+    "solo_mode_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "valueType": "BOOLEAN",
+      "description": "Mostra o modo individual no lobby."
+    },
+    "is_globo_paid": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "valueType": "BOOLEAN",
+      "description": "Cobra pelo auto-globo (sorteio automático)."
+    },
+    "is_host_premium": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "valueType": "BOOLEAN",
+      "description": "Cobra para criar sala. Mantido false: criar sala é o gancho de aquisição."
+    },
+    "paywall_variant": {
+      "defaultValue": {
+        "value": "default"
+      },
+      "valueType": "STRING",
+      "description": "Variante do paywall próprio para testes A/B via Experiments."
+    }
+  }
+}
