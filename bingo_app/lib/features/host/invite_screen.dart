@@ -117,14 +117,14 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                             style: textTheme.displaySmall,
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 16),
                           Center(
                             child: RepaintBoundary(
                               child: Semantics(
                                 label: l10n.inviteScanDesc,
                                 image: true,
                                 child: Container(
-                                  padding: const EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: AppColors.card,
                                     border: Border.all(
@@ -139,17 +139,20 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                                       ),
                                     ],
                                   ),
+                                  // 180 dp: ainda lê de longe e sobra lugar
+                                  // em 360x640 para a dica abaixo do botão
+                                  // de copiar aparecer inteira sem rolar.
                                   child: QrImageView(
                                     data: qrData,
                                     version: QrVersions.auto,
-                                    size: 200.0,
+                                    size: 180.0,
                                     backgroundColor: AppColors.card,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 16),
                           BingoButton(
                             key: const Key('invite_share_button'),
                             label: l10n.inviteShareInvite,
@@ -163,15 +166,20 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                             label: Text(l10n.inviteCopyLink),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            l10n.invitePasteHint(l10n.scanManualButton),
-                            key: const Key('invite_paste_hint'),
-                            textAlign: TextAlign.center,
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: AppColors.textSecondary,
+                          // Padding embaixo: a dica termina com folga antes
+                          // da dobra em 360x640 em vez de sair pela metade.
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Text(
+                              l10n.invitePasteHint(l10n.scanManualButton),
+                              key: const Key('invite_paste_hint'),
+                              textAlign: TextAlign.center,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 16),
                           // "N/M" + "jogadores (plano grátis)" quando há limite e
                           // o host não é premium (modelo paywall_host).
                           ValueListenableBuilder<bool>(
