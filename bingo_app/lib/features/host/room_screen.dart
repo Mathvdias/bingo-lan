@@ -8,6 +8,7 @@ import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
+import 'package:bingo_app/shared/ui/widgets/config_listenable_builder.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/foundation.dart';
@@ -164,22 +165,25 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
             if (!didPop) _onExit(viewModel);
           },
           // "N/M" + "jogadores (plano grátis)" quando há limite e o host não
-          // é premium (modelo paywall_host).
-          child: ValueListenableBuilder<bool>(
-            valueListenable: SubscriptionService.isPremium,
-            builder: (context, isPremium, _) {
-              final showCap =
-                  RevenueConfigService.hasFreePlayerCap && !isPremium;
-              return HostRoomView(
-                viewModel: viewModel,
-                onExit: () => _onExit(viewModel),
-                onEndRoom: () => _endRoom(viewModel),
-                maxPlayers: showCap
-                    ? RevenueConfigService.maxFreePlayersPathA
-                    : null,
-                purchasesEnabled: RevenueConfigService.purchasesEnabled,
-              );
-            },
+          // é premium (modelo paywall_host). Reconstrói quando as flags
+          // mudam ao vivo (override em /debug/flags).
+          child: ConfigListenableBuilder(
+            builder: (context) => ValueListenableBuilder<bool>(
+              valueListenable: SubscriptionService.isPremium,
+              builder: (context, isPremium, _) {
+                final showCap =
+                    RevenueConfigService.hasFreePlayerCap && !isPremium;
+                return HostRoomView(
+                  viewModel: viewModel,
+                  onExit: () => _onExit(viewModel),
+                  onEndRoom: () => _endRoom(viewModel),
+                  maxPlayers: showCap
+                      ? RevenueConfigService.maxFreePlayersPathA
+                      : null,
+                  purchasesEnabled: RevenueConfigService.purchasesEnabled,
+                );
+              },
+            ),
           ),
         );
       },
