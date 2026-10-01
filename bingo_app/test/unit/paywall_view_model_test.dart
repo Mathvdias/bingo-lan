@@ -222,30 +222,31 @@ void main() {
   });
 
   group('PaywallViewModel.purchase', () {
-    test('sucesso: passa por purchasing, retorna true e rastreia funil',
-        () async {
-      gateway.packages = [weekly, annual];
-      await vm.load();
-      final states = <PaywallState>[];
-      vm.addListener(() => states.add(vm.state));
+    test(
+      'sucesso: passa por purchasing, retorna true e rastreia funil',
+      () async {
+        gateway.packages = [weekly, annual];
+        await vm.load();
+        final states = <PaywallState>[];
+        vm.addListener(() => states.add(vm.state));
 
-      final granted = await vm.purchase();
+        final granted = await vm.purchase();
 
-      expect(granted, isTrue);
-      expect(gateway.purchased, [annual]);
-      expect(states, [PaywallState.purchasing, PaywallState.ready]);
-      expect(vm.error, isNull);
-      expect(
-        analytics.events,
-        containsAllInOrder([
-          'intent:annual_subscription',
-          'purchase:annual_subscription',
-        ]),
-      );
-    });
+        expect(granted, isTrue);
+        expect(gateway.purchased, [annual]);
+        expect(states, [PaywallState.purchasing, PaywallState.ready]);
+        expect(vm.error, isNull);
+        expect(
+          analytics.events,
+          containsAllInOrder([
+            'intent:annual_subscription',
+            'purchase:annual_subscription',
+          ]),
+        );
+      },
+    );
 
-    test('cancelada: volta a ready sem erro e não rastreia purchase',
-        () async {
+    test('cancelada: volta a ready sem erro e não rastreia purchase', () async {
       gateway.packages = [annual];
       gateway.purchaseOutcome = const PurchaseCancelled();
       await vm.load();
@@ -317,8 +318,7 @@ void main() {
   });
 
   group('PaywallViewModel.restore', () {
-    test('concede premium: retorna true e rastreia restore:granted',
-        () async {
+    test('concede premium: retorna true e rastreia restore:granted', () async {
       gateway.packages = [annual];
       gateway.restoreGrants = true;
       await vm.load();
@@ -331,19 +331,21 @@ void main() {
       expect(analytics.events, contains('restore:granted'));
     });
 
-    test('nada para restaurar: erro restoreNothing, rastreia restore:none',
-        () async {
-      gateway.packages = [annual];
-      gateway.restoreGrants = false;
-      await vm.load();
+    test(
+      'nada para restaurar: erro restoreNothing, rastreia restore:none',
+      () async {
+        gateway.packages = [annual];
+        gateway.restoreGrants = false;
+        await vm.load();
 
-      final granted = await vm.restore();
+        final granted = await vm.restore();
 
-      expect(granted, isFalse);
-      expect(vm.state, PaywallState.ready);
-      expect(vm.error, PaywallError.restoreNothing);
-      expect(analytics.events, contains('restore:none'));
-    });
+        expect(granted, isFalse);
+        expect(vm.state, PaywallState.ready);
+        expect(vm.error, PaywallError.restoreNothing);
+        expect(analytics.events, contains('restore:none'));
+      },
+    );
 
     test('falha: erro restoreFailed, rastreia restore:error', () async {
       gateway.packages = [annual];
@@ -412,10 +414,7 @@ void main() {
         isNull,
       );
       expect(
-        PaywallViewModel.computeSavingsPercent(
-          annualPrice: 52,
-          weeklyPrice: 1,
-        ),
+        PaywallViewModel.computeSavingsPercent(annualPrice: 52, weeklyPrice: 1),
         isNull,
       );
     });

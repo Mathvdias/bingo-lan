@@ -81,27 +81,31 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('StrokedText — stroke width padrão', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: StrokedText(
-                text: 'Stroke Normal',
-                style: theme.textTheme.headlineMedium,
-                strokeWidth: 2.0,
+    testWidgets(
+      'StrokedText — stroke width padrão',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: StrokedText(
+                  text: 'Stroke Normal',
+                  style: theme.textTheme.headlineMedium,
+                  strokeWidth: 2.0,
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(StrokedText),
-        matchesGoldenFile('stroked_text_normal_width.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(StrokedText),
+          matchesGoldenFile('stroked_text_normal_width.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
     testWidgets('StrokedText — stroke width fino', (tester) async {
       await tester.pumpWidget(
@@ -125,27 +129,31 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('StrokedText — stroke width grosso', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: StrokedText(
-                text: 'Stroke Grosso',
-                style: theme.textTheme.headlineMedium,
-                strokeWidth: 4.0,
+    testWidgets(
+      'StrokedText — stroke width grosso',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: StrokedText(
+                  text: 'Stroke Grosso',
+                  style: theme.textTheme.headlineMedium,
+                  strokeWidth: 4.0,
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(StrokedText),
-        matchesGoldenFile('stroked_text_thick_width.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(StrokedText),
+          matchesGoldenFile('stroked_text_thick_width.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
     testWidgets('StrokedText — tema escuro', (tester) async {
       final darkTheme = ThemeData(
@@ -194,130 +202,146 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('StrokedText — múltiplos tamanhos', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  StrokedText(
-                    text: 'Grande',
-                    style: theme.textTheme.displayLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  StrokedText(
-                    text: 'Médio',
-                    style: theme.textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  StrokedText(
-                    text: 'Pequeno',
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(Column),
-        matchesGoldenFile('stroked_text_multiple_sizes.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
-
-    testWidgets('StrokedText — diferentes stroke widths', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  StrokedText(
-                    text: 'Fino',
-                    style: theme.textTheme.headlineMedium,
-                    strokeWidth: 0.5,
-                  ),
-                  const SizedBox(height: 16),
-                  StrokedText(
-                    text: 'Normal',
-                    style: theme.textTheme.headlineMedium,
-                    strokeWidth: 2.0,
-                  ),
-                  const SizedBox(height: 16),
-                  StrokedText(
-                    text: 'Grosso',
-                    style: theme.textTheme.headlineMedium,
-                    strokeWidth: 4.0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(Column),
-        matchesGoldenFile('stroked_text_multiple_widths.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
-
-    testWidgets('StrokedText — em contexto de Container', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(12),
+    testWidgets(
+      'StrokedText — múltiplos tamanhos',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    StrokedText(
+                      text: 'Grande',
+                      style: theme.textTheme.displayLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    StrokedText(
+                      text: 'Médio',
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    StrokedText(
+                      text: 'Pequeno',
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ],
                 ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Column),
+          matchesGoldenFile('stroked_text_multiple_sizes.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
+
+    testWidgets(
+      'StrokedText — diferentes stroke widths',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    StrokedText(
+                      text: 'Fino',
+                      style: theme.textTheme.headlineMedium,
+                      strokeWidth: 0.5,
+                    ),
+                    const SizedBox(height: 16),
+                    StrokedText(
+                      text: 'Normal',
+                      style: theme.textTheme.headlineMedium,
+                      strokeWidth: 2.0,
+                    ),
+                    const SizedBox(height: 16),
+                    StrokedText(
+                      text: 'Grosso',
+                      style: theme.textTheme.headlineMedium,
+                      strokeWidth: 4.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Column),
+          matchesGoldenFile('stroked_text_multiple_widths.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
+
+    testWidgets(
+      'StrokedText — em contexto de Container',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: StrokedText(
+                    text: 'Dentro Container',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Container),
+          matchesGoldenFile('stroked_text_in_container.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
+
+    testWidgets(
+      'StrokedText — texto especial (números e símbolos)',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
                 child: StrokedText(
-                  text: 'Dentro Container',
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                  ),
+                  text: 'BINGO 123! @#%',
+                  style: theme.textTheme.displayLarge,
                 ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(Container),
-        matchesGoldenFile('stroked_text_in_container.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
-
-    testWidgets('StrokedText — texto especial (números e símbolos)', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: StrokedText(
-                text: 'BINGO 123! @#%',
-                style: theme.textTheme.displayLarge,
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(StrokedText),
-        matchesGoldenFile('stroked_text_special_chars.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(StrokedText),
+          matchesGoldenFile('stroked_text_special_chars.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
   });
 }

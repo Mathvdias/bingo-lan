@@ -1,6 +1,7 @@
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
+import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/banner_ad_widget.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +41,47 @@ class _LobbyScreenState extends State<LobbyScreen> {
     }
   }
 
+  /// Ações do tour: "Pular" encerra tudo, "Próximo" avança. Sem isso o tour
+  /// só saía tocando passo a passo.
+  List<TooltipActionButton> _tourActions(AppLocalizations l10n) {
+    const labelStyle = TextStyle(
+      color: AppColors.text,
+      fontWeight: FontWeight.w700,
+      fontSize: 13,
+    );
+    return [
+      TooltipActionButton(
+        type: TooltipDefaultActionType.skip,
+        name: l10n.tourSkip,
+        backgroundColor: AppColors.card,
+        border: const Border.fromBorderSide(
+          BorderSide(color: AppColors.outline, width: 2),
+        ),
+        textStyle: labelStyle,
+      ),
+      TooltipActionButton(
+        type: TooltipDefaultActionType.next,
+        name: l10n.tourNext,
+        backgroundColor: AppColors.primary,
+        border: const Border.fromBorderSide(
+          BorderSide(color: AppColors.outline, width: 2),
+        ),
+        textStyle: labelStyle,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
+    final tourActions = _tourActions(l10n);
+    const tourActionConfig = TooltipActionConfig(
+      alignment: MainAxisAlignment.end,
+      actionGap: 8,
+      gapBetweenContentAndAction: 12,
+    );
 
     return Scaffold(
       key: const ValueKey<String>('lobby_screen'),
@@ -65,24 +102,25 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 if (isPremium) {
                   return Padding(
                     padding: const EdgeInsets.all(12.0),
+                    // Cores vêm do ChipThemeData: amarelo + texto preto.
                     child: Chip(
                       key: const Key('lobby_premium_chip'),
+                      avatar: const Icon(Icons.workspace_premium),
                       label: Text(l10n.lobbyPremiumTag),
-                      backgroundColor: Colors.amber,
-                      labelStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
                     ),
                   );
                 }
 
-                return TextButton.icon(
-                  key: const Key('lobby_upgrade_button'),
-                  onPressed: () => context.push('/paywall?source=lobby'),
-                  icon: const Icon(Icons.star, color: Colors.amber),
-                  label: Text(l10n.lobbyUpgradeButton),
-                  style: TextButton.styleFrom(foregroundColor: Colors.amber),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
+                  child: _UpgradePill(
+                    key: const Key('lobby_upgrade_button'),
+                    label: l10n.lobbyUpgradeButton,
+                    onPressed: () => context.push('/paywall?source=lobby'),
+                  ),
                 );
               },
             ),
@@ -126,6 +164,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                     Showcase(
                       key: _hostKey,
                       description: l10n.lobbyHostShowcase,
+                      tooltipActions: tourActions,
+                      tooltipActionConfig: tourActionConfig,
                       child: Semantics(
                         label: l10n.startBingo,
                         button: true,
@@ -142,6 +182,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                     Showcase(
                       key: _joinKey,
                       description: l10n.lobbyJoinShowcase,
+                      tooltipActions: tourActions,
+                      tooltipActionConfig: tourActionConfig,
                       child: Semantics(
                         label: l10n.joinBingo,
                         button: true,
@@ -160,6 +202,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       Showcase(
                         key: _soloKey,
                         description: l10n.lobbySoloShowcase,
+                        tooltipActions: tourActions,
+                        tooltipActionConfig: tourActionConfig,
                         child: Semantics(
                           label: l10n.soloButton,
                           button: true,
@@ -177,6 +221,67 @@ class _LobbyScreenState extends State<LobbyScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Botão "Upgrade": pílula branca com contorno preto, estrela amarela com
+/// contorno e rótulo em âmbar escuro. Amarelo nunca vira texto sobre o creme.
+class _UpgradePill extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  const _UpgradePill({super.key, required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Semantics(
+      button: true,
+      label: label,
+      child: Tooltip(
+        message: label,
+        child: Material(
+          color: AppColors.card,
+          shape: const StadiumBorder(
+            side: BorderSide(color: AppColors.outline, width: 2),
+          ),
+          child: InkWell(
+            onTap: onPressed,
+            customBorder: const StadiumBorder(),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 40),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 4, 14, 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Icon(Icons.star, color: AppColors.primary, size: 22),
+                        Icon(
+                          Icons.star_outline,
+                          color: AppColors.outline,
+                          size: 22,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      label,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.accentText,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -236,7 +341,10 @@ class _LobbyBackgroundState extends State<_LobbyBackground>
               Positioned(
                 left: 100 + ((1 - value) * 100),
                 bottom: -50 + ((1 - value) * 100),
-                child: _buildBubble(250, Colors.amber.withValues(alpha: 0.1)),
+                child: _buildBubble(
+                  250,
+                  AppColors.primary.withValues(alpha: 0.1),
+                ),
               ),
             ],
           );

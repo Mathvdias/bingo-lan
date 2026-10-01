@@ -34,12 +34,7 @@ void main() {
         MaterialApp(
           theme: theme,
           home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BingoGridHeader(),
-              ),
-            ),
+            body: Center(child: SizedBox(width: 400, child: BingoGridHeader())),
           ),
         ),
       );
@@ -76,12 +71,7 @@ void main() {
         MaterialApp(
           theme: darkTheme,
           home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BingoGridHeader(),
-              ),
-            ),
+            body: Center(child: SizedBox(width: 400, child: BingoGridHeader())),
           ),
         ),
       );
@@ -92,26 +82,30 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('BingoGridHeader — tamanho responsivo', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 200, // Metade do tamanho
-                child: BingoGridHeader(),
+    testWidgets(
+      'BingoGridHeader — tamanho responsivo',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 200, // Metade do tamanho
+                  child: BingoGridHeader(),
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(BingoGridHeader),
-        matchesGoldenFile('bingo_grid_header_small.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(BingoGridHeader),
+          matchesGoldenFile('bingo_grid_header_small.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
     testWidgets('BingoGridHeader — tela cheia', (tester) async {
       await tester.pumpWidget(
@@ -119,10 +113,7 @@ void main() {
           theme: theme,
           home: Scaffold(
             body: Center(
-              child: SizedBox(
-                width: double.infinity,
-                child: BingoGridHeader(),
-              ),
+              child: SizedBox(width: double.infinity, child: BingoGridHeader()),
             ),
           ),
         ),

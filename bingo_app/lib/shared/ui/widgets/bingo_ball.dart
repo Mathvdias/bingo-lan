@@ -16,9 +16,10 @@ class BingoBall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.headlineMedium?.copyWith(
-      color: isDrawn ? Colors.white : AppColors.outline,
-    );
+    // Texto sempre preto: branco sobre o verde pastel ficava em 1.7:1.
+    final textStyle = Theme.of(
+      context,
+    ).textTheme.headlineMedium?.copyWith(color: AppColors.text);
 
     return Container(
       width: size,
@@ -34,7 +35,9 @@ class BingoBall extends StatelessWidget {
 }
 
 @Preview(name: 'Bingo Ball - Normal')
-Widget bingoBallNormalPreview() => const Scaffold(body: Center(child: BingoBall(number: 75)));
+Widget bingoBallNormalPreview() =>
+    const Scaffold(body: Center(child: BingoBall(number: 75)));
 
 @Preview(name: 'Bingo Ball - Drawn')
-Widget bingoBallDrawnPreview() => const Scaffold(body: Center(child: BingoBall(number: 75, isDrawn: true)));
+Widget bingoBallDrawnPreview() =>
+    const Scaffold(body: Center(child: BingoBall(number: 75, isDrawn: true)));

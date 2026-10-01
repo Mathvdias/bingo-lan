@@ -165,9 +165,7 @@ class _PlayerGameScreenState extends State<PlayerGameScreen> {
                     key: const Key('player_winner_overlay'),
                     title: viewModel.isWinner
                         ? l10n.playerGameYouWon
-                        : l10n.playerGameSomeoneWon(
-                            viewModel.winnerName ?? '',
-                          ),
+                        : l10n.playerGameSomeoneWon(viewModel.winnerName ?? ''),
                     message: l10n.playerGameWaitNextRound,
                     buttonLabel: l10n.backToLobby,
                     onPressed: () => _leave(viewModel),
@@ -220,10 +218,14 @@ class _LastCalledStrip extends StatelessWidget {
                     ),
                   ),
                   if (last != null)
-                    StrokedText(
-                      key: const Key('player_last_called'),
-                      text: BingoCard.label(last),
-                      style: textTheme.headlineMedium,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: StrokedText(
+                        key: const Key('player_last_called'),
+                        text: BingoCard.label(last),
+                        style: textTheme.headlineMedium,
+                      ),
                     ),
                 ],
               ),
@@ -231,9 +233,7 @@ class _LastCalledStrip extends StatelessWidget {
             Text(
               l10n.drawnCount(viewModel.drawnNumbers.length),
               key: const Key('player_drawn_count'),
-              style: textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -256,8 +256,7 @@ class _ConnectionBanner extends StatelessWidget {
       GameConnectionState.connecting => l10n.connectionConnecting,
       GameConnectionState.reconnecting => l10n.connectionReconnecting,
       GameConnectionState.disconnected => l10n.connectionDisconnected,
-      GameConnectionState.connected ||
-      GameConnectionState.roomClosed => '',
+      GameConnectionState.connected || GameConnectionState.roomClosed => '',
     };
 
     return Padding(
@@ -334,9 +333,12 @@ class _Overlay extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                StrokedText(
-                  text: title,
-                  style: textTheme.headlineMedium,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: StrokedText(
+                    text: title,
+                    style: textTheme.headlineMedium,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(

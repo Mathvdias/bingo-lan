@@ -4,7 +4,7 @@
   "joinBingo": "Unisciti a un Bingo",
   "upgrade": "Aggiorna",
   "premiumBadge": "PREMIUM",
-  "manualGlobe": "Manuale (Globo Fisico)",
+  "manualGlobe": "Manuale",
   "virtualGlobe": "Virtuale",
   "autoGlobe": "Globo Automatico (Premium)",
   "drawRandom": "Estrai (Casuale)",
@@ -74,18 +74,8 @@
   "scanCancel": "Annulla",
   "scanShowcaseScanner": "Punta la fotocamera sul Codice QR dell'host per unirti rapidamente alla stanza.",
   "inviteRoomCode": "Codice della Stanza",
-  "inviteShareLink": "Condividi Link di Invito",
   "inviteTitle": "Invita Giocatori",
   "inviteScanDesc": "Scansiona per unirti alla stanza!",
-  "inviteShareCodeMessage": "Giochiamo a Bingo! Il nostro codice stanza è: {qrData}",
-  "@inviteShareCodeMessage": {
-    "placeholders": {
-      "qrData": {
-        "type": "String"
-      }
-    }
-  },
-  "inviteShareCodeTooltip": "Condividi Codice",
   "inviteShareLinkMessage": "Vieni a giocare a Bingo! Basta toccare dal telefono: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
@@ -178,17 +168,6 @@
       }
     }
   },
-  "inviteConnectedPlayersCapacity": "Giocatori connessi: {count}/{max} gratis",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "@playersInRoom": {
     "placeholders": {
       "count": {
@@ -260,5 +239,40 @@
         "type": "int"
       }
     }
-  }
+  },
+  "inviteShareInvite": "Condividi invito",
+  "inviteCopyLink": "Copia link",
+  "inviteLinkCopied": "Link copiato!",
+  "invitePasteHint": "oppure chiedi di incollare il link in '{button}'",
+  "@invitePasteHint": {
+    "placeholders": {
+      "button": {
+        "type": "String"
+      }
+    }
+  },
+  "playersCapacityLabel": "giocatori (piano gratuito)",
+  "playersConnectedLabel": "giocatori connessi",
+  "hostRoomUndoLast": "Annulla ultima pallina",
+  "hostRoomUndone": "Pallina {label} annullata",
+  "@hostRoomUndone": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomPause": "Pausa",
+  "hostRoomResume": "Riprendi",
+  "hostRoomEmptyTitle": "Nessuna pallina",
+  "tourSkip": "Salta",
+  "tourNext": "Avanti",
+  "cardCellMarked": "segnato",
+  "cardCellCalled": "estratto, non segnato",
+  "cardCellNotCalled": "non estratto",
+  "cardCellFreeSpace": "casella libera",
+  "scanCameraDeniedTitle": "Accesso alla fotocamera negato",
+  "scanCameraDeniedMessage": "Consenti l'accesso alla fotocamera nelle impostazioni per leggere il QR code, oppure inserisci il codice manualmente.",
+  "scanCameraErrorMessage": "Impossibile aprire la fotocamera. Riprova o inserisci il codice manualmente.",
+  "scanOpenSettings": "Apri impostazioni"
 }

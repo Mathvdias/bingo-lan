@@ -6,7 +6,6 @@ import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,7 +33,6 @@ class _PaywallScreenState extends State<PaywallScreen> {
   void initState() {
     super.initState();
     AdService.suppressFullScreenAds = true;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _viewModel = serviceLocator<PaywallViewModel>();
     _viewModel.addListener(_onViewModelChanged);
     _viewModel.start(widget.source);
@@ -44,7 +42,6 @@ class _PaywallScreenState extends State<PaywallScreen> {
   void dispose() {
     _viewModel.removeListener(_onViewModelChanged);
     _viewModel.dispose();
-    SystemChrome.setPreferredOrientations(const []);
     AdService.suppressFullScreenAds = false;
     super.dispose();
   }
@@ -354,11 +351,7 @@ class _Message extends StatelessWidget {
       children: [
         Icon(icon, size: 48, color: AppColors.textSecondary),
         const SizedBox(height: 12),
-        Text(
-          message,
-          textAlign: TextAlign.center,
-          style: textTheme.bodyLarge,
-        ),
+        Text(message, textAlign: TextAlign.center, style: textTheme.bodyLarge),
         const SizedBox(height: 16),
         BingoButton(
           key: const Key('paywall_retry'),

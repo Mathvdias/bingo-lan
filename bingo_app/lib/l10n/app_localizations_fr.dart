@@ -24,7 +24,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get premiumBadge => 'PREMIUM';
 
   @override
-  String get manualGlobe => 'Manuel (Physique)';
+  String get manualGlobe => 'Manuel';
 
   @override
   String get virtualGlobe => 'Virtuel';
@@ -219,21 +219,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get inviteRoomCode => 'Code de la Salle';
 
   @override
-  String get inviteShareLink => 'Partager le lien d\'invitation';
-
-  @override
   String get inviteTitle => 'Inviter des joueurs';
 
   @override
   String get inviteScanDesc => 'Scannez pour rejoindre la salle !';
-
-  @override
-  String inviteShareCodeMessage(String qrData) {
-    return 'Jouons au Bingo ! Notre code de salle est : $qrData';
-  }
-
-  @override
-  String get inviteShareCodeTooltip => 'Partager le code';
 
   @override
   String inviteShareLinkMessage(String qrData) {
@@ -426,11 +415,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String inviteConnectedPlayersCapacity(int count, int max) {
-    return 'Joueurs connectés : $count/$max gratuits';
-  }
-
-  @override
   String get routeErrorMessage => 'Impossible d\'ouvrir cet écran.';
 
   @override
@@ -561,4 +545,73 @@ class AppLocalizationsFr extends AppLocalizations {
   String playerGameShoutCooldown(int seconds) {
     return 'Patientez ${seconds}s';
   }
+
+  @override
+  String get inviteShareInvite => 'Partager l\'invitation';
+
+  @override
+  String get inviteCopyLink => 'Copier le lien';
+
+  @override
+  String get inviteLinkCopied => 'Lien copié !';
+
+  @override
+  String invitePasteHint(String button) {
+    return 'ou demandez de coller le lien dans « $button »';
+  }
+
+  @override
+  String get playersCapacityLabel => 'joueurs (offre gratuite)';
+
+  @override
+  String get playersConnectedLabel => 'joueurs connectés';
+
+  @override
+  String get hostRoomUndoLast => 'Annuler la dernière boule';
+
+  @override
+  String hostRoomUndone(String label) {
+    return 'Boule $label annulée';
+  }
+
+  @override
+  String get hostRoomPause => 'Pause';
+
+  @override
+  String get hostRoomResume => 'Reprendre';
+
+  @override
+  String get hostRoomEmptyTitle => 'Aucune boule';
+
+  @override
+  String get tourSkip => 'Passer';
+
+  @override
+  String get tourNext => 'Suivant';
+
+  @override
+  String get cardCellMarked => 'coché';
+
+  @override
+  String get cardCellCalled => 'tiré, non coché';
+
+  @override
+  String get cardCellNotCalled => 'non tiré';
+
+  @override
+  String get cardCellFreeSpace => 'case gratuite';
+
+  @override
+  String get scanCameraDeniedTitle => 'Accès à la caméra requis';
+
+  @override
+  String get scanCameraDeniedMessage =>
+      'Autorisez l\'accès à la caméra dans les réglages pour lire le QR code, ou saisissez le code manuellement.';
+
+  @override
+  String get scanCameraErrorMessage =>
+      'Impossible d\'ouvrir la caméra. Réessayez ou saisissez le code manuellement.';
+
+  @override
+  String get scanOpenSettings => 'Ouvrir les réglages';
 }

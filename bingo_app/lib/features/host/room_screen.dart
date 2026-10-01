@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bingo_app/features/host/host_room_view_model.dart';
+import 'package:bingo_app/features/host/widgets/host_draw_panel.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
@@ -42,6 +43,7 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
 
   Future<bool> _showExitDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
+    // Cores, contorno e tipografia vêm do DialogThemeData/TextButtonTheme.
     final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -89,6 +91,21 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
     }
   }
 
+  /// Toast neutro acima do botão de sortear: não pode cobrir a ação principal
+  /// do cantador entre uma bola e outra.
+  void _showToast(ScaffoldMessengerState messenger, Key key, String text) {
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          key: key,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+          duration: const Duration(seconds: 2),
+          content: Text(text),
+        ),
+      );
+  }
+
   void _onAction(HostRoomAction action, AppLocalizations l10n) {
     if (!mounted) return;
     final messenger = ScaffoldMessenger.of(context);
@@ -101,74 +118,27 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
           HostRoomError.alreadyDrawn => l10n.errorNumberDrawn,
           HostRoomError.connection => l10n.hostRoomErrorConnection,
         };
+        // Rosa de fundo + texto preto (SnackBarThemeData).
         messenger.showSnackBar(
           SnackBar(content: Text(text), backgroundColor: AppColors.error),
         );
       case AnnounceNumber(:final number, :final phrase):
-        messenger
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              key: const Key('host_announce_toast'),
-              behavior: SnackBarBehavior.floating,
-              // Acima do botão de sortear: o toast não pode cobrir a ação
-              // principal do cantador entre uma bola e outra.
-              margin: const EdgeInsets.fromLTRB(16, 0, 16, 120),
-              duration: const Duration(seconds: 2),
-              backgroundColor: AppColors.card,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: const BorderSide(color: AppColors.outline, width: 2),
-              ),
-              content: Text(
-                '${BingoCard.label(number)}  ·  $phrase',
-                style: const TextStyle(
-                  color: AppColors.text,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          );
-    }
-  }
-
-  /// "N jogadores na sala" ou "N/M" quando há limite grátis e o host não é
-  /// premium (modelo paywall_host).
-  Widget _buildPlayerCount(BuildContext context, HostRoomViewModel viewModel) {
-    final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
-    return ValueListenableBuilder<bool>(
-      valueListenable: SubscriptionService.isPremium,
-      builder: (context, isPremium, _) {
-        final showCap = RevenueConfigService.hasFreePlayerCap && !isPremium;
-        final text = showCap
-            ? l10n.playersCapacity(
-                viewModel.playerCount,
-                RevenueConfigService.maxFreePlayersPathA,
-              )
-            : l10n.playersInRoom(viewModel.playerCount);
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.people),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                text,
-                key: const Key('host_room_player_count'),
-                style: textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
+        _showToast(
+          messenger,
+          const Key('host_announce_toast'),
+          '${BingoCard.label(number)}  ·  $phrase',
         );
-      },
-    );
+      case AnnounceUndo(:final number):
+        _showToast(
+          messenger,
+          const Key('host_undo_toast'),
+          l10n.hostRoomUndone(BingoCard.label(number)),
+        );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context)!;
 
     return ViewModelProvider<HostRoomViewModel>(
@@ -179,7 +149,9 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
               if (kDebugMode) log('HostRoomScreen: interstitial carregado.');
             },
             onAdFailedToLoad: (error) {
-              if (kDebugMode) log('HostRoomScreen: interstitial falhou: $error');
+              if (kDebugMode) {
+                log('HostRoomScreen: interstitial falhou: $error');
+              }
             },
           );
         }
@@ -188,8 +160,9 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
         );
       },
       builder: (context, viewModel, child) {
-        final history = viewModel.drawnNumbersNewestFirst;
-        final canDraw = viewModel.canDraw && !viewModel.isAutoPlaying;
+        // Sortear na mão é permitido fora do fim de jogo e enquanto o globo
+        // automático não estiver rodando (pausado pode).
+        final canDraw = viewModel.canDraw && !viewModel.isAutoRunning;
 
         return PopScope(
           canPop: false,
@@ -212,103 +185,24 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
                   slivers: [
                     SliverToBoxAdapter(
                       child: RepaintBoundary(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              // Último número sorteado (com a letra B-I-N-G-O)
-                              Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: AppColors.card,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: AppColors.outline,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    StrokedText(
-                                      key: const Key('host_last_number'),
-                                      text: viewModel.lastNumber == null
-                                          ? '--'
-                                          : BingoCard.label(
-                                              viewModel.lastNumber!,
-                                            ),
-                                      style: textTheme.headlineLarge,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      l10n.drawnCount(
-                                        viewModel.drawnNumbers.length,
-                                      ),
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ),
-                                    if (viewModel.phase == GamePhase.waiting)
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: Text(
-                                          l10n.hostRoomWaitingDraw,
-                                          textAlign: TextAlign.center,
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            fontStyle: FontStyle.italic,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              // Histórico: mais recente primeiro
-                              SizedBox(
-                                height: 50,
-                                child: ListView.builder(
-                                  key: const Key('host_history'),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: history.length,
-                                  itemBuilder: (context, index) {
-                                    final number = history[index];
-                                    final isLatest = index == 0;
-                                    return Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 4,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isLatest
-                                            ? AppColors.primary
-                                            : AppColors.success,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: AppColors.outline,
-                                          width: isLatest ? 2 : 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          BingoCard.label(number),
-                                          style: textTheme.bodyLarge?.copyWith(
-                                            color: AppColors.text,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              // Player Count (com dica de capacidade N/M)
-                              _buildPlayerCount(context, viewModel),
-                              const SizedBox(height: 16),
-                            ],
-                          ),
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: SubscriptionService.isPremium,
+                          builder: (context, isPremium, _) {
+                            final showCap =
+                                RevenueConfigService.hasFreePlayerCap &&
+                                !isPremium;
+                            return HostDrawPanel(
+                              lastNumber: viewModel.lastNumber,
+                              drawnNumbersNewestFirst:
+                                  viewModel.drawnNumbersNewestFirst,
+                              canUndo: viewModel.canUndo,
+                              onUndo: viewModel.undoLastDraw,
+                              playerCount: viewModel.playerCount,
+                              maxPlayers: showCap
+                                  ? RevenueConfigService.maxFreePlayersPathA
+                                  : null,
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -327,7 +221,7 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final claim = viewModel.bingoClaims[index];
                         return Card(
-                          margin: const EdgeInsets.only(bottom: 8),
+                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                           child: ListTile(
                             title: Text(
                               '${claim.playerName} ${l10n.shoutedBingo}',
@@ -351,66 +245,30 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
                             length: 2,
                             child: Column(
                               children: [
+                                // Rótulos curtos (<= 12 caracteres) com ícone;
+                                // cores e indicador vêm do TabBarThemeData.
                                 TabBar(
                                   tabs: [
-                                    Tab(text: l10n.virtualGlobe),
-                                    Tab(text: l10n.manualGlobe),
+                                    Tab(
+                                      key: const Key('host_tab_virtual'),
+                                      icon: const Icon(Icons.casino),
+                                      text: l10n.virtualGlobe,
+                                    ),
+                                    Tab(
+                                      key: const Key('host_tab_manual'),
+                                      icon: const Icon(Icons.edit),
+                                      text: l10n.manualGlobe,
+                                    ),
                                   ],
-                                  labelColor: AppColors.primary,
-                                  unselectedLabelColor: AppColors.textSecondary,
-                                  indicatorColor: AppColors.primary,
                                 ),
-                                const SizedBox(height: 16),
                                 SizedBox(
-                                  height: 200, // Fixed height for controls
+                                  height: 240, // Altura fixa dos controles
                                   child: TabBarView(
                                     children: [
-                                      // Virtual Globe
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          BingoButton(
-                                            key: const Key('host_draw_button'),
-                                            label: l10n.drawRandom,
-                                            enabled: canDraw,
-                                            onPressed:
-                                                viewModel.drawRandomNumber,
-                                          ),
-                                          const SizedBox(height: 16),
-                                          if (RevenueConfigService
-                                              .purchasesEnabled)
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Flexible(
-                                                  child: Text(l10n.autoGlobe),
-                                                ),
-                                                Switch(
-                                                  value: viewModel.isAutoPlaying,
-                                                  onChanged: viewModel.isGameOver
-                                                      ? null
-                                                      : (value) => viewModel
-                                                          .toggleAutoPlay(),
-                                                  activeThumbColor:
-                                                      AppColors.primary,
-                                                ),
-                                                if (viewModel.isAutoPlaying)
-                                                  const SizedBox(
-                                                    height: 16,
-                                                    width: 16,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          strokeWidth: 2,
-                                                        ),
-                                                  ),
-                                              ],
-                                            ),
-                                        ],
+                                      _VirtualGlobeControl(
+                                        viewModel: viewModel,
+                                        canDraw: canDraw,
                                       ),
-
-                                      // Manual Input
                                       _ManualInputControl(
                                         viewModel: viewModel,
                                         enabled: canDraw,
@@ -438,6 +296,93 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Aba "Virtual": sortear, globo automático (premium) e pausar/retomar.
+class _VirtualGlobeControl extends StatelessWidget {
+  final HostRoomViewModel viewModel;
+  final bool canDraw;
+
+  const _VirtualGlobeControl({required this.viewModel, required this.canDraw});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BingoButton(
+            key: const Key('host_draw_button'),
+            label: l10n.drawRandom,
+            enabled: canDraw,
+            onPressed: viewModel.drawRandomNumber,
+          ),
+          if (RevenueConfigService.purchasesEnabled) ...[
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(child: Text(l10n.autoGlobe)),
+                Switch(
+                  key: const Key('host_auto_switch'),
+                  value: viewModel.isAutoPlaying,
+                  onChanged: viewModel.isGameOver
+                      ? null
+                      : (value) => viewModel.toggleAutoPlay(),
+                  activeThumbColor: AppColors.outline,
+                  activeTrackColor: AppColors.primary,
+                ),
+              ],
+            ),
+            if (viewModel.isAutoPlaying)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton.icon(
+                    key: const Key('host_auto_pause_button'),
+                    onPressed: viewModel.isAutoPaused
+                        ? viewModel.resumeAutoPlay
+                        : viewModel.pauseAutoPlay,
+                    icon: Icon(
+                      viewModel.isAutoPaused ? Icons.play_arrow : Icons.pause,
+                    ),
+                    label: Text(
+                      viewModel.isAutoPaused
+                          ? l10n.hostRoomResume
+                          : l10n.hostRoomPause,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      textStyle: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (viewModel.isAutoRunning) ...[
+                    const SizedBox(width: 12),
+                    const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.outline,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -474,9 +419,12 @@ class _WinnerOverlay extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              StrokedText(
-                text: l10n.hostRoomWinnerTitle,
-                style: textTheme.headlineLarge,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: StrokedText(
+                  text: l10n.hostRoomWinnerTitle,
+                  style: textTheme.headlineLarge,
+                ),
               ),
               const SizedBox(height: 12),
               Text(
@@ -543,45 +491,48 @@ class _ManualInputControlState extends State<_ManualInputControl> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 100,
-              child: TextField(
-                controller: _controller,
-                enabled: widget.enabled,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: l10n.numberInput,
-                  border: const OutlineInputBorder(),
-                ),
-                onSubmitted: (_) => _submit(),
-              ),
-            ),
-            const SizedBox(width: 16),
-            ElevatedButton(
-              onPressed: widget.enabled ? _submit : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 100,
+                child: TextField(
+                  key: const Key('host_manual_field'),
+                  controller: _controller,
+                  enabled: widget.enabled,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: l10n.numberInput,
+                    border: const OutlineInputBorder(),
+                  ),
+                  onSubmitted: (_) => _submit(),
                 ),
               ),
-              child: Text(l10n.confirm),
+              const SizedBox(width: 16),
+              // Fundo amarelo + texto preto vêm do ElevatedButtonThemeData.
+              ElevatedButton(
+                key: const Key('host_manual_confirm'),
+                onPressed: widget.enabled ? _submit : null,
+                child: Text(l10n.confirm),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.manualInputInstruction,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.textSecondary,
+              fontSize: 12,
             ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.manualInputInstruction,
-          style: const TextStyle(color: Colors.grey, fontSize: 12),
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -10,10 +10,7 @@ void main() {
       MaterialApp(
         theme: bingoTheme,
         home: Scaffold(
-          body: BingoButton(
-            label: 'Jogar',
-            onPressed: () => tapped = true,
-          ),
+          body: BingoButton(label: 'Jogar', onPressed: () => tapped = true),
         ),
       ),
     );

@@ -9,16 +9,8 @@ void main() {
         home: Scaffold(
           body: Row(
             children: [
-              SizedBox(
-                width: 80,
-                height: 80,
-                child: CardCell(number: 17),
-              ),
-              SizedBox(
-                width: 80,
-                height: 80,
-                child: CardCell(number: 0),
-              ),
+              SizedBox(width: 80, height: 80, child: CardCell(number: 17)),
+              SizedBox(width: 80, height: 80, child: CardCell(number: 0)),
             ],
           ),
         ),
@@ -37,10 +29,7 @@ void main() {
           body: SizedBox(
             width: 80,
             height: 80,
-            child: CardCell(
-              number: 5,
-              onTap: () => taps++,
-            ),
+            child: CardCell(number: 5, onTap: () => taps++),
           ),
         ),
       ),

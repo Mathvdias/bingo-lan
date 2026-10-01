@@ -5,9 +5,11 @@ import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
+import 'package:bingo_app/shared/ui/widgets/players_counter.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -46,6 +48,28 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
     }
   }
 
+  /// O texto compartilhado carrega o deep link `bingo://join?data=...`; o
+  /// link bruto nunca aparece na tela.
+  void _share(AppLocalizations l10n) {
+    SharePlus.instance.share(
+      ShareParams(text: l10n.inviteShareLinkMessage(widget.qrData)),
+    );
+  }
+
+  Future<void> _copyLink(AppLocalizations l10n) async {
+    await Clipboard.setData(ClipboardData(text: widget.qrData));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          key: const Key('invite_link_copied'),
+          content: Text(l10n.inviteLinkCopied),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -69,29 +93,31 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
             body: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.contain,
-                            child: StrokedText(
-                              key: const Key('invite_room_name'),
-                              text: roomName,
-                              style: textTheme.headlineMedium,
-                            ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: StrokedText(
+                            key: const Key('invite_room_name'),
+                            text: roomName,
+                            style: textTheme.headlineMedium,
                           ),
-                          Text(
-                            l10n.inviteScanDesc,
-                            style: textTheme.displaySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 24),
-                          Center(
-                            child: RepaintBoundary(
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.inviteScanDesc,
+                          style: textTheme.displaySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: RepaintBoundary(
+                            child: Semantics(
+                              label: l10n.inviteScanDesc,
+                              image: true,
                               child: Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
@@ -101,6 +127,12 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(16),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: AppColors.outline,
+                                      offset: Offset(4, 4),
+                                    ),
+                                  ],
                                 ),
                                 child: QrImageView(
                                   data: qrData,
@@ -111,114 +143,60 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.card,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: AppColors.outline,
-                                width: 2,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  l10n.inviteRoomCode,
-                                  style: textTheme.labelLarge,
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        qrData,
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          fontFamily: 'Courier',
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.share),
-                                      tooltip: l10n.inviteShareCodeTooltip,
-                                      onPressed: () {
-                                        SharePlus.instance.share(
-                                          ShareParams(
-                                            text: l10n.inviteShareCodeMessage(
-                                              qrData,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const Divider(color: AppColors.outline),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TextButton.icon(
-                                      onPressed: () {
-                                        // qrData já é o deep link
-                                        // bingo://join?data=... gerado pelo host.
-                                        SharePlus.instance.share(
-                                          ShareParams(
-                                            text: l10n.inviteShareLinkMessage(
-                                              qrData,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.share),
-                                      label: Text(l10n.inviteShareLink),
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: AppColors.text,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                        ),
+                        const SizedBox(height: 24),
+                        BingoButton(
+                          key: const Key('invite_share_button'),
+                          label: l10n.inviteShareInvite,
+                          onPressed: () => _share(l10n),
+                        ),
+                        const SizedBox(height: 12),
+                        OutlinedButton.icon(
+                          key: const Key('invite_copy_button'),
+                          onPressed: () => _copyLink(l10n),
+                          icon: const Icon(Icons.link),
+                          label: Text(l10n.inviteCopyLink),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.invitePasteHint(l10n.scanManualButton),
+                          key: const Key('invite_paste_hint'),
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textSecondary,
                           ),
-                          // "N jogadores conectados" ou "N/M grátis" quando há
-                          // limite e o host não é premium (modelo paywall_host).
-                          ValueListenableBuilder<bool>(
-                            valueListenable: SubscriptionService.isPremium,
-                            builder: (context, isPremium, _) {
-                              final showCap =
-                                  RevenueConfigService.hasFreePlayerCap &&
-                                  !isPremium;
-                              return Text(
-                                showCap
-                                    ? l10n.inviteConnectedPlayersCapacity(
-                                        players.length,
-                                        RevenueConfigService
-                                            .maxFreePlayersPathA,
-                                      )
-                                    : l10n.inviteConnectedPlayers(
-                                        players.length,
-                                      ),
-                                key: const Key('invite_player_count'),
-                                style: textTheme.headlineSmall,
-                                textAlign: TextAlign.center,
-                              );
-                            },
-                          ),
-                          if (players.isEmpty)
-                            Text(
+                        ),
+                        const SizedBox(height: 24),
+                        // "N/M" + "jogadores (plano grátis)" quando há limite e
+                        // o host não é premium (modelo paywall_host).
+                        ValueListenableBuilder<bool>(
+                          valueListenable: SubscriptionService.isPremium,
+                          builder: (context, isPremium, _) {
+                            final showCap =
+                                RevenueConfigService.hasFreePlayerCap &&
+                                !isPremium;
+                            return PlayersCounter(
+                              key: const Key('invite_player_count'),
+                              count: players.length,
+                              max: showCap
+                                  ? RevenueConfigService.maxFreePlayersPathA
+                                  : null,
+                            );
+                          },
+                        ),
+                        if (players.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
                               l10n.inviteWaitingPlayers,
                               style: textTheme.bodyLarge?.copyWith(
                                 fontStyle: FontStyle.italic,
                               ),
                               textAlign: TextAlign.center,
                             ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
+                          ),
+                        const SizedBox(height: 8),
+                      ],
                     ),
                   ),
                 ),
@@ -241,6 +219,7 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                         // servidor; a sala continua na tela do host.
                         context.go('/host/room');
                       },
+                      color: AppColors.success,
                     ),
                   ),
                 ),

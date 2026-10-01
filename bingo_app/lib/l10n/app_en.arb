@@ -4,7 +4,7 @@
   "joinBingo": "Join a Bingo",
   "upgrade": "Upgrade",
   "premiumBadge": "PREMIUM",
-  "manualGlobe": "Manual (Physical Globe)",
+  "manualGlobe": "Manual",
   "virtualGlobe": "Virtual",
   "autoGlobe": "Auto Globe (Premium)",
   "drawRandom": "Draw (Random)",
@@ -74,18 +74,8 @@
   "scanCancel": "Cancel",
   "scanShowcaseScanner": "Point your camera at the host's QR Code to quickly join the room.",
   "inviteRoomCode": "Room Code",
-  "inviteShareLink": "Share Invite Link",
   "inviteTitle": "Invite Players",
   "inviteScanDesc": "Scan to join the room!",
-  "inviteShareCodeMessage": "Let's play Bingo! Our room code is: {qrData}",
-  "@inviteShareCodeMessage": {
-    "placeholders": {
-      "qrData": {
-        "type": "String"
-      }
-    }
-  },
-  "inviteShareCodeTooltip": "Share Code",
   "inviteShareLinkMessage": "Come play Bingo! Just tap from your phone: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
@@ -178,17 +168,6 @@
       }
     }
   },
-  "inviteConnectedPlayersCapacity": "Connected Players: {count}/{max} free",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "@playersInRoom": {
     "placeholders": {
       "count": {
@@ -260,5 +239,40 @@
         "type": "int"
       }
     }
-  }
+  },
+  "inviteShareInvite": "Share invite",
+  "inviteCopyLink": "Copy link",
+  "inviteLinkCopied": "Link copied!",
+  "invitePasteHint": "or ask them to paste the link under '{button}'",
+  "@invitePasteHint": {
+    "placeholders": {
+      "button": {
+        "type": "String"
+      }
+    }
+  },
+  "playersCapacityLabel": "players (free plan)",
+  "playersConnectedLabel": "players connected",
+  "hostRoomUndoLast": "Undo last ball",
+  "hostRoomUndone": "Ball {label} undone",
+  "@hostRoomUndone": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomPause": "Pause",
+  "hostRoomResume": "Resume",
+  "hostRoomEmptyTitle": "No balls yet",
+  "tourSkip": "Skip",
+  "tourNext": "Next",
+  "cardCellMarked": "marked",
+  "cardCellCalled": "called, not marked",
+  "cardCellNotCalled": "not called",
+  "cardCellFreeSpace": "free space",
+  "scanCameraDeniedTitle": "Camera access needed",
+  "scanCameraDeniedMessage": "Allow camera access in Settings to scan the QR code, or enter the code manually.",
+  "scanCameraErrorMessage": "We couldn't open the camera. Try again or enter the code manually.",
+  "scanOpenSettings": "Open Settings"
 }

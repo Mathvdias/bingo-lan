@@ -4,7 +4,7 @@
   "joinBingo": "ビンゴに参加する",
   "upgrade": "アップグレード",
   "premiumBadge": "プレミアム",
-  "manualGlobe": "手動 (物理)",
+  "manualGlobe": "手動",
   "virtualGlobe": "バーチャル",
   "autoGlobe": "自動グローブ (プレミアム)",
   "drawRandom": "抽選 (ランダム)",
@@ -74,18 +74,8 @@
   "scanCancel": "キャンセル",
   "scanShowcaseScanner": "ホストのQRコードにカメラを向けて、すぐにルームに参加します。",
   "inviteRoomCode": "ルームコード",
-  "inviteShareLink": "招待リンクを共有",
   "inviteTitle": "プレイヤーを招待",
   "inviteScanDesc": "スキャンしてルームに参加！",
-  "inviteShareCodeMessage": "ビンゴをしよう！ルームコードは：{qrData}",
-  "@inviteShareCodeMessage": {
-    "placeholders": {
-      "qrData": {
-        "type": "String"
-      }
-    }
-  },
-  "inviteShareCodeTooltip": "コードを共有",
   "inviteShareLinkMessage": "ビンゴで遊ぼう！スマホからタップするだけ: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
@@ -178,17 +168,6 @@
       }
     }
   },
-  "inviteConnectedPlayersCapacity": "接続中のプレイヤー: {count}/{max}（無料）",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "@playersInRoom": {
     "placeholders": {
       "count": {
@@ -260,5 +239,40 @@
         "type": "int"
       }
     }
-  }
+  },
+  "inviteShareInvite": "招待を共有",
+  "inviteCopyLink": "リンクをコピー",
+  "inviteLinkCopied": "リンクをコピーしました",
+  "invitePasteHint": "または「{button}」にリンクを貼り付けてもらいましょう",
+  "@invitePasteHint": {
+    "placeholders": {
+      "button": {
+        "type": "String"
+      }
+    }
+  },
+  "playersCapacityLabel": "人（無料プラン）",
+  "playersConnectedLabel": "人が接続中",
+  "hostRoomUndoLast": "最後のボールを取り消す",
+  "hostRoomUndone": "ボール {label} を取り消しました",
+  "@hostRoomUndone": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomPause": "一時停止",
+  "hostRoomResume": "再開",
+  "hostRoomEmptyTitle": "まだボールなし",
+  "tourSkip": "スキップ",
+  "tourNext": "次へ",
+  "cardCellMarked": "マーク済み",
+  "cardCellCalled": "抽選済み、未マーク",
+  "cardCellNotCalled": "未抽選",
+  "cardCellFreeSpace": "フリースペース",
+  "scanCameraDeniedTitle": "カメラにアクセスできません",
+  "scanCameraDeniedMessage": "QRコードを読み取るには設定でカメラの使用を許可するか、コードを手動で入力してください。",
+  "scanCameraErrorMessage": "カメラを起動できませんでした。もう一度試すか、コードを手動で入力してください。",
+  "scanOpenSettings": "設定を開く"
 }

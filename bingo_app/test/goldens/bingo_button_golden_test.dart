@@ -34,10 +34,7 @@ void main() {
         theme: theme,
         home: Scaffold(
           body: Center(
-            child: BingoButton(
-              label: 'Test',
-              onPressed: () {},
-            ),
+            child: BingoButton(label: 'Test', onPressed: () {}),
           ),
         ),
       ),

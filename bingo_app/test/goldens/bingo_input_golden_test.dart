@@ -50,9 +50,7 @@ void main() {
             body: Center(
               child: SizedBox(
                 width: 300,
-                child: BingoInput(
-                  hintText: 'Digite algo...',
-                ),
+                child: BingoInput(hintText: 'Digite algo...'),
               ),
             ),
           ),
@@ -65,29 +63,35 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('BingoInput — com texto preenchido', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 300,
-                child: BingoInput(
-                  controller: TextEditingController(text: 'Texto já digitado'),
-                  hintText: 'Digite algo...',
+    testWidgets(
+      'BingoInput — com texto preenchido',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 300,
+                  child: BingoInput(
+                    controller: TextEditingController(
+                      text: 'Texto já digitado',
+                    ),
+                    hintText: 'Digite algo...',
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(BingoInput),
-        matchesGoldenFile('bingo_input_with_text.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(BingoInput),
+          matchesGoldenFile('bingo_input_with_text.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
     testWidgets('BingoInput — modo senha', (tester) async {
       await tester.pumpWidget(
@@ -121,19 +125,17 @@ void main() {
             body: Center(
               child: SizedBox(
                 width: 300,
-                child: BingoInput(
-                  hintText: 'Clique em mim...',
-                ),
+                child: BingoInput(hintText: 'Clique em mim...'),
               ),
             ),
           ),
         ),
       );
-      
+
       // Dar foco ao campo
       await tester.tap(find.byType(BingoInput));
       await tester.pumpAndSettle();
-      
+
       await expectLater(
         find.byType(BingoInput),
         matchesGoldenFile('bingo_input_focused.png'),
@@ -182,9 +184,7 @@ void main() {
             body: Center(
               child: SizedBox(
                 width: 300,
-                child: BingoInput(
-                  hintText: 'Digite algo escuro...',
-                ),
+                child: BingoInput(hintText: 'Digite algo escuro...'),
               ),
             ),
           ),
@@ -205,9 +205,7 @@ void main() {
             body: Center(
               child: SizedBox(
                 width: 200, // Menor que o padrão
-                child: BingoInput(
-                  hintText: 'Input pequeno...',
-                ),
+                child: BingoInput(hintText: 'Input pequeno...'),
               ),
             ),
           ),
@@ -227,9 +225,7 @@ void main() {
           home: Scaffold(
             body: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: BingoInput(
-                hintText: 'Input em tela cheia...',
-              ),
+              child: BingoInput(hintText: 'Input em tela cheia...'),
             ),
           ),
         ),
@@ -241,38 +237,39 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('BingoInput — múltiplos estados lado a lado', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BingoInput(hintText: 'Campo normal...'),
-                  const SizedBox(height: 16),
-                  BingoInput(
-                    controller: TextEditingController(text: 'Com texto'),
-                    hintText: 'Com texto...',
-                  ),
-                  const SizedBox(height: 16),
-                  BingoInput(
-                    obscureText: true,
-                    hintText: 'Senha...',
-                  ),
-                ],
+    testWidgets(
+      'BingoInput — múltiplos estados lado a lado',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BingoInput(hintText: 'Campo normal...'),
+                    const SizedBox(height: 16),
+                    BingoInput(
+                      controller: TextEditingController(text: 'Com texto'),
+                      hintText: 'Com texto...',
+                    ),
+                    const SizedBox(height: 16),
+                    BingoInput(obscureText: true, hintText: 'Senha...'),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(Column),
-        matchesGoldenFile('bingo_input_variety.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Column),
+          matchesGoldenFile('bingo_input_variety.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
   });
 }

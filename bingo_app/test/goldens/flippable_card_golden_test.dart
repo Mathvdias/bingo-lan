@@ -10,14 +10,77 @@ class MockAssetBundle extends CachingAssetBundle {
   @override
   Future<ByteData> load(String key) async {
     if (key.endsWith('.png')) {
-      return ByteData.sublistView(Uint8List.fromList([
-        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
-        0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
-        0x0A, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
-        0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
-        0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
-      ]));
+      return ByteData.sublistView(
+        Uint8List.fromList([
+          0x89,
+          0x50,
+          0x4E,
+          0x47,
+          0x0D,
+          0x0A,
+          0x1A,
+          0x0A,
+          0x00,
+          0x00,
+          0x00,
+          0x0D,
+          0x49,
+          0x48,
+          0x44,
+          0x52,
+          0x00,
+          0x00,
+          0x00,
+          0x01,
+          0x00,
+          0x00,
+          0x00,
+          0x01,
+          0x08,
+          0x06,
+          0x00,
+          0x00,
+          0x00,
+          0x1F,
+          0x15,
+          0xC4,
+          0x89,
+          0x00,
+          0x00,
+          0x00,
+          0x0A,
+          0x49,
+          0x44,
+          0x41,
+          0x54,
+          0x78,
+          0x9C,
+          0x63,
+          0x00,
+          0x01,
+          0x00,
+          0x00,
+          0x05,
+          0x00,
+          0x01,
+          0x0D,
+          0x0A,
+          0x2D,
+          0xB4,
+          0x00,
+          0x00,
+          0x00,
+          0x00,
+          0x49,
+          0x45,
+          0x4E,
+          0x44,
+          0xAE,
+          0x42,
+          0x60,
+          0x82,
+        ]),
+      );
     }
     return PlatformAssetBundle().load(key);
   }
@@ -40,7 +103,11 @@ void main() {
       cardTheme: const CardThemeData(elevation: 4.0, color: AppColors.card),
     );
 
-    Future<void> pumpCard(WidgetTester tester, Widget child, ThemeData currentTheme) async {
+    Future<void> pumpCard(
+      WidgetTester tester,
+      Widget child,
+      ThemeData currentTheme,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: currentTheme,
@@ -139,7 +206,10 @@ void main() {
         const SizedBox(
           width: 400,
           height: 400,
-          child: FlippableCard(image: 'assets/images/logo.png', text: 'Texto grande'),
+          child: FlippableCard(
+            image: 'assets/images/logo.png',
+            text: 'Texto grande',
+          ),
         ),
         theme,
       );
@@ -180,13 +250,19 @@ void main() {
               const SizedBox(
                 width: 150,
                 height: 150,
-                child: FlippableCard(image: 'assets/images/logo.png', text: 'Card 1'),
+                child: FlippableCard(
+                  image: 'assets/images/logo.png',
+                  text: 'Card 1',
+                ),
               ),
               const SizedBox(width: 16),
               const SizedBox(
                 width: 150,
                 height: 150,
-                child: FlippableCard(image: 'assets/images/logo.png', text: 'Card 2'),
+                child: FlippableCard(
+                  image: 'assets/images/logo.png',
+                  text: 'Card 2',
+                ),
               ),
             ],
           ),
@@ -210,10 +286,7 @@ void main() {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Cards Flippáveis',
-                  style: TextStyle(fontSize: 24),
-                ),
+                const Text('Cards Flippáveis', style: TextStyle(fontSize: 24)),
                 const SizedBox(height: 16),
                 const SizedBox(
                   width: double.infinity,

@@ -1,10 +1,10 @@
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
-import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/flippable_card.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
+import 'package:bingo_app/shared/ui/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -54,32 +54,7 @@ class HostSetupScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.error.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.error),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.wifi_rounded,
-                              color: AppColors.error,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                l10n.hostSetupWifiWarning,
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.error,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      WarningBox(text: l10n.hostSetupWifiWarning),
                       const SizedBox(height: 32),
                       FlippableCard(
                         image: 'assets/images/bingo_local.png',
@@ -103,8 +78,9 @@ class HostSetupScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(_errorText(l10n, error)),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.error,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.error,
                               ),
                             );
                           }

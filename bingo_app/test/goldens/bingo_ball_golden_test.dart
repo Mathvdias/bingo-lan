@@ -29,32 +29,30 @@ void main() {
       ),
     );
 
-    testWidgets('BingoBall — estado normal (não sorteado)', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 75),
-            ),
+    testWidgets(
+      'BingoBall — estado normal (não sorteado)',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(body: Center(child: BingoBall(number: 75))),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(BingoBall),
-        matchesGoldenFile('bingo_ball_normal.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(BingoBall),
+          matchesGoldenFile('bingo_ball_normal.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
     testWidgets('BingoBall — estado sorteado', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: theme,
           home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 75, isDrawn: true),
-            ),
+            body: Center(child: BingoBall(number: 75, isDrawn: true)),
           ),
         ),
       );
@@ -70,9 +68,7 @@ void main() {
         MaterialApp(
           theme: theme,
           home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 42, size: 40.0),
-            ),
+            body: Center(child: BingoBall(number: 42, size: 40.0)),
           ),
         ),
       );
@@ -88,9 +84,7 @@ void main() {
         MaterialApp(
           theme: theme,
           home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 23, size: 80.0),
-            ),
+            body: Center(child: BingoBall(number: 23, size: 80.0)),
           ),
         ),
       );
@@ -105,11 +99,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 7),
-            ),
-          ),
+          home: Scaffold(body: Center(child: BingoBall(number: 7))),
         ),
       );
       await tester.pumpAndSettle();
@@ -119,52 +109,56 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('BingoBall — números de 2 dígitos', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 75),
-            ),
+    testWidgets(
+      'BingoBall — números de 2 dígitos',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(body: Center(child: BingoBall(number: 75))),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(BingoBall),
-        matchesGoldenFile('bingo_ball_double_digit.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(BingoBall),
+          matchesGoldenFile('bingo_ball_double_digit.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
-    testWidgets('BingoBall — múltiplos estados lado a lado', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BingoBall(number: 7),
-                  const SizedBox(width: 8),
-                  BingoBall(number: 75, isDrawn: true),
-                  const SizedBox(width: 8),
-                  BingoBall(number: 42, size: 40.0),
-                  const SizedBox(width: 8),
-                  BingoBall(number: 23, isDrawn: true, size: 80.0),
-                ],
+    testWidgets(
+      'BingoBall — múltiplos estados lado a lado',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BingoBall(number: 7),
+                    const SizedBox(width: 8),
+                    BingoBall(number: 75, isDrawn: true),
+                    const SizedBox(width: 8),
+                    BingoBall(number: 42, size: 40.0),
+                    const SizedBox(width: 8),
+                    BingoBall(number: 23, isDrawn: true, size: 80.0),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(Row),
-        matchesGoldenFile('bingo_ball_variety.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Row),
+          matchesGoldenFile('bingo_ball_variety.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
 
     testWidgets('BingoBall — tema escuro', (tester) async {
       final darkTheme = ThemeData(
@@ -192,9 +186,7 @@ void main() {
         MaterialApp(
           theme: darkTheme,
           home: Scaffold(
-            body: Center(
-              child: BingoBall(number: 75, isDrawn: true),
-            ),
+            body: Center(child: BingoBall(number: 75, isDrawn: true)),
           ),
         ),
       );

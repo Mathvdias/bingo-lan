@@ -117,49 +117,52 @@ void main() {
       );
     }, skip: Platform.environment['CI'] == 'true');
 
-    testWidgets('CardCell — múltiplos estados lado a lado', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: CardCell(number: 10),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: CardCell(number: 0),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: CardCell(number: 20, state: CardCellState.marked),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: CardCell(number: 30, state: CardCellState.validated),
-                  ),
-                ],
+    testWidgets(
+      'CardCell — múltiplos estados lado a lado',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: CardCell(number: 10),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(width: 80, height: 80, child: CardCell(number: 0)),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: CardCell(number: 20, state: CardCellState.marked),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: CardCell(
+                        number: 30,
+                        state: CardCellState.validated,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(
-        find.byType(Row),
-        matchesGoldenFile('card_cell_all_states.png'),
-      );
-    }, skip: Platform.environment['CI'] == 'true');
+        );
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Row),
+          matchesGoldenFile('card_cell_all_states.png'),
+        );
+      },
+      skip: Platform.environment['CI'] == 'true',
+    );
   });
 }

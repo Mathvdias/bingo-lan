@@ -28,8 +28,9 @@ class FakeGameConnection implements IGameConnection {
   /// Executado logo após um `joinRoom` bem-sucedido (ex.: emitir JOINED).
   void Function()? onJoin;
 
-  FakeGameConnection({GameConnectionState initialState = GameConnectionState.connected})
-    : _state = initialState;
+  FakeGameConnection({
+    GameConnectionState initialState = GameConnectionState.connected,
+  }) : _state = initialState;
 
   // ------------------------------------------------------------ test helpers
   void emit(GameEvent event) => _events.add(event);

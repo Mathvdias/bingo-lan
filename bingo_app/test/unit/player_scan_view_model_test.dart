@@ -50,32 +50,34 @@ void main() {
       expect(vm.error, PlayerScanError.invalidCode);
     });
 
-    test('deep link válido conecta na URI do convite e devolve o JOINED',
-        () async {
-      connection.onJoin = () => connection.emit(
-        JoinedEvent(
-          playerId: 'p-1',
-          cardId: 4321,
-          drawnNumbers: const [9],
-          roomName: 'Festa',
-        ),
-      );
+    test(
+      'deep link válido conecta na URI do convite e devolve o JOINED',
+      () async {
+        connection.onJoin = () => connection.emit(
+          JoinedEvent(
+            playerId: 'p-1',
+            cardId: 4321,
+            drawnNumbers: const [9],
+            roomName: 'Festa',
+          ),
+        );
 
-      final joined = await vm.onQrCodeScanned(invite.toDeepLink());
+        final joined = await vm.onQrCodeScanned(invite.toDeepLink());
 
-      expect(joined, isNotNull);
-      expect(joined!.cardId, 4321);
-      expect(joined.playerId, 'p-1');
-      expect(connection.joinedUris.single, invite.webSocketUri);
-      expect(vm.error, isNull);
-      expect(vm.invite?.roomName, 'Festa');
+        expect(joined, isNotNull);
+        expect(joined!.cardId, 4321);
+        expect(joined.playerId, 'p-1');
+        expect(connection.joinedUris.single, invite.webSocketUri);
+        expect(vm.error, isNull);
+        expect(vm.invite?.roomName, 'Festa');
 
-      final args = PlayerGameArgs.fromJoined(joined, playerName: 'Ana');
-      expect(args.cardId, 4321);
-      expect(args.playerId, 'p-1');
-      expect(args.initialDrawnNumbers, [9]);
-      expect(args.roomName, 'Festa');
-    });
+        final args = PlayerGameArgs.fromJoined(joined, playerName: 'Ana');
+        expect(args.cardId, 4321);
+        expect(args.playerId, 'p-1');
+        expect(args.initialDrawnNumbers, [9]);
+        expect(args.roomName, 'Festa');
+      },
+    );
 
     test('base64 puro (código manual) também funciona', () async {
       connection.onJoin = () => connection.emit(

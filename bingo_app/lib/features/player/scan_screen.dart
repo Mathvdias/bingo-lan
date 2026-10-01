@@ -3,6 +3,7 @@ import 'dart:developer'; // Import for log
 import 'package:app_settings/app_settings.dart';
 import 'package:bingo_app/features/player/player_game_args.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
+import 'package:bingo_app/features/player/widgets/camera_error_view.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
@@ -139,10 +140,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: Text(
-                l10n.scanCancel,
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text(l10n.scanCancel),
             ),
             BingoButton(
               label: l10n.scanJoin,
@@ -186,10 +184,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                l10n.scanCancel,
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text(l10n.scanCancel),
             ),
             BingoButton(
               label: l10n.scanJoin,
@@ -242,42 +237,64 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                   child: MobileScanner(
                     controller: controller,
                     onDetect: (capture) => _onDetect(capture, viewModel),
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: RepaintBoundary(
-                  child: CustomPaint(painter: _ScannerOverlayPainter()),
-                ),
-              ),
-              Center(
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary, width: 4),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-              Center(
-                child: Transform.translate(
-                  offset: const Offset(0, 140),
-                  child: Text(
-                    l10n.playerScanCameraHint,
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        const Shadow(
-                          offset: Offset(0, 1),
-                          blurRadius: 4,
-                          color: Colors.black,
-                        ),
-                      ],
+                    // Câmera negada ou indisponível: mensagem amigável no
+                    // lugar do erro padrão do plugin.
+                    errorBuilder: (context, error) => CameraErrorView(
+                      error: error,
+                      onRetry: () => controller.start(),
                     ),
-                    textAlign: TextAlign.center,
                   ),
+                ),
+              ),
+              // Máscara, moldura e dica só fazem sentido com a câmera aberta.
+              ValueListenableBuilder<MobileScannerState>(
+                valueListenable: controller,
+                builder: (context, state, child) {
+                  if (state.error != null) return const SizedBox.shrink();
+                  return child!;
+                },
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: RepaintBoundary(
+                        child: CustomPaint(painter: _ScannerOverlayPainter()),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          // Amarelo como moldura sobre a máscara escura.
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 4,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Transform.translate(
+                        offset: const Offset(0, 140),
+                        child: Text(
+                          l10n.playerScanCameraHint,
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              const Shadow(
+                                offset: Offset(0, 1),
+                                blurRadius: 4,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SafeArea(
@@ -315,14 +332,14 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                           ),
                         ),
                         TextButton(
-                            onPressed: () => AppSettings.openAppSettings(
-                              type: AppSettingsType.wifi,
-                            ),
-                            child: Text(
-                              l10n.buttonConfig,
-                              style: const TextStyle(color: AppColors.primary),
-                            ),
+                          onPressed: () => AppSettings.openAppSettings(
+                            type: AppSettingsType.wifi,
                           ),
+                          child: Text(
+                            l10n.buttonConfig,
+                            style: const TextStyle(color: AppColors.primary),
+                          ),
+                        ),
                       ],
                     ),
                   ),
