@@ -1,170 +1,137 @@
-# Guia de Configuração do RevenueCat
+# RevenueCat · configuração do projeto `bingo`
 
-## 1. Criar Conta e Projeto
+Estado real do projeto, não um tutorial genérico. O que o código espera está
+em `bingo_core/lib/src/constants/entitlements.dart` e em
+`bingo_app/lib/shared/services/subscription_service.dart`.
 
-1. Acesse https://www.revenuecat.com
-2. Crie uma conta (gratuita para começar)
-3. Clique em **"Create New Project"**
-4. Nome do projeto: **Bingo Lucca**
+## O que o app espera
 
-## 2. Criar App
+| Item | Valor | Onde o código lê |
+|---|---|---|
+| Projeto RevenueCat | `bingo` | — |
+| Entitlement | `premium` | `kPremiumEntitlementId` (bingo_core) |
+| Offering atual | `default` (qualquer id serve; o app usa `offerings.current`) | `PurchasesGateway.fetchPackages` |
+| Produto semanal | `weekly_subscription` | `SubscriptionService.weeklyProductId` |
+| Produto anual | `annual_subscription` | `SubscriptionService.annualProductId` |
+| Produto vitalício | `lifetime_purchase` | `SubscriptionService.lifetimeProductId` |
+| Pacote Android | `com.nightstudios.bingo` (dev: `com.nightstudios.bingo.dev`) | `android/app/build.gradle.kts` |
 
-1. No dashboard, clique em **"Add App"**
-2. Escolha **"Apple App Store"** (iOS)
-3. App Name: `Bingo Lucca iOS`
-4. Bundle ID: `com.bingolucca.app` (ou seu bundle ID)
-5. Clique em **"Save"**
+O paywall (`/paywall`) não tem ids de produto fixos: ele renderiza o que
+`offerings.current.availablePackages` devolver, usando `package.packageType`
+para o rótulo do período e `storeProduct.priceString` para o preço. O selo
+"economize X%" do anual é calculado contra semanal×52 (ou mensal×12).
 
-6. Repita para Android:
-   - Clique em **"Add App"**
-   - Escolha **"Google Play Store"**
-   - App Name: `Bingo Lucca Android`
-   - Package Name: `com.bingolucca.app`
+`Purchases.configure` é chamado **uma única vez**, em
+`SubscriptionService.initialize` (`main_common.dart`). O `PaymentDriver` do
+`bingo_core` apenas lê `CustomerInfo`. `Purchases.setLogLevel(debug)` só roda em
+`kDebugMode`.
 
-## 3. Configurar Produtos
+## Chaves (dart-define)
 
-### 3.1 Criar Entitlement
+| Variável | Uso |
+|---|---|
+| `RC_ANDROID_KEY` | chave pública `goog_...` do app Android |
+| `RC_IOS_KEY` | chave pública `appl_...` do app iOS |
+| `RC_TEST_STORE_KEY` | chave `test_...` do **Test Store**; só vale no flavor dev |
 
-1. Na sidebar, clique em **"Entitlements"**
-2. Clique em **"+ New"**
-3. Identifier: `premium`
-4. Display name: `Premium Access`
-5. Clique em **"Save"**
+Regra em `Env.revenueCatKeyFor`: no flavor dev, se `RC_TEST_STORE_KEY` estiver
+preenchida ela substitui a chave da plataforma. Em prod ela é ignorada e
+`Env.validate` exige `RC_ANDROID_KEY` e `RC_IOS_KEY`.
 
-### 3.2 Criar Produtos
+Preencha `bingo_app/.env` (copie de `.env.example`); `scripts/run_dev.sh` e
+`build_release.sh` leem esse arquivo. Nunca versione chaves.
 
-1. Na sidebar, clique em **"Products"**
-2. Criar produtos conforme abaixo:
+## 1. Dashboard RevenueCat
 
-#### Produto 1: Semanal
-- Product ID: `weekly_subscription`
-- Type: `Subscription`
-- Display Name: `Assinatura Semanal`
-- Price: `$2.99/week`
-- Attach to entitlement: `premium`
+1. Projeto **bingo** → **Apps & providers** → confirme os apps:
+   - Google Play: package `com.nightstudios.bingo`
+   - Apple App Store: bundle id do iOS (quando o scheme iOS existir)
+   - **Test Store**: criado automaticamente; copie a chave `test_...`
+2. **Entitlements** → `premium` (display name livre).
+3. **Products** → crie os três ids acima **por loja** e anexe cada um ao
+   entitlement `premium`.
+4. **Offerings** → `default`, marcado como *current*, com os pacotes:
+   - `$rc_weekly` → `weekly_subscription`
+   - `$rc_annual` → `annual_subscription`
+   - `$rc_lifetime` → `lifetime_purchase`
 
-#### Produto 2: Anual  
-- Product ID: `annual_subscription`
-- Type: `Subscription`
-- Display Name: `Assinatura Anual`
-- Price: `$29.99/year`
-- Attach to entitlement: `premium`
+   No Test Store o sandbox hoje expõe `$rc_monthly`, `$rc_annual` e
+   `$rc_lifetime`; o app renderiza esses três sem alteração (o selo do anual
+   usa o mensal×12 quando não há semanal).
 
-#### Produto 3: Lifetime
-- Product ID: `lifetime_purchase`
-- Type: `Non-Subscription`
-- Display Name: `Acesso Vitalício`
-- Price: `$49.99` (one-time)
-- Attach to entitlement: `premium`
+## 2. Test Store (dev) — testar o paywall sem Play Console
 
-### 3.3 Criar Offering
+1. Em **Apps & providers → Test Store**, copie a chave pública `test_...`.
+2. `bingo_app/.env`:
+   ```
+   RC_TEST_STORE_KEY=test_xxxxxxxxxxxxxxxx
+   ```
+3. `bingo_app/scripts/run_dev.sh` (imprime "RevenueCat: usando Test Store").
+4. Lobby → **Upgrade** → o paywall lista os pacotes do Test Store com preços
+   fictícios. A compra é simulada pelo RevenueCat e o entitlement `premium`
+   ativa na hora: o selo PREMIUM aparece no lobby, o auto-globo destrava, o
+   limite de jogadores some e os anúncios deixam de carregar.
+5. Para voltar a free: dashboard → **Customers** → o usuário anônimo →
+   *Delete customer*, ou limpe os dados do app.
 
-1. Na sidebar, clique em **"Offerings"**
-2. Clique em **"+ New Offering"**
-3. Identifier: `default`
-4. Display name: `Planos Premium`
-5. Adicione os 3 produtos criados:
-   - Weekly subscription
-   - Annual subscription  
-   - Lifetime purchase
-6. Marque **"Make this the current offering"**
-7. Clique em **"Save"**
+## 3. Google Play — ordem obrigatória
 
-## 4. Configurar App Store / Play Store
+Os produtos só podem ser criados no Play Console **depois do primeiro upload
+de um AAB** com a permissão `com.android.vending.BILLING` (o plugin do
+RevenueCat já a declara).
 
-### iOS (App Store Connect)
+1. `./build_release.sh` (exige `RC_ANDROID_KEY` e `RC_IOS_KEY` no `.env`).
+2. Play Console → app → **Teste → Teste interno** → envie
+   `build/app/outputs/bundle/prodRelease/app-prod-release.aab`.
+3. **Monetizar → Produtos**:
+   - **Assinaturas**: `weekly_subscription` (plano base semanal) e
+     `annual_subscription` (plano base anual).
+   - **Produtos no app**: `lifetime_purchase` (gerenciado, não consumível).
+   Os ids precisam ser exatamente estes; eles são os `Product ID` que você
+   cadastra no RevenueCat para a loja Google Play.
+4. **Configuração → Acesso à API / Conta de serviço** (ver abaixo) para o
+   RevenueCat validar recibos.
+5. **Monetizar → Teste de licença**: adicione o e-mail da conta Google do
+   dispositivo de teste para compras sandbox (não cobradas).
+6. Instale a build do teste interno pelo link do Play (não um APK local) e
+   compre pelo paywall.
 
-1. Acesse https://appstoreconnect.apple.com
-2. Meu app → **"Assinaturas"** ou **"Compras no App"**
-3. Criar 3 produtos com os mesmos IDs:
-   - `weekly_subscription` - Assinatura renovável automática - 1 semana - $2.99
-   - `annual_subscription` - Assinatura renovável automática - 1 ano - $29.99
-   - `lifetime_purchase` - Compra não consumível - $49.99
+### Conta de serviço (Google Play ↔ RevenueCat)
 
-4. Em cada produto:
-   - Adicionar descrições
-   - Fazer upload de screenshot de review (pode ser mock)
-   - Marcar como "Ready to Submit"
+1. Google Cloud Console (projeto vinculado ao Play Console) → **IAM e
+   administrador → Contas de serviço → Criar**. Nome sugerido:
+   `revenuecat-play`.
+2. Na conta criada → **Chaves → Adicionar chave → JSON**. Guarde o arquivo
+   fora do repositório.
+3. No Cloud Console, habilite a API **Google Play Android Developer API** e a
+   **Google Play Developer Reporting API**.
+4. Play Console → **Usuários e permissões → Convidar novo usuário** com o e-mail
+   da conta de serviço. Permissões mínimas: *Ver dados financeiros*,
+   *Gerenciar pedidos e assinaturas*, e no app *Ver informações do app*.
+5. RevenueCat → **Apps & providers → Google Play → Service Account
+   credentials JSON** → faça upload. A propagação do Play leva até 36 h; até
+   lá o dashboard pode mostrar erro de credencial.
+6. Opcional mas recomendado: **Real-time developer notifications** (Pub/Sub)
+   seguindo o link no mesmo painel do RevenueCat.
 
-5. Copiar **Shared Secret** (App Store Connect → Meu app → App Information → App-Specific Shared Secret)
+## 4. App Store (quando houver iOS)
 
-6. No RevenueCat:
-   - Va para **Project Settings** → **Apple App Store**
-   - Cole o Shared Secret
-   - Habilite **"Sandbox Testing"**
+1. App Store Connect → **Assinaturas** e **Compras no app** com os mesmos ids.
+2. Copie o **App-Specific Shared Secret** e a **In-App Purchase Key (.p8)**
+   para o RevenueCat em **Apps & providers → App Store**.
+3. Teste com conta de sandbox (Ajustes → App Store → Conta de sandbox).
 
-### Android (Google Play Console)
+## 5. Remote Config que afeta o paywall
 
-1. Acesse https://play.google.com/console
-2. Seu app → **"Monetização"** → **"Produtos"**
-3. Criar os mesmos 3 produtos:
-   - `weekly_subscription` - Assinatura - 1 semana - R$ 14,99
-   - `annual_subscription` - Assinatura - 1 ano - R$ 149,99
-   - `lifetime_purchase` - Produto gerenciado - R$ 249,99
+Parâmetros em `bingo_app/remoteconfig/*.template.json` (publicados por
+`scripts/rc_publish.sh`): `purchases_enabled` (mostra o botão Upgrade e o
+auto-globo), `revenue_model` + `max_free_players_path_a` (limite de jogadores
+grátis e dica "N/M"), `ads_enabled`, `paywall_variant` (A/B). Em debug o
+`minimumFetchInterval` é zero.
 
-4. Copiar **Service Account JSON**:
-   - Google Cloud Console → IAM → Service Accounts
-   - Criar ou usar conta existente
-   - Download JSON key
+## 6. Funil no Firebase Analytics
 
-5. No RevenueCat:
-   - Va para **Project Settings** → **Google Play**
-   - Upload Service Account JSON
-   - Habilite **"Sandbox Testing"**
-
-## 5. Obter API Keys
-
-1. No RevenueCat dashboard, clique em **Project Settings** (ícone de engrenagem)
-2. Clique em **"API keys"**
-3. Copie:
-   - **Public API Key (Apple)**: `appl_xxxxx`
-   - **Public API Key (Google)**: `goog_xxxxx`
-
-## 6. Configurar no App
-
-No arquivo `main_common.dart`, adicione após Supabase:
-
-```dart
-// Initialize RevenueCat
-final revenuecatKey = Platform.isIOS 
-  ? 'appl_YOUR_IOS_KEY'
-  : 'goog_YOUR_ANDROID_KEY';
-
-await SubscriptionService.initialize(apiKey: revenuecatKey);
-```
-
-Ou simplesmente use a key conforme instrução no BingoSDK.initialize.
-
-## 7. Testar com Sandbox
-
-### iOS
-1. Settings → App Store → Sandbox Account
-2. Adicionar conta de teste (criar no App Store Connect)
-3. Rodar app em dispositivo/simulator
-4. Tentar comprar → Usar conta sandbox
-
-### Android  
-1. Play Console → Licença → Adicionar email de teste
-2. Usar esse email no dispositivo
-3. Rodar app
-4. Tentar comprar → Modo sandbox automático
-
-## 8. Verificar Webhooks
-
-1. No RevenueCat, vá para **"Integrations"**
-2. Adicione **"Webhooks"** (opcional para notificações)
-3. URL: Sua API backend (se tiver)
-
-## 9. Dashboard e Analytics
-
-Após as primeiras compras, você verá no RevenueCat dashboard:
-- Revenue
-- Active subscriptions
-- Churn rate
-- Conversion rate
-
-## Pronto! 🎉
-
-RevenueCat está configurado e pronto para processar pagamentos.
-
-**IMPORTANTE**: Nunca commite API keys no código! Use variáveis de ambiente.
+`paywall_view{source}` → `begin_checkout{items}` → `purchase{value,currency}`
+e `restore_purchases{result: granted|none|error}`. A propriedade de usuário
+`subscription_status` (`premium`/`free`) é atualizada sempre que o cache do
+status muda (`SubscriptionService.isPremium`).

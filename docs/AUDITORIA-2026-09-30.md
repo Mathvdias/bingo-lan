@@ -47,6 +47,7 @@ Segurança e release
 - Ícone sem adaptive nem monochrome. Descrição do pubspec ainda é o template. `proguard-rules.pro` sem `-keepattributes SourceFile,LineNumberTable`, logo Crashlytics sem símbolos Java.
 
 Monetização
+- **Status (2026-10-01, PR 3 `feat/monetizacao`):** feito — entitlement único `premium` (`kPremiumEntitlementId`), `Purchases.configure` só em `SubscriptionService`, cache `isPremium` (ValueNotifier) nos gates, paywall próprio sem `purchases_ui_flutter`, banner só no lobby, App Open/interstitial/banner pulados para premium, test ids em debug, iOS sem ads, UMP antes do `MobileAds.initialize`, init preguiçosa do AdMob, funil de analytics ligado, dica "N/M" no convite e na sala, Clarity removido, `REVENUECAT_SETUP.md` atualizado. Pendente só no console: criar produtos na Play após o primeiro AAB e subir a conta de serviço no RevenueCat.
 - `Purchases.configure` chamado duas vezes. `core/drivers/payment_driver.dart:16` e `subscription_service.dart:34`.
 - Banner e App Open aparecem para quem paga. `banner_ad_widget.dart:27`, `ad_service.dart:100`. Banner está na cartela do jogador durante o jogo, a pior posição.
 - Mesmos ad units para Android e iOS; sem test ids em debug.
