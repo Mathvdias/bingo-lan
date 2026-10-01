@@ -134,12 +134,14 @@ class _LobbyScreenState extends State<LobbyScreen> {
       body: Stack(
         children: [
           _LobbyBackground(),
+          // Rolável: em 360x640 dp com banner e botão solo o conteúdo não
+          // cabe inteiro, e com escala de texto grande menos ainda.
           SafeArea(
             child: Center(
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Herói: bola 3D animada (toque inclina). Enquanto o
@@ -149,7 +151,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       child: BingoLavaIconView(
                         key: Key('lobby_hero_ball'),
                         icon: BingoLavaIcon.ball,
-                        size: 112,
+                        size: 104,
                         interactive: true,
                         fallback: _BallFallback(),
                       ),
