@@ -1,33 +1,34 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+
+import '../constants/entitlements.dart';
 import 'i_payment_driver.dart';
 
+/// Leitor do estado premium via RevenueCat.
+///
+/// Não configura o SDK: `Purchases.configure` acontece uma única vez no app
+/// (SubscriptionService). Aqui apenas consultamos o `CustomerInfo`.
 class PaymentDriver implements IPaymentDriver {
-  final String _apiKey;
-  final String _proEntitlementId = 'pro_access'; // Example entitlement ID
-
-  PaymentDriver(this._apiKey);
+  PaymentDriver();
 
   @override
   Future<void> init() async {
-    try {
-      await Purchases.configure(PurchasesConfiguration(_apiKey));
-    } catch (e) {
-      log('Error initializing payments: $e');
-    }
+    // Intencionalmente vazio: a configuração do RevenueCat é responsabilidade
+    // do app. Manter o método preserva o contrato de IPaymentDriver.
   }
 
   @override
   Future<bool> get isProUser async {
     try {
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      return customerInfo.entitlements.all[_proEntitlementId]?.isActive ??
+      final customerInfo = await Purchases.getCustomerInfo();
+      return customerInfo.entitlements.all[kPremiumEntitlementId]?.isActive ??
           false;
     } catch (e) {
-      // If error (e.g. network), default to false for safety
-      log("Error checking pro status: $e");
+      // SDK não configurado ou sem rede: trata como não premium.
+      if (kDebugMode) log('PaymentDriver: falha ao ler status premium: $e');
       return false;
     }
   }
@@ -35,22 +36,17 @@ class PaymentDriver implements IPaymentDriver {
   @override
   Future<void> purchasePro() async {
     try {
-      Offerings offerings = await Purchases.getOfferings();
-      if (offerings.current != null &&
-          offerings.current!.availablePackages.isNotEmpty) {
-        // Assume the first package is the pro subscription
-        final package = offerings.current!.availablePackages.first;
-        await Purchases.purchase(PurchaseParams.package(package));
-      }
+      final offerings = await Purchases.getOfferings();
+      final packages = offerings.current?.availablePackages ?? const [];
+      if (packages.isEmpty) return;
+      await Purchases.purchase(PurchaseParams.package(packages.first));
     } on PlatformException catch (e) {
-      // Handle user cancelled, etc
-      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      final errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        // show error
-        log("Purchase error: $e");
+        log('PaymentDriver: erro na compra: $e');
       }
     } catch (e) {
-      log("Purchase error: $e");
+      log('PaymentDriver: erro na compra: $e');
     }
   }
 
@@ -59,7 +55,7 @@ class PaymentDriver implements IPaymentDriver {
     try {
       await Purchases.restorePurchases();
     } catch (e) {
-      log("Restore purchase error: $e");
+      log('PaymentDriver: erro ao restaurar compras: $e');
     }
   }
 }

@@ -3,138 +3,171 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:bingo_app/core/config/env.dart';
+import 'package:bingo_app/flavors/app_config.dart';
+import 'package:bingo_app/shared/services/analytics_service.dart';
+import 'package:bingo_core/bingo_core.dart' show kPremiumEntitlementId;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-/// Service for managing in-app purchases and subscriptions via RevenueCat
+/// Único ponto de configuração do RevenueCat no app.
+///
+/// Mantém o status premium em cache ([isPremium]) atualizado pelo listener de
+/// `CustomerInfo`. Gates de UI leem o cache; [refresh] força uma releitura.
 class SubscriptionService {
+  SubscriptionService._();
+
   static const String weeklyProductId = 'weekly_subscription';
   static const String annualProductId = 'annual_subscription';
   static const String lifetimeProductId = 'lifetime_purchase';
 
-  /// Stream of premium status
+  /// Status premium em cache. `false` até o primeiro `CustomerInfo` chegar.
+  static final ValueNotifier<bool> isPremium = ValueNotifier<bool>(false);
+
   static final _premiumStatusController = StreamController<bool>.broadcast();
+
+  /// Stream do status premium (emite apenas quando o valor muda).
   static Stream<bool> get premiumStatusStream =>
       _premiumStatusController.stream;
 
-  /// Initialize RevenueCat SDK
-  static Future<void> initialize({String? apiKey, String? userId}) async {
-    try {
-      await Purchases.setLogLevel(LogLevel.debug);
+  static bool _configured = false;
 
-      final key =
-          apiKey ??
-          (Platform.isIOS ? Env.revenueCatIosKey : Env.revenueCatAndroidKey);
+  /// `true` após `Purchases.configure` ter sido chamado com sucesso.
+  static bool get isConfigured => _configured;
+
+  /// Configura o RevenueCat uma única vez e carrega o status inicial.
+  ///
+  /// Em dev com `RC_TEST_STORE_KEY` definida usa o RevenueCat Test Store.
+  /// Nunca lança: falhas são logadas e o app segue como usuário free.
+  static Future<void> initialize({
+    required AppConfig appConfig,
+    String? apiKey,
+    String? userId,
+  }) async {
+    if (_configured) return;
+
+    final key =
+        apiKey ?? Env.revenueCatKeyFor(appConfig, isIOS: Platform.isIOS);
+    if (key.isEmpty) {
+      log('RevenueCat: sem chave para este flavor/plataforma; compras off.');
+      return;
+    }
+
+    try {
+      if (kDebugMode) {
+        await Purchases.setLogLevel(LogLevel.debug);
+      }
 
       final configuration = PurchasesConfiguration(key);
       if (userId != null) {
         configuration.appUserID = userId;
       }
-
       await Purchases.configure(configuration);
+      _configured = true;
 
-      // Listen for updates
-      Purchases.addCustomerInfoUpdateListener((customerInfo) {
-        _updatePremiumStatus(customerInfo);
-      });
+      Purchases.addCustomerInfoUpdateListener(applyCustomerInfo);
+      await refresh();
 
-      log('RevenueCat initialized successfully');
+      if (kDebugMode) {
+        final usingTestStore =
+            appConfig.isDev && key == Env.revenueCatTestStoreKey;
+        log(
+          'RevenueCat configurado'
+          '${usingTestStore ? ' (Test Store)' : ''}.',
+        );
+      }
     } catch (e) {
-      log('Error initializing RevenueCat: $e');
-      rethrow;
+      log('RevenueCat: falha ao configurar: $e');
     }
   }
 
-  /// Helper to update local stream
-  static void _updatePremiumStatus(CustomerInfo? info) {
+  /// Atualiza o cache a partir de um [CustomerInfo] (listener, compra, restore).
+  static void applyCustomerInfo(CustomerInfo? info) {
     if (info == null) return;
-    final isPremium = info.entitlements.all['premium']?.isActive ?? false;
-    _premiumStatusController.add(isPremium);
+    final active =
+        info.entitlements.all[kPremiumEntitlementId]?.isActive ?? false;
+    _setPremium(active);
   }
 
-  /// Set user ID (call after authentication)
-  static Future<void> setUserId(String userId) async {
+  static void _setPremium(bool value) {
+    if (isPremium.value == value) return;
+    isPremium.value = value;
+    _premiumStatusController.add(value);
+    AnalyticsService.setSubscriptionStatus(value);
+  }
+
+  /// Releitura explícita do `CustomerInfo`. Retorna o status premium atual.
+  static Future<bool> refresh() async {
+    if (!_configured) return isPremium.value;
     try {
-      await Purchases.logIn(userId);
-      log('RevenueCat user ID set: $userId');
-      await checkSubscriptionStatus(); // Initial check
+      final info = await Purchases.getCustomerInfo();
+      applyCustomerInfo(info);
     } catch (e) {
-      log('Error setting RevenueCat user ID: $e');
+      log('RevenueCat: falha ao ler CustomerInfo: $e');
+    }
+    return isPremium.value;
+  }
+
+  /// Identifica o usuário (chamar após autenticação, se houver).
+  static Future<void> setUserId(String userId) async {
+    if (!_configured) return;
+    try {
+      final result = await Purchases.logIn(userId);
+      applyCustomerInfo(result.customerInfo);
+    } catch (e) {
+      log('RevenueCat: falha no logIn: $e');
     }
   }
 
-  /// Get available offerings
+  /// Offerings atuais ou `null` em caso de erro.
   static Future<Offerings?> getOfferings() async {
+    if (!_configured) return null;
     try {
-      final offerings = await Purchases.getOfferings();
-      return offerings;
+      return await Purchases.getOfferings();
     } catch (e) {
-      log('Error getting offerings: $e');
+      log('RevenueCat: falha ao buscar offerings: $e');
       return null;
     }
   }
 
-  /// Purchase a product
+  /// Compra um pacote. Retorna `null` se cancelado ou em erro.
   static Future<CustomerInfo?> purchaseProduct(Package package) async {
     try {
-      final purchaseResult = await Purchases.purchase(PurchaseParams.package(package));
-      final customerInfo = purchaseResult.customerInfo;
-
-      log('Purchase successful: ${package.identifier}');
-      return customerInfo;
+      final result = await Purchases.purchase(PurchaseParams.package(package));
+      applyCustomerInfo(result.customerInfo);
+      return result.customerInfo;
     } on PlatformException catch (e) {
       final errorCode = PurchasesErrorHelper.getErrorCode(e);
-      if (errorCode == PurchasesErrorCode.purchaseCancelledError) {
-        log('User cancelled the purchase');
-      } else {
-        log('Error making purchase: $e');
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        log('RevenueCat: erro na compra: $e');
       }
       return null;
+    } catch (e) {
+      log('RevenueCat: erro na compra: $e');
+      return null;
     }
   }
 
-  /// Restore purchases
+  /// Restaura compras. Retorna `null` em erro.
   static Future<CustomerInfo?> restorePurchases() async {
     try {
-      final customerInfo = await Purchases.restorePurchases();
-
-      log('Purchases restored successfully');
-      return customerInfo;
+      final info = await Purchases.restorePurchases();
+      applyCustomerInfo(info);
+      return info;
     } catch (e) {
-      log('Error restoring purchases: $e');
+      log('RevenueCat: erro ao restaurar: $e');
       return null;
     }
   }
 
-  /// Check if user has active subscription and update stream
-  static Future<bool> checkSubscriptionStatus() async {
-    try {
-      final customerInfo = await Purchases.getCustomerInfo();
-      _updatePremiumStatus(customerInfo);
-      return customerInfo.entitlements.all['premium']?.isActive ?? false;
-    } catch (e) {
-      log('Error checking subscription status: $e');
-      return false;
-    }
-  }
-
-  /// Get customer info
-  static Future<CustomerInfo?> getCustomerInfo() async {
-    try {
-      return await Purchases.getCustomerInfo();
-    } catch (e) {
-      log('Error getting customer info: $e');
-      return null;
-    }
-  }
-
-  /// Sign out user
+  /// Encerra a sessão do usuário identificado.
   static Future<void> signOut() async {
+    if (!_configured) return;
     try {
-      await Purchases.logOut();
-      log('RevenueCat user logged out');
+      final info = await Purchases.logOut();
+      applyCustomerInfo(info);
     } catch (e) {
-      log('Error logging out from RevenueCat: $e');
+      log('RevenueCat: falha no logOut: $e');
     }
   }
 }

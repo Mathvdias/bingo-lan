@@ -1,6 +1,9 @@
 // API Facade
 export 'src/api/bingo_sdk.dart';
 
+// Constants
+export 'src/constants/entitlements.dart';
+
 // Drivers
 
 export 'src/drivers/i_config_driver.dart';
