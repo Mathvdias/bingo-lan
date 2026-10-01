@@ -7,6 +7,7 @@ import 'package:bingo_app/shared/services/caller_phrases.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 /// Fase da rodada no host.
@@ -122,7 +123,16 @@ class HostRoomViewModel extends BaseViewModel {
         _actionController.add(ShowError(HostRoomError.connection));
       }
     });
+    // Em dev/alpha o driver é um OverridableConfigDriver (Listenable):
+    // override de globo pago, limite etc. reconstrói a tela na hora.
+    final config = _configDriver;
+    if (config is Listenable) {
+      _configListenable = config as Listenable;
+      _configListenable!.addListener(notifyListeners);
+    }
   }
+
+  Listenable? _configListenable;
 
   Future<bool> get canDrawNextNumber async {
     // Check if the "is_globo_paid" feature is paid and if the user is PRO.
@@ -361,6 +371,7 @@ class HostRoomViewModel extends BaseViewModel {
 
   @override
   void dispose() {
+    _configListenable?.removeListener(notifyListeners);
     _playersSub?.cancel();
     _eventsSub?.cancel();
     _errorsSub?.cancel();

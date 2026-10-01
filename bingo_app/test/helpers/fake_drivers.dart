@@ -3,9 +3,10 @@ import 'package:bingo_core/bingo_core.dart';
 /// Remote Config falso: tudo desligado/zero, sem Firebase.
 class FakeConfigDriver implements IConfigDriver {
   final Map<String, Object> values = {};
+  int fetches = 0;
 
   @override
-  Future<void> fetchAndActivate() async {}
+  Future<void> fetchAndActivate() async => fetches++;
 
   @override
   bool getBool(String key) => values[key] as bool? ?? false;

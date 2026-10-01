@@ -1,0 +1,21 @@
+# Ícone do flavor alpha (teste fechado): o ícone de prod com a faixa BETA.
+# Arte gerada por tool/icons/make_alpha_icon.py; mipmaps saem em
+# android/app/src/alpha/res/ (o nome do arquivo define o flavor).
+#
+# Atenção: com um arquivo flutter_launcher_icons-<flavor>.yaml presente, o
+# gerador entra em modo "flavors" e ignora o flutter_launcher_icons.yaml
+# padrão. Para regerar o ícone de prod (src/main), mova este arquivo
+# temporariamente para fora da pasta.
+#
+#   python3 tool/icons/make_alpha_icon.py
+#   dart run flutter_launcher_icons -f flutter_launcher_icons-alpha.yaml
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/icon/alpha/launcher.png"
+  min_sdk_android: 24
+  adaptive_icon_background: "#F6C705"
+  adaptive_icon_foreground: "assets/icon/alpha/adaptive_foreground.png"
+  adaptive_icon_monochrome: "assets/icon/adaptive_monochrome.png"
+  web:
+    generate: false

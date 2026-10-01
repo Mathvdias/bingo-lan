@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:bingo_core/bingo_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 
 /// Chaves no Firebase Remote Config (console → Remote Config → parâmetros).
 /// Os defaults abaixo espelham `remoteconfig/prod.template.json`:
@@ -21,6 +23,12 @@ enum RevenueModel {
   adSupported,
 }
 
+/// Leitura das flags de receita.
+///
+/// Os getters leem pelo [IConfigDriver] do GetIt (o mesmo que o core usa), e
+/// não pelo `FirebaseRemoteConfig` direto: assim os overrides locais do
+/// [OverridableConfigDriver] (dev/alpha) valem aqui também. O Firebase só
+/// entra em [initialize], para registrar os defaults e buscar.
 class RevenueConfigService {
   RevenueConfigService._();
 
@@ -45,12 +53,24 @@ class RevenueConfigService {
     keyPaywallVariant: 'default',
   };
 
-  static final FirebaseRemoteConfig _remoteConfig =
-      FirebaseRemoteConfig.instance;
+  /// Driver registrado pelo `BingoSDK.initialize`; nulo se o SDK não subiu
+  /// (os getters caem nos [defaults]).
+  static IConfigDriver? get _driver =>
+      GetIt.I.isRegistered<IConfigDriver>() ? GetIt.I<IConfigDriver>() : null;
+
+  /// Notifica quando as flags podem ter mudado (override local ou novo
+  /// fetch). Em prod o driver não é [Listenable] e isto nunca dispara.
+  static Listenable get listenable {
+    final driver = _driver;
+    return driver is Listenable ? driver as Listenable : _never;
+  }
+
+  static final Listenable _never = ChangeNotifier();
 
   static Future<void> initialize() async {
     try {
-      await _remoteConfig.setConfigSettings(
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      await remoteConfig.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: const Duration(minutes: 1),
           minimumFetchInterval: kDebugMode
@@ -59,8 +79,8 @@ class RevenueConfigService {
         ),
       );
 
-      await _remoteConfig.setDefaults(defaults);
-      await _remoteConfig.fetchAndActivate();
+      await remoteConfig.setDefaults(defaults);
+      await remoteConfig.fetchAndActivate();
       if (kDebugMode) {
         log(
           'Remote Config pronto. revenue_model=${currentModel.name} '
@@ -73,31 +93,37 @@ class RevenueConfigService {
     }
   }
 
+  static bool _bool(String key) =>
+      _driver?.getBool(key) ?? defaults[key] as bool;
+
+  static int _int(String key) => _driver?.getInt(key) ?? defaults[key] as int;
+
+  static String _string(String key) =>
+      _driver?.getString(key) ?? defaults[key] as String;
+
   static RevenueModel get currentModel {
-    final modelStr = _remoteConfig.getString(keyRevenueModel);
+    final modelStr = _string(keyRevenueModel);
     if (modelStr == 'paywall_host') {
       return RevenueModel.paywallHost;
     }
     return RevenueModel.adSupported;
   }
 
-  static int get maxFreePlayersPathA =>
-      _remoteConfig.getInt(keyMaxFreePlayersPathA);
+  static int get maxFreePlayersPathA => _int(keyMaxFreePlayersPathA);
 
-  static bool get soloModeEnabled => _remoteConfig.getBool(keySoloModeEnabled);
+  static bool get soloModeEnabled => _bool(keySoloModeEnabled);
 
-  static bool get adsEnabled => _remoteConfig.getBool(keyAdsEnabled);
+  static bool get adsEnabled => _bool(keyAdsEnabled);
 
-  static bool get purchasesEnabled =>
-      _remoteConfig.getBool(keyPurchasesEnabled);
+  static bool get purchasesEnabled => _bool(keyPurchasesEnabled);
 
-  static bool get isGloboPaid => _remoteConfig.getBool(keyIsGloboPaid);
+  static bool get isGloboPaid => _bool(keyIsGloboPaid);
 
-  static bool get isHostPremium => _remoteConfig.getBool(keyIsHostPremium);
+  static bool get isHostPremium => _bool(keyIsHostPremium);
 
   /// Variante do paywall próprio (A/B via Experiments). Default `default`.
   static String get paywallVariant {
-    final value = _remoteConfig.getString(keyPaywallVariant);
+    final value = _string(keyPaywallVariant);
     return value.isEmpty ? 'default' : value;
   }
 
