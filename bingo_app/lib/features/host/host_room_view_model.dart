@@ -108,6 +108,9 @@ class HostRoomViewModel extends BaseViewModel {
        _configDriver = configDriver,
        _random = random ?? Random() {
     _eventsSub = _gameConnection.eventStream.listen(_onPlayerEvent);
+    // Quem entrou pela tela de convite já está na conexão; o stream só emite
+    // mudanças, então a lista começa do valor atual.
+    _players = _gameConnection.connectedPlayers;
     _playersSub = _gameConnection.connectedPlayersStream.listen((players) {
       _players = players;
       notifyListeners();

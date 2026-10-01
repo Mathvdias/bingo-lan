@@ -25,6 +25,8 @@ class HostInviteViewModel extends BaseViewModel {
 
   HostInviteViewModel({required IGameConnection gameConnection})
     : _gameConnection = gameConnection {
+    // Mesma fonte da sala do host: valor atual + mudanças.
+    _connectedPlayers = _gameConnection.connectedPlayers;
     _playersSub = _gameConnection.connectedPlayersStream.listen((players) {
       _connectedPlayers = players;
       notifyListeners();

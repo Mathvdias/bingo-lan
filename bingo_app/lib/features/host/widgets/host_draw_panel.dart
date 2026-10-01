@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 /// Cabeçalho da sala do host: última bola (ou estado vazio), histórico,
 /// desfazer e contador de jogadores.
 ///
+/// Compacto de propósito: em 360x640 dp, com o rodapé de sortear fixo, tudo
+/// até o contador cabe acima do rodapé sem rolar (escala 1.0).
+///
 /// Widget puro (sem ViewModel) para poder ser testado com escala de texto
 /// grande sem Firebase nem plugins.
 class HostDrawPanel extends StatelessWidget {
@@ -23,7 +26,7 @@ class HostDrawPanel extends StatelessWidget {
   final int? maxPlayers;
 
   /// Altura da faixa do histórico, reservada mesmo sem bolas.
-  static const double _historyHeight = 52;
+  static const double _historyHeight = 48;
 
   const HostDrawPanel({
     super.key,
@@ -48,7 +51,7 @@ class HostDrawPanel extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius: BorderRadius.circular(16),
@@ -94,7 +97,7 @@ class HostDrawPanel extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           // Histórico (mais recente primeiro). A faixa reserva a altura mesmo
           // vazia para nada abaixo se mover na primeira bola.
           SizedBox(
@@ -140,26 +143,38 @@ class HostDrawPanel extends StatelessWidget {
                     },
                   ),
           ),
-          const SizedBox(height: 12),
-          // Desfazer fica sempre no mesmo lugar; desabilitado quando não há
-          // bola para tirar ou o globo automático está rodando.
-          OutlinedButton.icon(
-            key: const Key('host_undo_button'),
-            onPressed: canUndo ? onUndo : null,
-            icon: const Icon(Icons.undo),
-            label: Text(l10n.hostRoomUndoLast),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              textStyle: textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w700,
+          const SizedBox(height: 8),
+          // Desfazer e contador na mesma linha: desfazer fica sempre no mesmo
+          // lugar (desabilitado quando não há bola para tirar ou o globo
+          // automático está rodando); o contador compacto carrega o rótulo
+          // completo na semântica.
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('host_undo_button'),
+                  onPressed: canUndo ? onUndo : null,
+                  icon: const Icon(Icons.undo),
+                  label: Text(l10n.hostRoomUndoLast),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    textStyle: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          PlayersCounter(
-            key: const Key('host_room_player_count'),
-            count: playerCount,
-            max: maxPlayers,
+              const SizedBox(width: 12),
+              PlayersCounter(
+                key: const Key('host_room_player_count'),
+                count: playerCount,
+                max: maxPlayers,
+                compact: true,
+              ),
+            ],
           ),
         ],
       ),
@@ -210,17 +225,17 @@ class _DrawnState extends StatelessWidget {
 }
 
 /// Estado vazio: globo de bingo 3D girando no eixo, com bolas dentro (bola
-/// em contorno com "—" até o bundle carregar), título e instrução. Substitui
-/// o "--" gigante amarelo que parecia duas pílulas.
+/// em contorno com "—" até o bundle carregar), ao lado do título e da
+/// instrução. Substitui o "--" gigante amarelo que parecia duas pílulas.
 class _EmptyState extends StatelessWidget {
   final AppLocalizations l10n;
   final TextTheme textTheme;
   final bool animated;
 
-  /// Lado do globo (120 px: o bundle é renderizado em 2x para isso); o
-  /// placeholder tem o mesmo tamanho para o cartão não mudar de altura entre
-  /// os dois estados.
-  static const double _heroSize = 120;
+  /// Lado do globo (96 px: cabe ao lado dos textos em 360 dp de largura; o
+  /// bundle é renderizado em 2x e encolhe bem); o placeholder tem o mesmo
+  /// tamanho para o cartão não mudar de altura entre os dois estados.
+  static const double _heroSize = 96;
 
   const _EmptyState({
     super.key,
@@ -255,8 +270,10 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    // Globo à esquerda, título e instrução à direita: o cartão fica com a
+    // altura da última bola (120 px) em vez de empilhar globo + dois textos.
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (animated)
           BingoLavaIconView(
@@ -267,17 +284,27 @@ class _EmptyState extends StatelessWidget {
           )
         else
           SizedBox.square(dimension: _heroSize, child: _placeholder()),
-        const SizedBox(height: 12),
-        Text(
-          l10n.hostRoomEmptyTitle,
-          textAlign: TextAlign.center,
-          style: textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          l10n.hostRoomWaitingDraw,
-          textAlign: TextAlign.center,
-          style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.hostRoomEmptyTitle,
+                style: textTheme.displaySmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.hostRoomWaitingDraw,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

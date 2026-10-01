@@ -147,6 +147,30 @@ void main() {
       expect(host.boundPort, port);
     });
 
+    test('connectedPlayers guarda a lista para quem assina depois', () async {
+      // Ninguém ouvindo: simula a tela da sala, criada só depois que o
+      // jogador entrou pela tela de convite.
+      await playersSub?.cancel();
+      playersSub = null;
+      expect(host.connectedPlayers, isEmpty);
+
+      final (client, _) = await joinNewClient();
+      await _eventually(() => host.connectedPlayers.length == 1);
+      expect(host.connectedPlayers, ['Player']);
+
+      // Um ouvinte novo parte do valor atual e segue recebendo mudanças.
+      final seen = <List<String>>[host.connectedPlayers];
+      playersSub = host.connectedPlayersStream.listen(seen.add);
+      await client.sendPlayerEvent(PlayerNameEvent(name: 'Ana'));
+      await _eventually(() => seen.length == 2);
+      expect(seen.first, ['Player']);
+      expect(seen.last, ['Ana']);
+      expect(host.connectedPlayers, ['Ana']);
+
+      await client.disconnect();
+      await _eventually(() => host.connectedPlayers.isEmpty);
+    });
+
     test('token válido recebe JOINED com identidade atribuída pelo host',
         () async {
       final (client, joined) = await joinNewClient();

@@ -2,6 +2,7 @@ import 'package:bingo_app/features/player/player_game_args.dart';
 import 'package:bingo_app/features/player/player_game_view_model.dart';
 import 'package:bingo_app/features/player/widgets/player_game_view.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
+import 'package:bingo_app/shared/ui/widgets/card_cell.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -87,10 +88,100 @@ void main() {
         );
         // Nada por cima: toque chega no botão.
         expect(shout.hitTestable(), findsOneWidget);
-        // A cartela continua inteira (rolável acima do rodapé).
+        // A cartela continua inteira.
         expect(find.text('LIVRE'), findsOneWidget);
+        expect(find.byType(CardCell), findsNWidgets(25));
       });
     }
+
+    bool inside(Rect rect) =>
+        viewport.contains(rect.topLeft) && viewport.contains(rect.bottomRight);
+
+    testWidgets('faixa de status, cabeçalho e as 25 células cabem sem rolar', (
+      tester,
+    ) async {
+      final fake = await _pumpView(tester);
+      expect(tester.takeException(), isNull);
+
+      final status = find.byKey(const Key('player_status_card'));
+      expect(inside(tester.getRect(status)), isTrue, reason: 'status fora');
+      expect(find.text('3/75 sorteados'), findsOneWidget);
+      expect(find.byKey(const Key('player_last_called')), findsOneWidget);
+      expect(find.text('B'), findsOneWidget);
+
+      final cells = find.byType(CardCell);
+      expect(cells, findsNWidgets(25));
+      final shoutRect = tester.getRect(shout);
+      for (var i = 0; i < 25; i++) {
+        final rect = tester.getRect(cells.at(i));
+        expect(inside(rect), isTrue, reason: 'célula $i $rect fora da tela');
+        expect(
+          rect.bottom,
+          lessThanOrEqualTo(shoutRect.top),
+          reason: 'célula $i $rect sob o rodapé $shoutRect',
+        );
+        // Alvo de toque confortável.
+        expect(rect.width, greaterThanOrEqualTo(44));
+        expect(rect.height, closeTo(rect.width, 0.01));
+      }
+
+      // Toque numa célula cantada marca (nada por cima).
+      final card = BingoCard(id: 7);
+      final called = card.matrix.firstWhere((n) => n != 0 && n != 12);
+      fake.emit(NumberDrawnEvent(number: called));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('$called'));
+      await tester.pumpAndSettle();
+      expect(
+        find.bySemanticsLabel('${BingoCard.label(called)}, marcado'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a 1.3x nada estoura e as células não ficam menores que 44', (
+      tester,
+    ) async {
+      await _pumpView(tester, textScale: 1.3);
+      expect(tester.takeException(), isNull);
+
+      final cells = find.byType(CardCell);
+      expect(cells, findsNWidgets(25));
+      for (var i = 0; i < 25; i++) {
+        expect(tester.getRect(cells.at(i)).width, greaterThanOrEqualTo(44));
+      }
+      expect(inside(tester.getRect(shout)), isTrue);
+      expect(
+        inside(tester.getRect(find.byKey(const Key('player_status_card')))),
+        isTrue,
+      );
+    });
+
+    testWidgets(
+      'a 1.3x com aviso de conexão a cartela rola até a última linha',
+      (tester) async {
+        // disconnected: o aviso mostra um ícone (o spinner de "reconectando"
+        // nunca assenta no pumpAndSettle).
+        await _pumpView(
+          tester,
+          textScale: 1.3,
+          connection: GameConnectionState.disconnected,
+        );
+        expect(tester.takeException(), isNull);
+        expect(
+          find.byKey(const Key('player_connection_banner')),
+          findsOneWidget,
+        );
+        final cells = find.byType(CardCell);
+        expect(cells, findsNWidgets(25));
+
+        final scroll = find.byKey(const Key('player_card_scroll'));
+        await tester.drag(scroll, const Offset(0, -400));
+        await tester.pumpAndSettle();
+        final last = tester.getRect(cells.at(24));
+        expect(last.bottom, lessThanOrEqualTo(tester.getRect(shout).top));
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('respeita a barra de gestos do sistema', (tester) async {
       await _pumpView(tester, bottomPadding: 24);
