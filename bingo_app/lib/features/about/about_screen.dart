@@ -3,6 +3,7 @@ import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
+import 'package:bingo_app/shared/ui/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,7 +16,6 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -40,12 +40,34 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(Icons.info_outline, size: 64, color: AppColors.primary),
+            // Ícone preto sobre disco amarelo: o amarelo é fundo, não traço.
+            Center(
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.outline, width: 2),
+                  boxShadow: const [
+                    BoxShadow(color: AppColors.outline, offset: Offset(4, 4)),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.info_outline,
+                  size: 40,
+                  color: AppColors.text,
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
 
             Text(
               l10n.aboutImportantTitle,
-              style: textTheme.headlineSmall?.copyWith(color: AppColors.error),
+              style: textTheme.headlineSmall?.copyWith(
+                color: AppColors.warningText,
+                fontWeight: FontWeight.w700,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -57,44 +79,11 @@ class _AboutScreenState extends State<AboutScreen> {
             const SizedBox(height: 32),
 
             // Wi-Fi Status Card
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.error.withValues(alpha: 0.3),
-                ),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.wifi_rounded, color: AppColors.error),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      l10n.lobbyWifiBannerDefault,
-                      style: textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.error,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                      onPressed: () => AppSettings.openAppSettings(
-                        type: AppSettingsType.wifi,
-                      ),
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.error,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: Size.zero,
-                      ),
-                      child: Text(
-                        l10n.buttonWifi,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                ],
-              ),
+            WarningBox(
+              text: l10n.lobbyWifiBannerDefault,
+              actionLabel: l10n.buttonWifi,
+              onAction: () =>
+                  AppSettings.openAppSettings(type: AppSettingsType.wifi),
             ),
             const SizedBox(height: 32),
 
@@ -227,13 +216,21 @@ class _AboutScreenState extends State<AboutScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            radius: 16,
+          Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.outline, width: 2),
+            ),
             child: Text(
               number,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.text,
+              ),
             ),
           ),
           const SizedBox(width: 16),

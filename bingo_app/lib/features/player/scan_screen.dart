@@ -139,10 +139,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: Text(
-                l10n.scanCancel,
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text(l10n.scanCancel),
             ),
             BingoButton(
               label: l10n.scanJoin,
@@ -186,10 +183,7 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                l10n.scanCancel,
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text(l10n.scanCancel),
             ),
             BingoButton(
               label: l10n.scanJoin,
@@ -315,14 +309,14 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                           ),
                         ),
                         TextButton(
-                            onPressed: () => AppSettings.openAppSettings(
-                              type: AppSettingsType.wifi,
-                            ),
-                            child: Text(
-                              l10n.buttonConfig,
-                              style: const TextStyle(color: AppColors.primary),
-                            ),
+                          onPressed: () => AppSettings.openAppSettings(
+                            type: AppSettingsType.wifi,
                           ),
+                          child: Text(
+                            l10n.buttonConfig,
+                            style: const TextStyle(color: AppColors.primary),
+                          ),
+                        ),
                       ],
                     ),
                   ),

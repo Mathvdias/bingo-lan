@@ -179,7 +179,9 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
               if (kDebugMode) log('HostRoomScreen: interstitial carregado.');
             },
             onAdFailedToLoad: (error) {
-              if (kDebugMode) log('HostRoomScreen: interstitial falhou: $error');
+              if (kDebugMode) {
+                log('HostRoomScreen: interstitial falhou: $error');
+              }
             },
           );
         }
@@ -352,13 +354,11 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
                             child: Column(
                               children: [
                                 TabBar(
+                                  // Cores e indicador vêm do TabBarThemeData.
                                   tabs: [
                                     Tab(text: l10n.virtualGlobe),
                                     Tab(text: l10n.manualGlobe),
                                   ],
-                                  labelColor: AppColors.primary,
-                                  unselectedLabelColor: AppColors.textSecondary,
-                                  indicatorColor: AppColors.primary,
                                 ),
                                 const SizedBox(height: 16),
                                 SizedBox(
@@ -388,11 +388,13 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
                                                   child: Text(l10n.autoGlobe),
                                                 ),
                                                 Switch(
-                                                  value: viewModel.isAutoPlaying,
-                                                  onChanged: viewModel.isGameOver
+                                                  value:
+                                                      viewModel.isAutoPlaying,
+                                                  onChanged:
+                                                      viewModel.isGameOver
                                                       ? null
                                                       : (value) => viewModel
-                                                          .toggleAutoPlay(),
+                                                            .toggleAutoPlay(),
                                                   activeThumbColor:
                                                       AppColors.primary,
                                                 ),
@@ -563,15 +565,9 @@ class _ManualInputControlState extends State<_ManualInputControl> {
               ),
             ),
             const SizedBox(width: 16),
+            // Fundo amarelo + texto preto vêm do ElevatedButtonThemeData.
             ElevatedButton(
               onPressed: widget.enabled ? _submit : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-              ),
               child: Text(l10n.confirm),
             ),
           ],
@@ -579,7 +575,11 @@ class _ManualInputControlState extends State<_ManualInputControl> {
         const SizedBox(height: 8),
         Text(
           l10n.manualInputInstruction,
-          style: const TextStyle(color: Colors.grey, fontSize: 12),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.textSecondary,
+            fontSize: 12,
+          ),
         ),
       ],
     );
