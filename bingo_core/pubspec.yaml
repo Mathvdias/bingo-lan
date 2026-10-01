@@ -1,5 +1,5 @@
 name: bingo_core
-description: "A new Flutter plugin project."
+description: "SDK do Bingo: conexão local, regras de jogo, convites e controle de acesso."
 version: 0.0.1
 homepage:
 
@@ -9,13 +9,11 @@ environment:
 
 
 dependencies:
-  bonsoir: ^6.0.1
   crypto: ^3.0.7
   dart_jsonwebtoken: ^3.3.1
   firebase_remote_config: ^6.1.3
   flutter:
     sdk: flutter
-  flutter_jailbreak__root_detection: ^1.13.2
   get_it: ^9.2.0
   network_info_plus: ^7.0.0
   plugin_platform_interface: ^2.0.2

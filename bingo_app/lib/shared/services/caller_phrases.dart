@@ -5,7 +5,7 @@ import 'dart:math';
 /// Tudo é local e síncrono: não há chamada de rede nem chave de API no app.
 /// Uma versão com modelo generativo só deve existir atrás de um proxy no
 /// servidor, nunca com a chave compilada no cliente.
-class AiService {
+class CallerPhrases {
   static final Random _random = Random();
 
   static final Map<int, List<String>> _jokes = {

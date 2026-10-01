@@ -14,11 +14,11 @@
 
 # Uncomment this to preserve line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
 
 # Flutter specific rules
 -keep class io.flutter.app.** { *; }
