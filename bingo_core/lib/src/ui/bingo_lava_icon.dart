@@ -7,7 +7,8 @@ enum BingoLavaIcon {
   /// Bola azul com o 7 (herói do lobby).
   ball('bingo_ball'),
 
-  /// Globo amarelo com bolas (sala do host sem sorteio).
+  /// Globo de bingo amarelo girando no eixo, com bolas dentro (sala do host
+  /// sem sorteio).
   cage('bingo_cage'),
 
   /// Roseta amarela com estrela preta (paywall).
@@ -20,7 +21,31 @@ enum BingoLavaIcon {
   cameraScan('camera_scan'),
 
   /// Balão de informação (tela Sobre).
-  infoBubble('info_bubble');
+  infoBubble('info_bubble'),
+
+  /// Placa de aviso amarela com "!" (título "Importante" do Sobre).
+  warning('warning_sign'),
+
+  /// Livro aberto com uma página virando (título "Como jogar" do Sobre).
+  book('open_book'),
+
+  /// Globo terrestre girando no eixo (seletor de idioma do Sobre).
+  globe('globe'),
+
+  /// Roteador Wi-Fi com bolas de bingo (cartão da criação de sala).
+  wifiRouter('wifi_table'),
+
+  /// Balão amarelo com "?" que balança (botão de ajuda do lobby).
+  helpBubble('help_bubble'),
+
+  /// Dois jogadores, um acenando (contador de jogadores e paywall).
+  players('players'),
+
+  /// Dado que rola e cai noutra face; toca uma vez (aba "Virtual").
+  dice('dice'),
+
+  /// Lápis que escreve um traço; toca uma vez (aba "Manual").
+  pencil('pencil');
 
   const BingoLavaIcon(this.directory);
 
@@ -30,6 +55,57 @@ enum BingoLavaIcon {
   /// Chave de asset vista pelo app hospedeiro (assets de pacote levam o
   /// prefixo `packages/<pacote>/`).
   String get assetPath => 'packages/bingo_core/assets/lava/$directory';
+}
+
+/// Carrega o bundle de um [BingoLavaIcon] e avisa [onChanged] quando ele
+/// chega ou falha. Um bundle ausente ou corrompido vai para o console
+/// ([FlutterError.reportError]) em vez de sumir.
+class BingoLavaBundleLoader {
+  BingoLavaBundleLoader(this.icon, {required this.onChanged});
+
+  final BingoLavaIcon icon;
+  final VoidCallback onChanged;
+
+  LavaBundle? _bundle;
+  bool _failed = false;
+  bool _disposed = false;
+
+  /// O bundle decodificado, ou `null` enquanto carrega ou se falhou.
+  LavaBundle? get bundle {
+    final bundle = _bundle;
+    if (bundle == null || bundle.isDisposed) return null;
+    return bundle;
+  }
+
+  /// Verdadeiro quando o carregamento falhou: fica o fallback.
+  bool get failed => _failed;
+
+  Future<void> load() async {
+    try {
+      final bundle = await LavaBundle.openLavaAsset(assetPath: icon.assetPath);
+      if (_disposed) return;
+      _bundle = bundle;
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'bingo_core',
+          context: ErrorDescription(
+            'while loading the ${icon.name} Lava icon',
+          ),
+        ),
+      );
+      if (_disposed) return;
+      _failed = true;
+    }
+    onChanged();
+  }
+
+  /// Depois disto o resultado de [load] é ignorado.
+  void dispose() {
+    _disposed = true;
+  }
 }
 
 /// Mostra um [BingoLavaIcon] animado, com [fallback] no lugar enquanto o
@@ -68,57 +144,40 @@ class BingoLavaIconView extends StatefulWidget {
 }
 
 class _BingoLavaIconViewState extends State<BingoLavaIconView> {
-  LavaBundle? _bundle;
-  bool _failed = false;
-  int _generation = 0;
+  late BingoLavaBundleLoader _loader;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loader = BingoLavaBundleLoader(widget.icon, onChanged: _onLoaderChanged)
+      ..load();
   }
 
   @override
   void didUpdateWidget(covariant BingoLavaIconView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.icon != oldWidget.icon) {
-      _bundle = null;
-      _failed = false;
-      _load();
+      _loader.dispose();
+      _loader = BingoLavaBundleLoader(widget.icon, onChanged: _onLoaderChanged)
+        ..load();
     }
   }
 
-  Future<void> _load() async {
-    final generation = ++_generation;
-    try {
-      final bundle = await LavaBundle.openLavaAsset(
-        assetPath: widget.icon.assetPath,
-      );
-      if (!mounted || generation != _generation) return;
-      setState(() => _bundle = bundle);
-    } catch (error, stackTrace) {
-      // Bundle ausente ou corrompido: fica o fallback, mas o erro aparece no
-      // console em vez de sumir.
-      FlutterError.reportError(
-        FlutterErrorDetails(
-          exception: error,
-          stack: stackTrace,
-          library: 'bingo_core',
-          context: ErrorDescription(
-            'while loading the ${widget.icon.name} Lava icon',
-          ),
-        ),
-      );
-      if (!mounted || generation != _generation) return;
-      setState(() => _failed = true);
-    }
+  void _onLoaderChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _loader.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bundle = _bundle;
+    final bundle = _loader.bundle;
     final Widget child;
-    if (bundle == null || bundle.isDisposed || _failed) {
+    if (bundle == null || _loader.failed) {
       child = KeyedSubtree(
         key: const ValueKey<String>('bingo_lava_fallback'),
         child: widget.fallback,

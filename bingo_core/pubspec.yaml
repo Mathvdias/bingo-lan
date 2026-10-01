@@ -50,6 +50,14 @@ flutter:
     - assets/lava/info_bubble/
     - assets/lava/premium_badge/
     - assets/lava/trophy/
+    - assets/lava/warning_sign/
+    - assets/lava/open_book/
+    - assets/lava/globe/
+    - assets/lava/wifi_table/
+    - assets/lava/help_bubble/
+    - assets/lava/players/
+    - assets/lava/dice/
+    - assets/lava/pencil/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
