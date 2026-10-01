@@ -9,6 +9,7 @@ import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
+import 'package:bingo_app/shared/ui/widgets/players_counter.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:bingo_core/bingo_core.dart';
@@ -132,35 +133,17 @@ class _HostRoomScreenState extends State<HostRoomScreen> {
     }
   }
 
-  /// "N jogadores na sala" ou "N/M" quando há limite grátis e o host não é
-  /// premium (modelo paywall_host).
+  /// "N" ou "N/M" (limite grátis e host não premium, modelo paywall_host),
+  /// com o rótulo em linha própria. Mesmo componente da tela de convite.
   Widget _buildPlayerCount(BuildContext context, HostRoomViewModel viewModel) {
-    final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
     return ValueListenableBuilder<bool>(
       valueListenable: SubscriptionService.isPremium,
       builder: (context, isPremium, _) {
         final showCap = RevenueConfigService.hasFreePlayerCap && !isPremium;
-        final text = showCap
-            ? l10n.playersCapacity(
-                viewModel.playerCount,
-                RevenueConfigService.maxFreePlayersPathA,
-              )
-            : l10n.playersInRoom(viewModel.playerCount);
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.people),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                text,
-                key: const Key('host_room_player_count'),
-                style: textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
+        return PlayersCounter(
+          key: const Key('host_room_player_count'),
+          count: viewModel.playerCount,
+          max: showCap ? RevenueConfigService.maxFreePlayersPathA : null,
         );
       },
     );

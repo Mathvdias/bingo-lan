@@ -472,12 +472,6 @@ abstract class AppLocalizations {
   /// **'Room Code'**
   String get inviteRoomCode;
 
-  /// No description provided for @inviteShareLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Share Invite Link'**
-  String get inviteShareLink;
-
   /// No description provided for @inviteTitle.
   ///
   /// In en, this message translates to:
@@ -489,18 +483,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan to join the room!'**
   String get inviteScanDesc;
-
-  /// No description provided for @inviteShareCodeMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Let\'s play Bingo! Our room code is: {qrData}'**
-  String inviteShareCodeMessage(String qrData);
-
-  /// No description provided for @inviteShareCodeTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Share Code'**
-  String get inviteShareCodeTooltip;
 
   /// No description provided for @inviteShareLinkMessage.
   ///
@@ -1173,12 +1155,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get scanOpenSettings;
-
-  /// No description provided for @inviteConnectedPlayersCapacity.
-  ///
-  /// In en, this message translates to:
-  /// **'Connected Players: {count}/{max} free'**
-  String inviteConnectedPlayersCapacity(int count, int max);
 }
 
 class _AppLocalizationsDelegate

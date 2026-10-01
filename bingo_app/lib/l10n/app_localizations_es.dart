@@ -217,21 +217,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get inviteRoomCode => 'Código de la Sala';
 
   @override
-  String get inviteShareLink => 'Compartir Enlace de Invitación';
-
-  @override
   String get inviteTitle => 'Invitar Jugadores';
 
   @override
   String get inviteScanDesc => '¡Escanea para unirte a la sala!';
-
-  @override
-  String inviteShareCodeMessage(String qrData) {
-    return '¡Vamos a jugar Bingo! Nuestro código de sala es: $qrData';
-  }
-
-  @override
-  String get inviteShareCodeTooltip => 'Compartir Código';
 
   @override
   String inviteShareLinkMessage(String qrData) {
@@ -624,9 +613,4 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get scanOpenSettings => 'Abrir ajustes';
-
-  @override
-  String inviteConnectedPlayersCapacity(int count, int max) {
-    return 'Jugadores Conectados: $count/$max gratis';
-  }
 }

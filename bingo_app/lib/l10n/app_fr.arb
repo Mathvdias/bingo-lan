@@ -74,18 +74,8 @@
   "scanCancel": "Annuler",
   "scanShowcaseScanner": "Pointez votre caméra vers le Code QR de l'hôte pour rejoindre rapidement la salle.",
   "inviteRoomCode": "Code de la Salle",
-  "inviteShareLink": "Partager le lien d'invitation",
   "inviteTitle": "Inviter des joueurs",
   "inviteScanDesc": "Scannez pour rejoindre la salle !",
-  "inviteShareCodeMessage": "Jouons au Bingo ! Notre code de salle est : {qrData}",
-  "@inviteShareCodeMessage": {
-    "placeholders": {
-      "qrData": {
-        "type": "String"
-      }
-    }
-  },
-  "inviteShareCodeTooltip": "Partager le code",
   "inviteShareLinkMessage": "Viens jouer au Bingo ! Appuie simplement depuis ton téléphone : {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
@@ -284,16 +274,5 @@
   "scanCameraDeniedTitle": "Accès à la caméra requis",
   "scanCameraDeniedMessage": "Autorisez l'accès à la caméra dans les réglages pour lire le QR code, ou saisissez le code manuellement.",
   "scanCameraErrorMessage": "Impossible d'ouvrir la caméra. Réessayez ou saisissez le code manuellement.",
-  "scanOpenSettings": "Ouvrir les réglages",
-  "inviteConnectedPlayersCapacity": "Joueurs connectés : {count}/{max} gratuits",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  }
+  "scanOpenSettings": "Ouvrir les réglages"
 }

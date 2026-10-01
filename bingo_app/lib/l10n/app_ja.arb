@@ -74,18 +74,8 @@
   "scanCancel": "キャンセル",
   "scanShowcaseScanner": "ホストのQRコードにカメラを向けて、すぐにルームに参加します。",
   "inviteRoomCode": "ルームコード",
-  "inviteShareLink": "招待リンクを共有",
   "inviteTitle": "プレイヤーを招待",
   "inviteScanDesc": "スキャンしてルームに参加！",
-  "inviteShareCodeMessage": "ビンゴをしよう！ルームコードは：{qrData}",
-  "@inviteShareCodeMessage": {
-    "placeholders": {
-      "qrData": {
-        "type": "String"
-      }
-    }
-  },
-  "inviteShareCodeTooltip": "コードを共有",
   "inviteShareLinkMessage": "ビンゴで遊ぼう！スマホからタップするだけ: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
@@ -284,16 +274,5 @@
   "scanCameraDeniedTitle": "カメラにアクセスできません",
   "scanCameraDeniedMessage": "QRコードを読み取るには設定でカメラの使用を許可するか、コードを手動で入力してください。",
   "scanCameraErrorMessage": "カメラを起動できませんでした。もう一度試すか、コードを手動で入力してください。",
-  "scanOpenSettings": "設定を開く",
-  "inviteConnectedPlayersCapacity": "接続中のプレイヤー: {count}/{max}（無料）",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  }
+  "scanOpenSettings": "設定を開く"
 }

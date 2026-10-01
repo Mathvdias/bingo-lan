@@ -206,21 +206,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get inviteRoomCode => 'ルームコード';
 
   @override
-  String get inviteShareLink => '招待リンクを共有';
-
-  @override
   String get inviteTitle => 'プレイヤーを招待';
 
   @override
   String get inviteScanDesc => 'スキャンしてルームに参加！';
-
-  @override
-  String inviteShareCodeMessage(String qrData) {
-    return 'ビンゴをしよう！ルームコードは：$qrData';
-  }
-
-  @override
-  String get inviteShareCodeTooltip => 'コードを共有';
 
   @override
   String inviteShareLinkMessage(String qrData) {
@@ -591,9 +580,4 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get scanOpenSettings => '設定を開く';
-
-  @override
-  String inviteConnectedPlayersCapacity(int count, int max) {
-    return '接続中のプレイヤー: $count/$max（無料）';
-  }
 }

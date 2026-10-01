@@ -217,21 +217,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteRoomCode => 'Room Code';
 
   @override
-  String get inviteShareLink => 'Share Invite Link';
-
-  @override
   String get inviteTitle => 'Invite Players';
 
   @override
   String get inviteScanDesc => 'Scan to join the room!';
-
-  @override
-  String inviteShareCodeMessage(String qrData) {
-    return 'Let\'s play Bingo! Our room code is: $qrData';
-  }
-
-  @override
-  String get inviteShareCodeTooltip => 'Share Code';
 
   @override
   String inviteShareLinkMessage(String qrData) {
@@ -620,9 +609,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanOpenSettings => 'Open Settings';
-
-  @override
-  String inviteConnectedPlayersCapacity(int count, int max) {
-    return 'Connected Players: $count/$max free';
-  }
 }
