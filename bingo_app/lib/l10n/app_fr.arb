@@ -14,7 +14,6 @@
   "errorInvalidNumber": "Le numéro doit être compris entre 1 et 75",
   "errorNumberDrawn": "Le numéro a déjà été tiré!",
   "paywallTitle": "Fonctionnalité Payante",
-  "paywallMessage": "Le Globe Automatique est payant. Mettez à niveau!",
   "stopRoomTitle": "Fermer la Salle",
   "stopRoomMessage": "Êtes-vous sûr de vouloir fermer la salle ? Tous les joueurs seront déconnectés.",
   "no": "Non",
@@ -120,5 +119,74 @@
   "hostSetupWifiWarning": "Avertissement: Tous les joueurs DOIVENT être connectés au MÊME RÉSEAU WI-FI pour rejoindre la salle.",
   "hostSetupWifiDesc": "Jouez avec des personnes sur le même réseau Wi-Fi. Idéal pour les fêtes et les rassemblements.",
   "playerScanCameraHint": "Pointez votre appareil photo sur le code QR de l'hôte",
-  "splashSubtitle": "La façon la plus amusante de jouer !"
+  "splashSubtitle": "La façon la plus amusante de jouer !",
+  "paywallHeroTitle": "Passez Premium",
+  "paywallHeroSubtitle": "Des fêtes plus grandes, sans limites ni interruptions.",
+  "paywallBenefitUnlimitedPlayers": "Joueurs illimités par salle",
+  "paywallBenefitAutoGlobe": "Globe automatique : l'app tire les boules pour vous",
+  "paywallBenefitNoAds": "Sans publicité",
+  "paywallPeriodWeekly": "Hebdomadaire",
+  "paywallPeriodMonthly": "Mensuel",
+  "paywallPeriodTwoMonth": "Tous les 2 mois",
+  "paywallPeriodThreeMonth": "Trimestriel",
+  "paywallPeriodSixMonth": "Semestriel",
+  "paywallPeriodAnnual": "Annuel",
+  "paywallPeriodLifetime": "À vie",
+  "paywallPeriodCustom": "Forfait",
+  "paywallBilledWeekly": "Facturé chaque semaine",
+  "paywallBilledMonthly": "Facturé chaque mois",
+  "paywallBilledTwoMonth": "Facturé tous les 2 mois",
+  "paywallBilledThreeMonth": "Facturé tous les 3 mois",
+  "paywallBilledSixMonth": "Facturé tous les 6 mois",
+  "paywallBilledAnnual": "Facturé une fois par an",
+  "paywallBilledCustom": "Abonnement",
+  "paywallOneTimePayment": "Paiement unique",
+  "paywallSavings": "Économisez {percent}%",
+  "@paywallSavings": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallCta": "Continuer pour {price}",
+  "@paywallCta": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallRestore": "Restaurer les achats",
+  "paywallLegal": "Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Annulez à tout moment dans les réglages de votre compte de la boutique.",
+  "paywallEmpty": "Aucun forfait disponible pour le moment.",
+  "paywallRetry": "Réessayer",
+  "paywallErrorLoad": "Impossible de charger les forfaits. Vérifiez votre connexion et réessayez.",
+  "paywallErrorPurchase": "L'achat n'a pas pu être finalisé. Veuillez réessayer.",
+  "paywallErrorRestore": "Impossible de restaurer vos achats. Veuillez réessayer.",
+  "paywallRestoreNothing": "Aucun achat précédent trouvé pour ce compte.",
+  "paywallRestoreSuccess": "Achats restaurés. Bienvenue dans Premium !",
+  "paywallClose": "Fermer",
+  "playersCapacity": "{count}/{max} joueurs (offre gratuite)",
+  "@playersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteConnectedPlayersCapacity": "Joueurs connectés : {count}/{max} gratuits",
+  "@inviteConnectedPlayersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

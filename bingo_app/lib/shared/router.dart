@@ -38,9 +38,12 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
     GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
 
+    // Aceita `?source=` para o funil de analytics (ex.: /paywall?source=lobby).
     GoRoute(
       path: '/paywall',
-      builder: (context, state) => const PaywallScreen(),
+      builder: (context, state) => PaywallScreen(
+        source: state.uri.queryParameters['source'] ?? 'unknown',
+      ),
     ),
     // Host Routes
     GoRoute(

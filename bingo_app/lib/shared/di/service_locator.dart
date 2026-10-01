@@ -2,7 +2,9 @@ import 'dart:developer'; // Import for log
 import 'package:bingo_app/features/host/host_invite_view_model.dart';
 import 'package:bingo_app/features/host/host_room_view_model.dart';
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
+import 'package:bingo_app/features/paywall/paywall_analytics.dart';
 import 'package:bingo_app/features/paywall/paywall_view_model.dart';
+import 'package:bingo_app/features/paywall/purchases_gateway.dart';
 import 'package:bingo_app/features/player/player_game_view_model.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/features/solo/solo_game_view_model.dart';
@@ -51,8 +53,16 @@ void setupServiceLocator() {
     ),
   );
 
-  // Paywall ViewModel (Nova versão sem paymentDriver)
-  serviceLocator.registerFactory(() => PaywallViewModel());
+  // Paywall: gateway sobre o RevenueCat + ViewModel por tela
+  serviceLocator.registerLazySingleton<PurchasesGateway>(
+    () => const RevenueCatPurchasesGateway(),
+  );
+  serviceLocator.registerFactory(
+    () => PaywallViewModel(
+      gateway: serviceLocator<PurchasesGateway>(),
+      analytics: const FirebasePaywallAnalytics(),
+    ),
+  );
 
   // SoloGame ViewModel
   serviceLocator.registerFactory(() => SoloGameViewModel());

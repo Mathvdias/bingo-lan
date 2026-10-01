@@ -54,10 +54,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get paywallTitle => 'Recurso de Pago';
 
   @override
-  String get paywallMessage =>
-      'El Globo Automático es un recurso de pago. ¡Haz upgrade!';
-
-  @override
   String get stopRoomTitle => 'Cerrar Sala';
 
   @override
@@ -294,4 +290,125 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get splashSubtitle => '¡La forma más divertida de jugar!';
+
+  @override
+  String get paywallHeroTitle => 'Hazte Premium';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Fiestas más grandes, sin límites y sin interrupciones.';
+
+  @override
+  String get paywallBenefitUnlimitedPlayers => 'Jugadores ilimitados por sala';
+
+  @override
+  String get paywallBenefitAutoGlobe =>
+      'Globo automático: la app sortea las bolas por ti';
+
+  @override
+  String get paywallBenefitNoAds => 'Sin anuncios';
+
+  @override
+  String get paywallPeriodWeekly => 'Semanal';
+
+  @override
+  String get paywallPeriodMonthly => 'Mensual';
+
+  @override
+  String get paywallPeriodTwoMonth => 'Bimestral';
+
+  @override
+  String get paywallPeriodThreeMonth => 'Trimestral';
+
+  @override
+  String get paywallPeriodSixMonth => 'Semestral';
+
+  @override
+  String get paywallPeriodAnnual => 'Anual';
+
+  @override
+  String get paywallPeriodLifetime => 'De por vida';
+
+  @override
+  String get paywallPeriodCustom => 'Plan';
+
+  @override
+  String get paywallBilledWeekly => 'Se cobra cada semana';
+
+  @override
+  String get paywallBilledMonthly => 'Se cobra cada mes';
+
+  @override
+  String get paywallBilledTwoMonth => 'Se cobra cada 2 meses';
+
+  @override
+  String get paywallBilledThreeMonth => 'Se cobra cada 3 meses';
+
+  @override
+  String get paywallBilledSixMonth => 'Se cobra cada 6 meses';
+
+  @override
+  String get paywallBilledAnnual => 'Se cobra una vez al año';
+
+  @override
+  String get paywallBilledCustom => 'Suscripción';
+
+  @override
+  String get paywallOneTimePayment => 'Pago único';
+
+  @override
+  String paywallSavings(int percent) {
+    return 'Ahorra $percent%';
+  }
+
+  @override
+  String paywallCta(String price) {
+    return 'Continuar por $price';
+  }
+
+  @override
+  String get paywallRestore => 'Restaurar compras';
+
+  @override
+  String get paywallLegal =>
+      'Las suscripciones se renuevan automáticamente salvo que se cancelen al menos 24 horas antes del final del período actual. Cancela cuando quieras en la configuración de tu cuenta de la tienda.';
+
+  @override
+  String get paywallEmpty => 'No hay planes disponibles por ahora.';
+
+  @override
+  String get paywallRetry => 'Reintentar';
+
+  @override
+  String get paywallErrorLoad =>
+      'No se pudieron cargar los planes. Revisa tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get paywallErrorPurchase =>
+      'No se pudo completar la compra. Inténtalo de nuevo.';
+
+  @override
+  String get paywallErrorRestore =>
+      'No se pudieron restaurar tus compras. Inténtalo de nuevo.';
+
+  @override
+  String get paywallRestoreNothing =>
+      'No se encontraron compras anteriores para esta cuenta.';
+
+  @override
+  String get paywallRestoreSuccess =>
+      'Compras restauradas. ¡Bienvenido a Premium!';
+
+  @override
+  String get paywallClose => 'Cerrar';
+
+  @override
+  String playersCapacity(int count, int max) {
+    return '$count/$max jugadores (plan gratis)';
+  }
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return 'Jugadores Conectados: $count/$max gratis';
+  }
 }

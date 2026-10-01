@@ -14,7 +14,6 @@
   "errorInvalidNumber": "Number must be between 1 and 75",
   "errorNumberDrawn": "Number already drawn!",
   "paywallTitle": "Premium Feature",
-  "paywallMessage": "Auto Globe is a premium feature. Upgrade now!",
   "stopRoomTitle": "End Room",
   "stopRoomMessage": "Are you sure you want to close the room? All players will be disconnected.",
   "no": "No",
@@ -120,5 +119,74 @@
   "hostSetupWifiWarning": "Warning: All players MUST be connected to the SAME WI-FI NETWORK to join the room.",
   "hostSetupWifiDesc": "Play with people on the same Wi-Fi network. Ideal for parties and gatherings.",
   "playerScanCameraHint": "Point your camera at the Host's QR Code",
-  "splashSubtitle": "The most fun way to play!"
+  "splashSubtitle": "The most fun way to play!",
+  "paywallHeroTitle": "Go Premium",
+  "paywallHeroSubtitle": "Bigger parties, zero limits, no interruptions.",
+  "paywallBenefitUnlimitedPlayers": "Unlimited players per room",
+  "paywallBenefitAutoGlobe": "Auto globe: the app draws the balls for you",
+  "paywallBenefitNoAds": "No ads",
+  "paywallPeriodWeekly": "Weekly",
+  "paywallPeriodMonthly": "Monthly",
+  "paywallPeriodTwoMonth": "Every 2 months",
+  "paywallPeriodThreeMonth": "Quarterly",
+  "paywallPeriodSixMonth": "Every 6 months",
+  "paywallPeriodAnnual": "Annual",
+  "paywallPeriodLifetime": "Lifetime",
+  "paywallPeriodCustom": "Plan",
+  "paywallBilledWeekly": "Billed every week",
+  "paywallBilledMonthly": "Billed every month",
+  "paywallBilledTwoMonth": "Billed every 2 months",
+  "paywallBilledThreeMonth": "Billed every 3 months",
+  "paywallBilledSixMonth": "Billed every 6 months",
+  "paywallBilledAnnual": "Billed once a year",
+  "paywallBilledCustom": "Subscription",
+  "paywallOneTimePayment": "One-time payment",
+  "paywallSavings": "Save {percent}%",
+  "@paywallSavings": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallCta": "Continue for {price}",
+  "@paywallCta": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallRestore": "Restore purchases",
+  "paywallLegal": "Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Cancel anytime in your store account settings.",
+  "paywallEmpty": "No plans available right now.",
+  "paywallRetry": "Try again",
+  "paywallErrorLoad": "We couldn't load the plans. Check your connection and try again.",
+  "paywallErrorPurchase": "The purchase could not be completed. Please try again.",
+  "paywallErrorRestore": "We couldn't restore your purchases. Please try again.",
+  "paywallRestoreNothing": "No previous purchases were found for this account.",
+  "paywallRestoreSuccess": "Purchases restored. Welcome to Premium!",
+  "paywallClose": "Close",
+  "playersCapacity": "{count}/{max} players (free plan)",
+  "@playersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteConnectedPlayersCapacity": "Connected Players: {count}/{max} free",
+  "@inviteConnectedPlayersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

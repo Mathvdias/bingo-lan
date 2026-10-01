@@ -54,9 +54,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paywallTitle => 'Premium Feature';
 
   @override
-  String get paywallMessage => 'Auto Globe is a premium feature. Upgrade now!';
-
-  @override
   String get stopRoomTitle => 'End Room';
 
   @override
@@ -292,4 +289,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get splashSubtitle => 'The most fun way to play!';
+
+  @override
+  String get paywallHeroTitle => 'Go Premium';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Bigger parties, zero limits, no interruptions.';
+
+  @override
+  String get paywallBenefitUnlimitedPlayers => 'Unlimited players per room';
+
+  @override
+  String get paywallBenefitAutoGlobe =>
+      'Auto globe: the app draws the balls for you';
+
+  @override
+  String get paywallBenefitNoAds => 'No ads';
+
+  @override
+  String get paywallPeriodWeekly => 'Weekly';
+
+  @override
+  String get paywallPeriodMonthly => 'Monthly';
+
+  @override
+  String get paywallPeriodTwoMonth => 'Every 2 months';
+
+  @override
+  String get paywallPeriodThreeMonth => 'Quarterly';
+
+  @override
+  String get paywallPeriodSixMonth => 'Every 6 months';
+
+  @override
+  String get paywallPeriodAnnual => 'Annual';
+
+  @override
+  String get paywallPeriodLifetime => 'Lifetime';
+
+  @override
+  String get paywallPeriodCustom => 'Plan';
+
+  @override
+  String get paywallBilledWeekly => 'Billed every week';
+
+  @override
+  String get paywallBilledMonthly => 'Billed every month';
+
+  @override
+  String get paywallBilledTwoMonth => 'Billed every 2 months';
+
+  @override
+  String get paywallBilledThreeMonth => 'Billed every 3 months';
+
+  @override
+  String get paywallBilledSixMonth => 'Billed every 6 months';
+
+  @override
+  String get paywallBilledAnnual => 'Billed once a year';
+
+  @override
+  String get paywallBilledCustom => 'Subscription';
+
+  @override
+  String get paywallOneTimePayment => 'One-time payment';
+
+  @override
+  String paywallSavings(int percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String paywallCta(String price) {
+    return 'Continue for $price';
+  }
+
+  @override
+  String get paywallRestore => 'Restore purchases';
+
+  @override
+  String get paywallLegal =>
+      'Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Cancel anytime in your store account settings.';
+
+  @override
+  String get paywallEmpty => 'No plans available right now.';
+
+  @override
+  String get paywallRetry => 'Try again';
+
+  @override
+  String get paywallErrorLoad =>
+      'We couldn\'t load the plans. Check your connection and try again.';
+
+  @override
+  String get paywallErrorPurchase =>
+      'The purchase could not be completed. Please try again.';
+
+  @override
+  String get paywallErrorRestore =>
+      'We couldn\'t restore your purchases. Please try again.';
+
+  @override
+  String get paywallRestoreNothing =>
+      'No previous purchases were found for this account.';
+
+  @override
+  String get paywallRestoreSuccess => 'Purchases restored. Welcome to Premium!';
+
+  @override
+  String get paywallClose => 'Close';
+
+  @override
+  String playersCapacity(int count, int max) {
+    return '$count/$max players (free plan)';
+  }
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return 'Connected Players: $count/$max free';
+  }
 }
