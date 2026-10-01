@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "726195608166",
+    "project_id": "nightstudios-bingo",
+    "storage_bucket": "nightstudios-bingo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726195608166:android:3d761008a74eb1d88f2ba7",
+        "android_client_info": {
+          "package_name": "com.nightstudios.bingo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn_riKabzAxrrH09-zpuGrkDb5sBJ_aN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,6 +26,6 @@ gcloud firebase test android run \
   --test build/app/outputs/apk/androidTest/dev/debug/app-dev-debug-androidTest.apk \
   --device model=SmallPhone.arm,version=30,locale=en_US,orientation=portrait \
   --timeout 2m \
-  --test-targets "class com.matheus.bingo.SimpleAndroidTest#useAppContext"
+  --test-targets "class com.nightstudios.bingo.SimpleAndroidTest#useAppContext"
 
 echo "✅ Teste Android puro concluído!"
