@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bingo_app/features/player/player_game_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
@@ -13,8 +15,10 @@ import 'package:flutter/material.dart';
 /// ([PlayerGameScreen]) cuida de wakelock, GetIt e rotas; aqui só widgets,
 /// para o teste conseguir montar com um [PlayerGameViewModel] real.
 ///
-/// "GRITAR BINGO!" fica numa barra fixa no rodapé: em 360x640 dp a cartela
-/// rola acima dele e o botão nunca sai da tela.
+/// "GRITAR BINGO!" fica numa barra fixa no rodapé e a cartela se ajusta à
+/// altura que sobra: em 360x640 dp (escala 1.0) a faixa de status, o
+/// cabeçalho e as 25 células cabem sem rolar; com escala de texto grande as
+/// células encolhem até 44 dp e, só então, a cartela rola.
 class PlayerGameView extends StatelessWidget {
   final PlayerGameViewModel viewModel;
 
@@ -46,29 +50,19 @@ class PlayerGameView extends StatelessWidget {
           : _ShoutBar(key: const Key('player_shout_bar'), viewModel: viewModel),
       body: Stack(
         children: [
-          CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(child: _LastCalledStrip(viewModel: viewModel)),
-              if (!viewModel.isConnected && !viewModel.roomClosed)
-                SliverToBoxAdapter(
-                  child: _ConnectionBanner(viewModel: viewModel),
-                ),
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  child: BingoGridHeader(),
-                ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                sliver: BingoGrid(
-                  bingoCard: viewModel.bingoCard,
-                  markedNumbers: viewModel.markedNumbers,
-                  calledNumbers: viewModel.calledNumbers,
-                  onNumberTapped: viewModel.markNumber,
-                ),
-              ),
-            ],
+          // SafeArea(bottom) só importa sem rodapé (camada aberta); com ele o
+          // Scaffold já desconta a barra de gestos.
+          SafeArea(
+            top: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _LastCalledStrip(viewModel: viewModel),
+                if (!viewModel.isConnected && !viewModel.roomClosed)
+                  _ConnectionBanner(viewModel: viewModel),
+                Expanded(child: _CardArea(viewModel: viewModel)),
+              ],
+            ),
           ),
           if (viewModel.roomClosed)
             _Overlay(
@@ -139,7 +133,82 @@ class _ShoutBar extends StatelessWidget {
   }
 }
 
-/// "Última bola: B-12" + contagem de sorteados.
+/// Cabeçalho B-I-N-G-O + cartela, com o lado da célula calculado para a
+/// cartela inteira caber na altura disponível (`min(largura, altura)`), sem
+/// descer de [minCell]. Quando nem assim cabe (escala de texto grande com o
+/// aviso de conexão), a área rola.
+class _CardArea extends StatelessWidget {
+  final PlayerGameViewModel viewModel;
+
+  static const double gap = 6;
+  static const double minCell = 44;
+  static const double _hPad = 16;
+  static const double _topPad = 8;
+  static const double _headerGap = 8;
+  static const double _bottomPad = 16;
+
+  const _CardArea({required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Altura do cabeçalho: linha do displaySmall (escalada) + padding 8
+        // em cima e embaixo + borda de 2 nos dois lados (BingoGridHeader).
+        final headerStyle = Theme.of(context).textTheme.displaySmall;
+        final headerLine =
+            MediaQuery.textScalerOf(
+              context,
+            ).scale(headerStyle?.fontSize ?? 20) *
+            (headerStyle?.height ?? 1.4);
+        final headerHeight = headerLine + 16 + 4;
+
+        final width = constraints.maxWidth - 2 * _hPad;
+        final widthCell = (width - 4 * gap) / 5;
+        final heightCell = constraints.maxHeight.isFinite
+            ? (constraints.maxHeight -
+                      _topPad -
+                      headerHeight -
+                      _headerGap -
+                      _bottomPad -
+                      4 * gap) /
+                  5
+            : widthCell;
+        final cell = max(minCell, min(widthCell, heightCell));
+        final side = BingoGridBox.sideFor(cellSize: cell, gap: gap);
+
+        return SingleChildScrollView(
+          key: const Key('player_card_scroll'),
+          padding: const EdgeInsets.fromLTRB(_hPad, _topPad, _hPad, _bottomPad),
+          child: Center(
+            child: SizedBox(
+              width: side,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const BingoGridHeader(),
+                  const SizedBox(height: _headerGap),
+                  BingoGridBox(
+                    key: const Key('player_card_grid'),
+                    bingoCard: viewModel.bingoCard,
+                    markedNumbers: viewModel.markedNumbers,
+                    calledNumbers: viewModel.calledNumbers,
+                    onNumberTapped: viewModel.markNumber,
+                    cellSize: cell,
+                    gap: gap,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Faixa de status numa linha: "Última bola" + pílula "B-12" à esquerda e
+/// "9/75 sorteados" à direita (ou o aviso de que nada saiu ainda).
 class _LastCalledStrip extends StatelessWidget {
   final PlayerGameViewModel viewModel;
 
@@ -152,43 +221,66 @@ class _LastCalledStrip extends StatelessWidget {
     final last = viewModel.lastNumber;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        key: const Key('player_status_card'),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.outline, width: 2),
         ),
-        // spaceBetween + Flexible: a contagem fica encostada à direita e
-        // encolhe (em vez de estourar) com escala de texto grande.
+        // Dois Flexible com FittedBox: com escala de texto grande os dois
+        // lados encolhem em vez de estourar.
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    last == null
-                        ? l10n.playerGameNoCallsYet
-                        : l10n.playerGameLastCalled,
-                    style: textTheme.labelLarge?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  if (last != null)
-                    FittedBox(
+            Flexible(
+              child: last == null
+                  ? Text(
+                      l10n.playerGameNoCallsYet,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    )
+                  : FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
-                      child: StrokedText(
-                        key: const Key('player_last_called'),
-                        text: BingoCard.label(last),
-                        style: textTheme.headlineMedium,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            l10n.playerGameLastCalled,
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.outline,
+                                width: 2,
+                              ),
+                            ),
+                            child: StrokedText(
+                              key: const Key('player_last_called'),
+                              text: BingoCard.label(last),
+                              style: textTheme.displayMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                ],
-              ),
             ),
             const SizedBox(width: 8),
             Flexible(

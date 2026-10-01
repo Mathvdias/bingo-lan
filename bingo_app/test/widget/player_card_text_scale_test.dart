@@ -75,6 +75,35 @@ void main() {
       expect(find.bySemanticsLabel('espaço livre'), findsOneWidget);
     });
 
+    testWidgets('BingoGridBox com célula de 44 dp: 25 células sem overflow', (
+      tester,
+    ) async {
+      final card = BingoCard(id: 1);
+      await pumpApp(
+        tester,
+        Center(
+          child: BingoGridBox(
+            bingoCard: card,
+            markedNumbers: const {},
+            cellSize: 44,
+            gap: 6,
+            onNumberTapped: (_) {},
+          ),
+        ),
+        textScale: 1.3,
+      );
+
+      expect(find.byType(CardCell), findsNWidgets(25));
+      expect(find.text('LIVRE'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      final size = tester.getSize(find.byType(BingoGridBox));
+      expect(size.width, BingoGridBox.sideFor(cellSize: 44, gap: 6));
+      expect(size.height, size.width);
+      for (var i = 0; i < 25; i++) {
+        expect(tester.getSize(find.byType(CardCell).at(i)), const Size(44, 44));
+      }
+    });
+
     testWidgets('célula minúscula não estoura com "LIVRE" a 1.3x', (
       tester,
     ) async {
