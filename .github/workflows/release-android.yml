@@ -1,10 +1,15 @@
 name: Release Android
 
-# Dispara em tags vX.Y.Z. Gera o App Bundle assinado e, se a service account
-# da Play estiver configurada, envia para a trilha INTERNA. A promoção para
-# teste fechado e produção continua manual no Play Console.
+# Dois caminhos para a Play, mesmo App Bundle prod assinado:
+#   - push na `develop`  → trilha ALPHA (teste fechado, grupo de testadores),
+#     nome da versão `<pubspec>-alpha.<run_number>`;
+#   - tag vX.Y.Z na `main` → trilha de lançamento (RELEASE_TRACK abaixo;
+#     `internal` até a conta ganhar acesso à produção, depois `production`).
+# O versionCode é o run_number deste workflow, único e crescente nos dois
+# caminhos, então a Play nunca vê uma versão andar para trás.
 on:
   push:
+    branches: [develop]
     tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
@@ -13,9 +18,19 @@ on:
         default: internal
         required: true
 
+# Um envio por vez por ref: dois pushes seguidos na develop não disputam a
+# mesma edição da Play (o run do meio é cancelado, o último sempre roda).
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   FLUTTER_VERSION: 3.38.10
   PACKAGE_NAME: com.nightstudios.bingo
+  # Trilha das tags na main. Trocar para `production` quando a Play liberar.
+  RELEASE_TRACK: internal
+  # Trilha dos pushes na develop (teste fechado com o grupo de testadores).
+  ALPHA_TRACK: alpha
 
 jobs:
   aab:
@@ -45,15 +60,31 @@ jobs:
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
             || { echo "::error::A tag ${GITHUB_REF_NAME} aponta para um commit fora da main; crie a tag a partir da main."; exit 1; }
 
-      - name: Versão a partir da tag
+      - name: Versão e trilha
         id: ver
+        env:
+          INPUT_TRACK: ${{ github.event.inputs.track }}
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          if [[ "$GITHUB_REF_TYPE" != "tag" ]]; then
-            TAG=$(grep '^version:' bingo_app/pubspec.yaml | sed -E 's/version: *([0-9.]+).*/\1/')
+          PUBSPEC=$(grep '^version:' bingo_app/pubspec.yaml | sed -E 's/version: *([0-9.]+).*/\1/')
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            NAME="${GITHUB_REF_NAME#v}"
+            TRACK="$RELEASE_TRACK"
+            LABEL="Versão"
+          elif [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            NAME="$PUBSPEC"
+            TRACK="$INPUT_TRACK"
+            LABEL="Versão"
+          else
+            # push na develop
+            NAME="${PUBSPEC}-alpha.${{ github.run_number }}"
+            TRACK="$ALPHA_TRACK"
+            LABEL="Alpha"
           fi
-          echo "name=$TAG" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME"   >> "$GITHUB_OUTPUT"
           echo "number=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "track=$TRACK" >> "$GITHUB_OUTPUT"
+          echo "label=$LABEL" >> "$GITHUB_OUTPUT"
+          echo "Build $NAME ($GITHUB_RUN_NUMBER) → trilha $TRACK"
 
       - name: Keystore e key.properties
         working-directory: bingo_app/android
@@ -97,7 +128,7 @@ jobs:
             bingo_app/build/symbols
           retention-days: 30
 
-      - name: Enviar para a Play (trilha ${{ github.event.inputs.track || 'internal' }})
+      - name: Enviar para a Play (trilha ${{ steps.ver.outputs.track }})
         if: env.HAS_PLAY_SA == 'true'
         env:
           PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
@@ -106,11 +137,11 @@ jobs:
           python3 .github/scripts/play_upload.py \
             --package "$PACKAGE_NAME" \
             --aab bingo_app/build/app/outputs/bundle/prodRelease/app-prod-release.aab \
-            --track "${{ github.event.inputs.track || 'internal' }}" \
+            --track "${{ steps.ver.outputs.track }}" \
             --status completed \
             --mapping bingo_app/build/app/outputs/mapping/prodRelease/mapping.txt \
-            --notes-pt "Versão ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})." \
-            --notes-en "Version ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})."
+            --notes-pt "${{ steps.ver.outputs.label }} ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})." \
+            --notes-en "${{ steps.ver.outputs.label == 'Alpha' && 'Alpha' || 'Version' }} ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})."
 
       - name: Aviso quando não houver service account
         if: env.HAS_PLAY_SA != 'true'
