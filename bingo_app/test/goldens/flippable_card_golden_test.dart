@@ -131,7 +131,7 @@ void main() {
           width: 300,
           height: 300,
           child: FlippableCard(
-            image: 'assets/images/logo.png',
+            image: 'assets/images/logo.webp',
             text: 'Texto do verso',
           ),
         ),
@@ -165,7 +165,7 @@ void main() {
           width: 300,
           height: 300,
           child: FlippableCard(
-            image: 'assets/images/logo.png',
+            image: 'assets/images/logo.webp',
             text: 'Texto do verso escuro',
           ),
         ),
@@ -186,7 +186,7 @@ void main() {
             width: 200,
             height: 200,
             child: FlippableCard(
-              image: 'assets/images/logo.png',
+              image: 'assets/images/logo.webp',
               text: 'Texto pequeno',
             ),
           ),
@@ -207,7 +207,7 @@ void main() {
           width: 400,
           height: 400,
           child: FlippableCard(
-            image: 'assets/images/logo.png',
+            image: 'assets/images/logo.webp',
             text: 'Texto grande',
           ),
         ),
@@ -226,7 +226,7 @@ void main() {
           width: 300,
           height: 300,
           child: FlippableCard(
-            image: 'assets/images/logo.png',
+            image: 'assets/images/logo.webp',
             text:
                 'Este é um texto muito longo que deve ser exibido no verso do card. Ele serve para testar como o componente lida com textos longos e se há quebra de linha adequada.',
           ),
@@ -251,7 +251,7 @@ void main() {
                 width: 150,
                 height: 150,
                 child: FlippableCard(
-                  image: 'assets/images/logo.png',
+                  image: 'assets/images/logo.webp',
                   text: 'Card 1',
                 ),
               ),
@@ -260,7 +260,7 @@ void main() {
                 width: 150,
                 height: 150,
                 child: FlippableCard(
-                  image: 'assets/images/logo.png',
+                  image: 'assets/images/logo.webp',
                   text: 'Card 2',
                 ),
               ),
@@ -292,7 +292,7 @@ void main() {
                   width: double.infinity,
                   height: 200,
                   child: FlippableCard(
-                    image: 'assets/images/logo.png',
+                    image: 'assets/images/logo.webp',
                     text: 'Card em coluna',
                   ),
                 ),
@@ -301,7 +301,7 @@ void main() {
                   width: double.infinity,
                   height: 200,
                   child: FlippableCard(
-                    image: 'assets/images/logo.png',
+                    image: 'assets/images/logo.webp',
                     text: 'Outro card',
                   ),
                 ),
@@ -327,7 +327,7 @@ void main() {
             width: 300,
             height: 300,
             child: FlippableCard(
-              image: 'assets/images/logo.png',
+              image: 'assets/images/logo.webp',
               text: 'Clique para virar',
             ),
           ),
