@@ -24,7 +24,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get premiumBadge => 'PREMIUM';
 
   @override
-  String get manualGlobe => 'Manual (Físico)';
+  String get manualGlobe => 'Manual';
 
   @override
   String get virtualGlobe => 'Virtual';
@@ -425,11 +425,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String inviteConnectedPlayersCapacity(int count, int max) {
-    return 'Jogadores Conectados: $count/$max grátis';
-  }
-
-  @override
   String get routeErrorMessage => 'Não foi possível abrir esta tela.';
 
   @override
@@ -559,5 +554,79 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String playerGameShoutCooldown(int seconds) {
     return 'Aguarde ${seconds}s';
+  }
+
+  @override
+  String get inviteShareInvite => 'Compartilhar convite';
+
+  @override
+  String get inviteCopyLink => 'Copiar link';
+
+  @override
+  String get inviteLinkCopied => 'Link copiado!';
+
+  @override
+  String invitePasteHint(String button) {
+    return 'ou peça para colar o link no botão \'$button\'';
+  }
+
+  @override
+  String get playersCapacityLabel => 'jogadores (plano grátis)';
+
+  @override
+  String get playersConnectedLabel => 'jogadores conectados';
+
+  @override
+  String get hostRoomUndoLast => 'Desfazer última bola';
+
+  @override
+  String hostRoomUndone(String label) {
+    return 'Bola $label desfeita';
+  }
+
+  @override
+  String get hostRoomPause => 'Pausar';
+
+  @override
+  String get hostRoomResume => 'Retomar';
+
+  @override
+  String get hostRoomEmptyTitle => 'Nenhuma bola ainda';
+
+  @override
+  String get tourSkip => 'Pular';
+
+  @override
+  String get tourNext => 'Próximo';
+
+  @override
+  String get cardCellMarked => 'marcado';
+
+  @override
+  String get cardCellCalled => 'sorteado, não marcado';
+
+  @override
+  String get cardCellNotCalled => 'não sorteado';
+
+  @override
+  String get cardCellFreeSpace => 'espaço livre';
+
+  @override
+  String get scanCameraDeniedTitle => 'Sem acesso à câmera';
+
+  @override
+  String get scanCameraDeniedMessage =>
+      'Permita o uso da câmera nas configurações para ler o QR Code, ou digite o código manualmente.';
+
+  @override
+  String get scanCameraErrorMessage =>
+      'Não foi possível abrir a câmera. Tente de novo ou digite o código manualmente.';
+
+  @override
+  String get scanOpenSettings => 'Abrir configurações';
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return 'Jogadores Conectados: $count/$max grátis';
   }
 }

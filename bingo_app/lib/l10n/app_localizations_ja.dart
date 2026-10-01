@@ -24,7 +24,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get premiumBadge => 'プレミアム';
 
   @override
-  String get manualGlobe => '手動 (物理)';
+  String get manualGlobe => '手動';
 
   @override
   String get virtualGlobe => 'バーチャル';
@@ -403,11 +403,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String inviteConnectedPlayersCapacity(int count, int max) {
-    return '接続中のプレイヤー: $count/$max（無料）';
-  }
-
-  @override
   String get routeErrorMessage => 'この画面を開けませんでした。';
 
   @override
@@ -526,5 +521,79 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String playerGameShoutCooldown(int seconds) {
     return '$seconds秒待ってください';
+  }
+
+  @override
+  String get inviteShareInvite => '招待を共有';
+
+  @override
+  String get inviteCopyLink => 'リンクをコピー';
+
+  @override
+  String get inviteLinkCopied => 'リンクをコピーしました';
+
+  @override
+  String invitePasteHint(String button) {
+    return 'または「$button」にリンクを貼り付けてもらいましょう';
+  }
+
+  @override
+  String get playersCapacityLabel => '人（無料プラン）';
+
+  @override
+  String get playersConnectedLabel => '人が接続中';
+
+  @override
+  String get hostRoomUndoLast => '最後のボールを取り消す';
+
+  @override
+  String hostRoomUndone(String label) {
+    return 'ボール $label を取り消しました';
+  }
+
+  @override
+  String get hostRoomPause => '一時停止';
+
+  @override
+  String get hostRoomResume => '再開';
+
+  @override
+  String get hostRoomEmptyTitle => 'まだボールなし';
+
+  @override
+  String get tourSkip => 'スキップ';
+
+  @override
+  String get tourNext => '次へ';
+
+  @override
+  String get cardCellMarked => 'マーク済み';
+
+  @override
+  String get cardCellCalled => '抽選済み、未マーク';
+
+  @override
+  String get cardCellNotCalled => '未抽選';
+
+  @override
+  String get cardCellFreeSpace => 'フリースペース';
+
+  @override
+  String get scanCameraDeniedTitle => 'カメラにアクセスできません';
+
+  @override
+  String get scanCameraDeniedMessage =>
+      'QRコードを読み取るには設定でカメラの使用を許可するか、コードを手動で入力してください。';
+
+  @override
+  String get scanCameraErrorMessage =>
+      'カメラを起動できませんでした。もう一度試すか、コードを手動で入力してください。';
+
+  @override
+  String get scanOpenSettings => '設定を開く';
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return '接続中のプレイヤー: $count/$max（無料）';
   }
 }

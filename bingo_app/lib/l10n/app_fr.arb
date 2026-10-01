@@ -4,7 +4,7 @@
   "joinBingo": "Rejoindre un Bingo",
   "upgrade": "Mettre à niveau",
   "premiumBadge": "PREMIUM",
-  "manualGlobe": "Manuel (Physique)",
+  "manualGlobe": "Manuel",
   "virtualGlobe": "Virtuel",
   "autoGlobe": "Globe Automatique (Premium)",
   "drawRandom": "Tirer au sort",
@@ -178,17 +178,6 @@
       }
     }
   },
-  "inviteConnectedPlayersCapacity": "Joueurs connectés : {count}/{max} gratuits",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "@playersInRoom": {
     "placeholders": {
       "count": {
@@ -257,6 +246,52 @@
   "@playerGameShoutCooldown": {
     "placeholders": {
       "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteShareInvite": "Partager l'invitation",
+  "inviteCopyLink": "Copier le lien",
+  "inviteLinkCopied": "Lien copié !",
+  "invitePasteHint": "ou demandez de coller le lien dans « {button} »",
+  "@invitePasteHint": {
+    "placeholders": {
+      "button": {
+        "type": "String"
+      }
+    }
+  },
+  "playersCapacityLabel": "joueurs (offre gratuite)",
+  "playersConnectedLabel": "joueurs connectés",
+  "hostRoomUndoLast": "Annuler la dernière boule",
+  "hostRoomUndone": "Boule {label} annulée",
+  "@hostRoomUndone": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomPause": "Pause",
+  "hostRoomResume": "Reprendre",
+  "hostRoomEmptyTitle": "Aucune boule",
+  "tourSkip": "Passer",
+  "tourNext": "Suivant",
+  "cardCellMarked": "coché",
+  "cardCellCalled": "tiré, non coché",
+  "cardCellNotCalled": "non tiré",
+  "cardCellFreeSpace": "case gratuite",
+  "scanCameraDeniedTitle": "Accès à la caméra requis",
+  "scanCameraDeniedMessage": "Autorisez l'accès à la caméra dans les réglages pour lire le QR code, ou saisissez le code manuellement.",
+  "scanCameraErrorMessage": "Impossible d'ouvrir la caméra. Réessayez ou saisissez le code manuellement.",
+  "scanOpenSettings": "Ouvrir les réglages",
+  "inviteConnectedPlayersCapacity": "Joueurs connectés : {count}/{max} gratuits",
+  "@inviteConnectedPlayersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
         "type": "int"
       }
     }

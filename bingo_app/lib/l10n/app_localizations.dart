@@ -139,7 +139,7 @@ abstract class AppLocalizations {
   /// No description provided for @manualGlobe.
   ///
   /// In en, this message translates to:
-  /// **'Manual (Physical Globe)'**
+  /// **'Manual'**
   String get manualGlobe;
 
   /// No description provided for @virtualGlobe.
@@ -826,12 +826,6 @@ abstract class AppLocalizations {
   /// **'{count}/{max} players (free plan)'**
   String playersCapacity(int count, int max);
 
-  /// No description provided for @inviteConnectedPlayersCapacity.
-  ///
-  /// In en, this message translates to:
-  /// **'Connected Players: {count}/{max} free'**
-  String inviteConnectedPlayersCapacity(int count, int max);
-
   /// No description provided for @routeErrorMessage.
   ///
   /// In en, this message translates to:
@@ -1053,6 +1047,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wait {seconds}s'**
   String playerGameShoutCooldown(int seconds);
+
+  /// No description provided for @inviteShareInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Share invite'**
+  String get inviteShareInvite;
+
+  /// No description provided for @inviteCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get inviteCopyLink;
+
+  /// No description provided for @inviteLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied!'**
+  String get inviteLinkCopied;
+
+  /// No description provided for @invitePasteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'or ask them to paste the link under \'{button}\''**
+  String invitePasteHint(String button);
+
+  /// No description provided for @playersCapacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'players (free plan)'**
+  String get playersCapacityLabel;
+
+  /// No description provided for @playersConnectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'players connected'**
+  String get playersConnectedLabel;
+
+  /// No description provided for @hostRoomUndoLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo last ball'**
+  String get hostRoomUndoLast;
+
+  /// No description provided for @hostRoomUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'Ball {label} undone'**
+  String hostRoomUndone(String label);
+
+  /// No description provided for @hostRoomPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get hostRoomPause;
+
+  /// No description provided for @hostRoomResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get hostRoomResume;
+
+  /// No description provided for @hostRoomEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No balls yet'**
+  String get hostRoomEmptyTitle;
+
+  /// No description provided for @tourSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get tourSkip;
+
+  /// No description provided for @tourNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get tourNext;
+
+  /// No description provided for @cardCellMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'marked'**
+  String get cardCellMarked;
+
+  /// No description provided for @cardCellCalled.
+  ///
+  /// In en, this message translates to:
+  /// **'called, not marked'**
+  String get cardCellCalled;
+
+  /// No description provided for @cardCellNotCalled.
+  ///
+  /// In en, this message translates to:
+  /// **'not called'**
+  String get cardCellNotCalled;
+
+  /// No description provided for @cardCellFreeSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'free space'**
+  String get cardCellFreeSpace;
+
+  /// No description provided for @scanCameraDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access needed'**
+  String get scanCameraDeniedTitle;
+
+  /// No description provided for @scanCameraDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow camera access in Settings to scan the QR code, or enter the code manually.'**
+  String get scanCameraDeniedMessage;
+
+  /// No description provided for @scanCameraErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open the camera. Try again or enter the code manually.'**
+  String get scanCameraErrorMessage;
+
+  /// No description provided for @scanOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get scanOpenSettings;
+
+  /// No description provided for @inviteConnectedPlayersCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Players: {count}/{max} free'**
+  String inviteConnectedPlayersCapacity(int count, int max);
 }
 
 class _AppLocalizationsDelegate

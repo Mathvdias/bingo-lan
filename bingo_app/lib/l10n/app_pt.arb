@@ -4,7 +4,7 @@
   "joinBingo": "Entrar em um Bingo",
   "upgrade": "Melhorar Conta",
   "premiumBadge": "PREMIUM",
-  "manualGlobe": "Manual (Físico)",
+  "manualGlobe": "Manual",
   "virtualGlobe": "Virtual",
   "autoGlobe": "Globo Automático (Premium)",
   "drawRandom": "Sortear (Aleatório)",
@@ -178,17 +178,6 @@
       }
     }
   },
-  "inviteConnectedPlayersCapacity": "Jogadores Conectados: {count}/{max} grátis",
-  "@inviteConnectedPlayersCapacity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "@playersInRoom": {
     "placeholders": {
       "count": {
@@ -257,6 +246,52 @@
   "@playerGameShoutCooldown": {
     "placeholders": {
       "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteShareInvite": "Compartilhar convite",
+  "inviteCopyLink": "Copiar link",
+  "inviteLinkCopied": "Link copiado!",
+  "invitePasteHint": "ou peça para colar o link no botão '{button}'",
+  "@invitePasteHint": {
+    "placeholders": {
+      "button": {
+        "type": "String"
+      }
+    }
+  },
+  "playersCapacityLabel": "jogadores (plano grátis)",
+  "playersConnectedLabel": "jogadores conectados",
+  "hostRoomUndoLast": "Desfazer última bola",
+  "hostRoomUndone": "Bola {label} desfeita",
+  "@hostRoomUndone": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomPause": "Pausar",
+  "hostRoomResume": "Retomar",
+  "hostRoomEmptyTitle": "Nenhuma bola ainda",
+  "tourSkip": "Pular",
+  "tourNext": "Próximo",
+  "cardCellMarked": "marcado",
+  "cardCellCalled": "sorteado, não marcado",
+  "cardCellNotCalled": "não sorteado",
+  "cardCellFreeSpace": "espaço livre",
+  "scanCameraDeniedTitle": "Sem acesso à câmera",
+  "scanCameraDeniedMessage": "Permita o uso da câmera nas configurações para ler o QR Code, ou digite o código manualmente.",
+  "scanCameraErrorMessage": "Não foi possível abrir a câmera. Tente de novo ou digite o código manualmente.",
+  "scanOpenSettings": "Abrir configurações",
+  "inviteConnectedPlayersCapacity": "Jogadores Conectados: {count}/{max} grátis",
+  "@inviteConnectedPlayersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
         "type": "int"
       }
     }
