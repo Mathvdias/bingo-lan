@@ -225,7 +225,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String inviteShareLinkMessage(String qrData) {
-    return 'Vieni a giocare a Bingo! Basta toccare dal telefono: $qrData';
+    return 'Vieni a giocare a Bingo! Basta toccare il link dal telefono:\n$qrData';
   }
 
   @override
@@ -293,9 +293,6 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get playerScanCameraHint =>
       'Punta la tua fotocamera sul codice QR dell\'Host';
-
-  @override
-  String get splashSubtitle => 'Il modo più divertente di giocare!';
 
   @override
   String get paywallHeroTitle => 'Passa a Premium';

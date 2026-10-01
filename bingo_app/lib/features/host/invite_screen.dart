@@ -48,8 +48,10 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
     }
   }
 
-  /// O texto compartilhado carrega o deep link `bingo://join?data=...`; o
-  /// link bruto nunca aparece na tela.
+  /// O texto compartilhado termina com o App Link
+  /// `https://bingo-policy-and-terms.vercel.app/join?data=...` em linha
+  /// própria, para os apps de mensagem o tornarem clicável; o link bruto
+  /// nunca aparece na tela.
   void _share(AppLocalizations l10n) {
     SharePlus.instance.share(
       ShareParams(text: l10n.inviteShareLinkMessage(widget.qrData)),

@@ -119,7 +119,7 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   // 4. Remote Config da receita; se anúncios ativos: ATT (iOS), consentimento
   //    UMP e AdMob. Não bloqueia o primeiro frame: o formulário de
-  //    consentimento aparece sobre a splash e o SDK inicializa quando puder.
+  //    consentimento aparece sobre o lobby e o SDK inicializa quando puder.
   await RevenueConfigService.initialize();
   if (RevenueConfigService.adsEnabled && !SubscriptionService.isPremium.value) {
     await AttService.requestIfNeeded();

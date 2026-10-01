@@ -487,7 +487,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteShareLinkMessage.
   ///
   /// In en, this message translates to:
-  /// **'Come play Bingo! Just tap from your phone: {qrData}'**
+  /// **'Come play Bingo! Just tap the link from your phone:\n{qrData}'**
   String inviteShareLinkMessage(String qrData);
 
   /// No description provided for @inviteConnectedPlayers.
@@ -597,12 +597,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Point your camera at the Host\'s QR Code'**
   String get playerScanCameraHint;
-
-  /// No description provided for @splashSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'The most fun way to play!'**
-  String get splashSubtitle;
 
   /// No description provided for @paywallHeroTitle.
   ///

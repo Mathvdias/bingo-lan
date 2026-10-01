@@ -76,7 +76,7 @@
   "inviteRoomCode": "Código de la Sala",
   "inviteTitle": "Invitar Jugadores",
   "inviteScanDesc": "¡Escanea para unirte a la sala!",
-  "inviteShareLinkMessage": "¡Ven a jugar Bingo! Solo toca desde tu celular: {qrData}",
+  "inviteShareLinkMessage": "¡Ven a jugar Bingo! Solo toca el enlace desde tu celular:\n{qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {
@@ -109,7 +109,6 @@
   "hostSetupWifiWarning": "Aviso: Todos los jugadores DEBEN estar conectados a la MISMA RED WI-FI para unirse a la sala.",
   "hostSetupWifiDesc": "Juega con personas en la misma red Wi-Fi. Ideal para fiestas y reuniones.",
   "playerScanCameraHint": "Apunta tu cámara al código QR del anfitrión",
-  "splashSubtitle": "¡La forma más divertida de jugar!",
   "paywallHeroTitle": "Hazte Premium",
   "paywallHeroSubtitle": "Fiestas más grandes, sin límites y sin interrupciones.",
   "paywallBenefitUnlimitedPlayers": "Jugadores ilimitados por sala",
