@@ -18,13 +18,15 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _goToLobby() {
     if (!mounted) return;
-    AdService.showAppOpenAd();
     context.go('/lobby');
   }
 
   @override
   void initState() {
     super.initState();
+    // Pré-carrega o App Open; o AdService exibe uma única vez quando carregar
+    // (nunca para premium nem sobre o paywall).
+    AdService.preloadAppOpenAd();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,

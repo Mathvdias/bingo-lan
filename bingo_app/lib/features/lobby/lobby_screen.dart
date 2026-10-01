@@ -1,6 +1,7 @@
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
+import 'package:bingo_app/shared/ui/widgets/banner_ad_widget.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,9 +16,6 @@ class LobbyScreen extends StatefulWidget {
 }
 
 class _LobbyScreenState extends State<LobbyScreen> {
-  bool _isPremium = false;
-  bool _checkingSubscription = true;
-
   final GlobalKey _hostKey = GlobalKey();
   final GlobalKey _joinKey = GlobalKey();
   final GlobalKey _soloKey = GlobalKey();
@@ -25,15 +23,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
   @override
   void initState() {
     super.initState();
-    _checkSubscription();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkFirstLaunch();
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Future<void> _checkFirstLaunch() async {
@@ -45,23 +37,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
 
       ShowcaseView.get().startShowCase(keys);
       await prefs.setBool('first_launch_showcase', false);
-    }
-  }
-
-  Future<void> _checkSubscription() async {
-    setState(() => _checkingSubscription = true);
-    try {
-      final hasSub = await SubscriptionService.checkSubscriptionStatus();
-      if (mounted) {
-        setState(() {
-          _isPremium = hasSub;
-          _checkingSubscription = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _checkingSubscription = false);
-      }
     }
   }
 
@@ -82,30 +57,16 @@ class _LobbyScreenState extends State<LobbyScreen> {
             icon: const Icon(Icons.help_outline),
             onPressed: () => context.push('/about'),
           ),
-          // Premium badge or upgrade button
+          // Selo premium ou botão de upgrade, lendo o cache do status.
           if (RevenueConfigService.purchasesEnabled)
-            StreamBuilder<bool>(
-              stream: SubscriptionService.premiumStatusStream,
-              initialData: _isPremium,
-              builder: (context, snapshot) {
-                final isPremium = snapshot.data ?? false;
-                if (snapshot.connectionState == ConnectionState.waiting &&
-                    !_isPremium &&
-                    _checkingSubscription) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  );
-                }
-
+            ValueListenableBuilder<bool>(
+              valueListenable: SubscriptionService.isPremium,
+              builder: (context, isPremium, _) {
                 if (isPremium) {
                   return Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Chip(
+                      key: const Key('lobby_premium_chip'),
                       label: Text(l10n.lobbyPremiumTag),
                       backgroundColor: Colors.amber,
                       labelStyle: const TextStyle(
@@ -117,7 +78,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 }
 
                 return TextButton.icon(
-                  onPressed: () => context.push('/paywall'),
+                  key: const Key('lobby_upgrade_button'),
+                  onPressed: () => context.push('/paywall?source=lobby'),
                   icon: const Icon(Icons.star, color: Colors.amber),
                   label: Text(l10n.lobbyUpgradeButton),
                   style: TextButton.styleFrom(foregroundColor: Colors.amber),
@@ -125,6 +87,11 @@ class _LobbyScreenState extends State<LobbyScreen> {
               },
             ),
         ],
+      ),
+      // Único lugar do app com banner. Ocupa zero altura quando não há anúncio.
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: Center(child: BannerAdWidget()),
       ),
       body: Stack(
         children: [

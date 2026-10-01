@@ -7,6 +7,7 @@ import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:developer';
@@ -51,8 +52,8 @@ class HostRoomScreen extends StatelessWidget {
   ) async {
     final shouldPop = await _showExitDialog(context, viewModel);
     if (shouldPop && context.mounted) {
-      final isPremium = await SubscriptionService.checkSubscriptionStatus();
-      if (RevenueConfigService.adsEnabled && !isPremium) {
+      // AdService.canShowAds já cobre ads_enabled, premium (cache) e plataforma.
+      if (AdService.canShowAds) {
         AdService.showInterstitialAd(
           onAdDismissed: () {
             if (context.mounted) {
@@ -61,11 +62,43 @@ class HostRoomScreen extends StatelessWidget {
           },
         );
       } else {
-        if (context.mounted) {
-          context.go('/lobby');
-        }
+        context.go('/lobby');
       }
     }
+  }
+
+  /// "N jogadores na sala" ou "N/M" quando há limite grátis e o host não é
+  /// premium (modelo paywall_host).
+  Widget _buildPlayerCount(BuildContext context, HostRoomViewModel viewModel) {
+    final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    return ValueListenableBuilder<bool>(
+      valueListenable: SubscriptionService.isPremium,
+      builder: (context, isPremium, _) {
+        final showCap = RevenueConfigService.hasFreePlayerCap && !isPremium;
+        final text = showCap
+            ? l10n.playersCapacity(
+                viewModel.playerCount,
+                RevenueConfigService.maxFreePlayersPathA,
+              )
+            : '${viewModel.playerCount} ${l10n.playersInRoom}';
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.people),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                text,
+                key: const Key('host_room_player_count'),
+                style: textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -74,17 +107,21 @@ class HostRoomScreen extends StatelessWidget {
 
     return ViewModelProvider<HostRoomViewModel>(
       onReady: (viewModel) {
-        if (RevenueConfigService.adsEnabled) {
+        if (AdService.canShowAds) {
           AdService.loadInterstitialAd(
-            onAdLoaded: () => log('HostRoomScreen: Interstitial ad loaded.'),
-            onAdFailedToLoad: (error) => log('HostRoomScreen: Interstitial ad failed to load: $error'),
+            onAdLoaded: () {
+              if (kDebugMode) log('HostRoomScreen: interstitial carregado.');
+            },
+            onAdFailedToLoad: (error) {
+              if (kDebugMode) log('HostRoomScreen: interstitial falhou: $error');
+            },
           );
         }
         viewModel.actionStream.listen((event) {
           if (!context.mounted) return;
           switch (event) {
-            case ShowPaywall():
-              context.push('/paywall');
+            case ShowPaywall(:final source):
+              context.push('/paywall?source=$source');
               break;
             case ShowError(:final message):
               ScaffoldMessenger.of(context).showSnackBar(
@@ -172,18 +209,8 @@ class HostRoomScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Player Count
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.people),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${viewModel.playerCount} ${AppLocalizations.of(context)!.playersInRoom}',
-                                style: textTheme.bodyLarge,
-                              ),
-                            ],
-                          ),
+                          // Player Count (com dica de capacidade N/M)
+                          _buildPlayerCount(context, viewModel),
                           const SizedBox(height: 16),
                         ],
                       ),
@@ -271,8 +298,12 @@ class HostRoomScreen extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            const Text(
-                                              'Globo Automático (Premium): ',
+                                            Flexible(
+                                              child: Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.autoGlobe,
+                                              ),
                                             ),
                                             Switch(
                                               value: viewModel.isAutoPlaying,
