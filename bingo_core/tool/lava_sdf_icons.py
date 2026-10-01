@@ -1,15 +1,17 @@
 """Ícones Lava procedurais do Bingo (ray marcher SDF de `lava_flutter/tool/lava_sdf.py`).
 
 Cada cena é um objeto 3D de verdade, então ele pode GIRAR no próprio eixo, virar uma página ou
-rolar um dado - coisa que o still + balanço de `lava_icons.py` não faz. Formas gordas e poucas
+rolar um dado - coisa que o still + balanço de `lava_icons.py` não faz. O globo do Sobre e o balão
+de ajuda já passaram por aqui e saíram: o globo voltou ao still com um balanço discreto (girar no
+canto de um título distraía) e o botão de ajuda ficou estático. Formas gordas e poucas
 (os ícones aparecem com 28 a 120 px), paleta do app.
 
     LAVA_TOOL=~/Developer/portifolio/packages/lava_flutter/tool
-    python3 tool/lava_sdf_icons.py globe --still 0.1 preview.png          # look-dev (~3 s)
-    python3 tool/lava_sdf_icons.py globe frames/globe                      # todos os quadros
-    python3 $LAVA_TOOL/openlava_encode.py assets/lava/globe --fps 24 --webp 88 frames/globe/frame_*.png
+    python3 tool/lava_sdf_icons.py open_book --still 0.1 preview.png      # look-dev (~3 s)
+    python3 tool/lava_sdf_icons.py open_book frames/open_book              # todos os quadros
+    python3 $LAVA_TOOL/openlava_encode.py assets/lava/open_book --fps 24 --webp 88 frames/open_book/frame_*.png
     python3 tool/lava_sdf_icons.py --oneshot assets/lava/dice              # manifest "loop": false
-    python3 tool/lava_sdf_icons.py --sheet frames/globe sheet.png 8        # folha de contato
+    python3 tool/lava_sdf_icons.py --sheet frames/open_book sheet.png 8    # folha de contato
     python3 tool/lava_sdf_icons.py --keys assets/lava all_keys.png         # primeiro quadro de cada bundle
 
 Loops: todo movimento é múltiplo inteiro de 2*pi*t, o último quadro emenda no primeiro. `dice` e
@@ -107,67 +109,6 @@ def lift(t):
 
 def const(colour, p):
     return np.broadcast_to(colour, p.shape).copy()
-
-
-# --------------------------------------------------------------------------------------------
-class Globe(Scene):
-    """Desk globe: blue sphere with bold green continents turning on its tilted axis, black
-    meridian arc and stand. One turn per loop."""
-
-    frames, fps = 48, 24
-    view_height, look_at, pitch = 3.15, (0.0, 1.32, 0.0), 14.0
-    bound_radius = 2.2
-    shadow_strength = 0.30
-    TILT = math.radians(23.0)
-    CENTRE = (-0.12, 1.46, 0.0)
-    ARC_R = 1.15
-    # (lat, lon, cap radius) in degrees; overlapping caps make each continent's silhouette
-    BLOBS = [(22, 0, 27), (-8, 16, 21), (38, 28, 15),
-             (-24, 118, 25), (2, 140, 17),
-             (42, -112, 23), (10, -96, 19), (-30, -82, 16),
-             (-60, 40, 13)]
-
-    def __init__(self):
-        dirs, cos_r = [], []
-        for lat, lon, r in self.BLOBS:
-            la, lo = math.radians(lat), math.radians(lon)
-            dirs.append([math.cos(la) * math.sin(lo), math.sin(la), math.cos(la) * math.cos(lo)])
-            cos_r.append(math.cos(math.radians(r)))
-        self.dirs, self.cos_r = np.array(dirs, F), np.array(cos_r, F)
-        self.materials = (
-            Material(self.surface, spec=0.45, shininess=40.0, rim=0.22),
-            Material(INK, spec=0.5, shininess=40.0, rim=0.12),
-        )
-
-    def frame(self, p):
-        return rot_z(p - np.asarray(self.CENTRE, F), -self.TILT)
-
-    def land(self, q, t):
-        """0..1 land mask from the direction of q in the turning sphere's frame."""
-        d = sdf.rot_y(q, -TAU * t)
-        d = d / np.maximum(sdf.length(d)[:, None], 1e-6)
-        dots = d @ self.dirs.T
-        k = sdf.smoothstep(self.cos_r[None] - 0.012, self.cos_r[None] + 0.012, dots)
-        return k.max(1)
-
-    def parts(self, p, t):
-        q = self.frame(p)
-        globe = sdf.sd_sphere(q, v3(0, 0, 0), 1.0) - 0.03 * self.land(q, t)
-        arc = sd_torus_z(q, v3(0, 0, 0), self.ARC_R, 0.055)
-        arc = np.maximum(arc, q[:, 0] - 0.0)
-        knobs = sd_spheres(q, np.array([[0, self.ARC_R, 0], [0, -self.ARC_R, 0]], F), np.full(2, 0.11, F))
-        foot = rot_z(np.array([[0.0, -self.ARC_R, 0.0]], F), self.TILT)[0] + np.asarray(self.CENTRE, F)
-        base_c = v3(foot[0] - 0.08, 0.0, 0.0)
-        stem = sdf.sd_capsule(p, foot, base_c + v3(0, 0.08, 0), 0.075)
-        base = sdf.sd_cylinder(p, base_c, 0.52, 0.15, rounding=0.06)
-        stand = np.minimum.reduce([arc, knobs, stem, base])
-        return [(globe, 0), (stand, 1)]
-
-    def surface(self, scene, p, n, t):
-        k = self.land(self.frame(p), t)
-        col = mix(const(BLUE, p), GREEN, k)
-        r = 2.0 * (n @ scene.eye)[:, None] * n - scene.eye
-        return col + (0.05 * sdf.smoothstep(0.35, 0.85, r[:, 1]))[:, None]
 
 
 # --------------------------------------------------------------------------------------------
@@ -457,8 +398,7 @@ class Pencil(Scene):
         return col
 
 
-SCENES = {"globe": Globe, "open_book": OpenBook, "bingo_cage": BingoCage, "players": Players, "dice": Dice,
-          "pencil": Pencil}
+SCENES = {"open_book": OpenBook, "bingo_cage": BingoCage, "players": Players, "dice": Dice, "pencil": Pencil}
 ONESHOT = {"dice", "pencil"}
 
 

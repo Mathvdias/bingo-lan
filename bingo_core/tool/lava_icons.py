@@ -8,7 +8,7 @@ openlava_encode.py) sem alterá-lo: cada ícone é uma subclasse de `Subject` re
     python3 $LAVA_TOOL/openlava_encode.py assets/lava/bingo_ball --webp 90 frames/bingo_ball/frame_*.png
     python3 tool/lava_icons.py repack assets/lava/wifi_table frames/wifi_table   # 360x324 -> 270x243, 24 q @ 15 fps
 
-Ícones que precisam girar de verdade (globo, gaiola, dado...) são cenas 3D em `lava_sdf_icons.py`.
+Ícones que precisam girar de verdade (gaiola, livro, dado...) são cenas 3D em `lava_sdf_icons.py`.
 
 Paleta do app (neo-brutalista pastel): amarelo #FFEB3B, azul #4FC3F7, verde #AED581, creme #FFFDF5,
 contorno #121212. Movimentos são funções de sin(2*pi*t) para que metade dos quadros repita a outra
@@ -222,11 +222,12 @@ class OpenBook(BingoSubject):
 
 
 class Globe(BingoSubject):
-    """Globo de mesa: balanço mais amplo, como se girasse no eixo."""
+    """Globo de mesa ao lado do título "Idioma": só um balanço discreto de 4 graus, sem subir nem
+    girar (um globo rodando no canto de um título puxava o olho; 48 quadros, --webp 88)."""
     fill = 0.76
 
     def motion(self, t):
-        return rock(t, 9.0), 0.0, 0.0, 1 + 0.02 * math.sin(2 * math.pi * t), 1.0
+        return rock(t, 4.0), 0.0, 0.0, 1.0, 1.0
 
 
 class WifiRouter(BingoSubject):

@@ -29,7 +29,7 @@ enum BingoLavaIcon {
   /// Livro aberto com uma página virando (título "Como jogar" do Sobre).
   book('open_book'),
 
-  /// Globo terrestre girando no eixo (seletor de idioma do Sobre).
+  /// Globo terrestre de mesa que balança de leve (seletor de idioma do Sobre).
   globe('globe'),
 
   /// Roteador Wi-Fi com bolas de bingo (cartão da criação de sala).
