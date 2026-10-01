@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' hide log;
 
+import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 
@@ -80,6 +81,9 @@ class PlayerScanViewModel extends BaseViewModel {
 
       // 4. Connect to the host
       await _gameConnection.joinRoom(connectionId);
+      AnalyticsService.trackJoinRoom(
+        (payload['n'] as String?) ?? (payload['h'] as String? ?? 'unknown'),
+      );
 
       // 5. Generate a random seed for the bingo card
       final cardId = Random().nextInt(999999);

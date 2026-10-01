@@ -3,6 +3,7 @@ import 'dart:developer'; // Import for log
 import 'dart:math' hide log;
 
 import 'package:intl/intl.dart';
+import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/services/caller_phrases.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
@@ -68,11 +69,11 @@ class HostRoomViewModel extends BaseViewModel {
     });
 
     _gameConnection.errorStream.listen((errorMsg) {
-       if (errorMsg == 'PAYWALL_TRIGGERED') {
-          _actionController.add(ShowPaywall());
-       } else {
-          _actionController.add(ShowError(errorMsg));
-       }
+      if (errorMsg == 'PAYWALL_TRIGGERED') {
+        _actionController.add(ShowPaywall(source: 'room_capacity'));
+      } else {
+        _actionController.add(ShowError(errorMsg));
+      }
     });
   }
 
@@ -114,16 +115,15 @@ class HostRoomViewModel extends BaseViewModel {
   }
 
   Future<void> _startAutoPlay() async {
-    // Check Premium
-    final isPremium =
-        await SubscriptionService.checkSubscriptionStatus(); // Using new method
-    if (!isPremium) {
-      _actionController.add(ShowPaywall());
+    // Gate lê o cache do status premium (atualizado pelo listener do RevenueCat).
+    if (!SubscriptionService.isPremium.value) {
+      _actionController.add(ShowPaywall(source: 'auto_globe'));
       return;
     }
 
     _isAutoPlaying = true;
     notifyListeners();
+    AnalyticsService.trackFeatureUsed('auto_globe');
 
     // Initial draw immediately? Or wait? Let's wait.
     _autoPlayTimer = Timer.periodic(const Duration(seconds: 4), (_) {
@@ -211,6 +211,7 @@ class HostRoomViewModel extends BaseViewModel {
       await _gameConnection.broadcastEvent(
         GameOverEvent(winnerName: claim.playerName),
       );
+      AnalyticsService.trackBingoWin('host_room', cardId: claim.cardId);
     } else {
       log('FALSE BINGO by ${claim.playerName}');
       await _gameConnection.broadcastEvent(
@@ -238,7 +239,11 @@ class HostRoomViewModel extends BaseViewModel {
 
 sealed class HostRoomAction {}
 
-class ShowPaywall extends HostRoomAction {}
+/// Pede para abrir o paywall. [source] alimenta o funil de analytics.
+class ShowPaywall extends HostRoomAction {
+  final String source;
+  ShowPaywall({required this.source});
+}
 
 class ShowError extends HostRoomAction {
   final String message;
