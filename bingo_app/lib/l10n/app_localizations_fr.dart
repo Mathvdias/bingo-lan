@@ -226,7 +226,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String inviteShareLinkMessage(String qrData) {
-    return 'Viens jouer au Bingo ! Appuie simplement depuis ton téléphone : $qrData';
+    return 'Viens jouer au Bingo ! Appuie simplement sur le lien depuis ton téléphone :\n$qrData';
   }
 
   @override

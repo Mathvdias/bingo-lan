@@ -76,7 +76,7 @@
   "inviteRoomCode": "Codice della Stanza",
   "inviteTitle": "Invita Giocatori",
   "inviteScanDesc": "Scansiona per unirti alla stanza!",
-  "inviteShareLinkMessage": "Vieni a giocare a Bingo! Basta toccare dal telefono: {qrData}",
+  "inviteShareLinkMessage": "Vieni a giocare a Bingo! Basta toccare il link dal telefono:\n{qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {

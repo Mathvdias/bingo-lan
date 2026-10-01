@@ -52,6 +52,54 @@ void main() {
       expect(parsed.roomName, invite.roomName);
     });
 
+    test('toWebLink e parse fecham o ciclo com o App Link https', () {
+      final link = invite.toWebLink();
+      expect(
+        link.startsWith('https://bingo-policy-and-terms.vercel.app/join?data='),
+        isTrue,
+      );
+      expect(link, '${BingoInvite.webLinkPrefix}${invite.toBase64()}');
+      final parsed = BingoInvite.parse(link);
+      expect(parsed, isNotNull);
+      expect(parsed!.ip, invite.ip);
+      expect(parsed.port, invite.port);
+      expect(parsed.token, invite.token);
+      expect(parsed.roomName, invite.roomName);
+    });
+
+    test('webLinkPrefix usa o host e o caminho do intent-filter', () {
+      expect(BingoInvite.webHost, 'bingo-policy-and-terms.vercel.app');
+      expect(BingoInvite.webPath, '/join');
+      final uri = Uri.parse(invite.toWebLink());
+      expect(uri.scheme, 'https');
+      expect(uri.host, BingoInvite.webHost);
+      expect(uri.path, BingoInvite.webPath);
+      expect(uri.queryParameters.keys, [BingoInvite.dataParam]);
+    });
+
+    test('parse aceita o App Link cujo + virou espaço', () {
+      // Base64 padrão (com +) dentro do link https, como chegaria após uma
+      // decodificação de query string que troca + por espaço. `~` alinhado
+      // no terceiro byte do trio gera o `+`.
+      const plusInvite = BingoInvite(
+        ip: '192.168.0.10',
+        port: 4242,
+        token: 'jwt~~~',
+        roomName: 'Sala teste',
+      );
+      final standard = base64Encode(
+        utf8.encode(jsonEncode(plusInvite.toJson())),
+      );
+      expect(standard.contains('+'), isTrue, reason: 'fixture precisa de +');
+      final link =
+          '${BingoInvite.webLinkPrefix}${standard.replaceAll('+', ' ')}';
+      expect(BingoInvite.parse(link)?.token, plusInvite.token);
+      // E a forma percent-encoded que Uri.queryParameters decodifica.
+      final encoded =
+          '${BingoInvite.webLinkPrefix}${standard.replaceAll('+', '%2B')}';
+      expect(BingoInvite.parse(encoded)?.token, plusInvite.token);
+    });
+
     test('parse aceita link http com o parâmetro data', () {
       final parsed = BingoInvite.parse(
         'https://example.com/join?data=${invite.toBase64()}',

@@ -76,7 +76,7 @@
   "inviteRoomCode": "ルームコード",
   "inviteTitle": "プレイヤーを招待",
   "inviteScanDesc": "スキャンしてルームに参加！",
-  "inviteShareLinkMessage": "ビンゴで遊ぼう！スマホからタップするだけ: {qrData}",
+  "inviteShareLinkMessage": "ビンゴで遊ぼう！スマホからリンクをタップするだけ:\n{qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {

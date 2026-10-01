@@ -26,12 +26,24 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Deep Link Intent Filter -->
+            <!-- Deep Link Intent Filter (esquema próprio, compatibilidade) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="bingo" android:host="join" />
+            </intent-filter>
+            <!-- App Link https do convite (BingoInvite.toWebLink). O host
+                 precisa publicar /.well-known/assetlinks.json para o
+                 autoVerify. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="bingo-policy-and-terms.vercel.app"
+                    android:pathPrefix="/join" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

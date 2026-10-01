@@ -3,10 +3,13 @@ import 'dart:convert';
 /// Convite de sala: a única fonte de verdade para o payload do QR Code.
 ///
 /// Formato (v2): JSON `{"v":2,"t":"wifi","h":ip,"p":port,"token":jwt,"n":room}`
-/// codificado em Base64 dentro do deep link `bingo://join?data=<base64>`.
+/// codificado em Base64 no parâmetro `data` de um link. O link compartilhado
+/// e o QR usam o App Link https ([toWebLink]), que apps de mensagem
+/// transformam em link clicável; o esquema `bingo://` ([toDeepLink]) segue
+/// aceito por [parse] para compatibilidade.
 ///
 /// Host, jogador e testes devem serializar e interpretar convites apenas por
-/// esta classe ([toDeepLink] / [parse]).
+/// esta classe ([toWebLink] / [toDeepLink] / [parse]).
 class BingoInvite {
   static const int currentVersion = 2;
   static const String typeWifi = 'wifi';
@@ -14,8 +17,18 @@ class BingoInvite {
   static const String host = 'join';
   static const String dataParam = 'data';
 
+  /// Domínio do App Link https (mesmo site da política de privacidade). Deve
+  /// bater com o intent-filter do Android e o `applinks:` do iOS.
+  static const String webHost = 'bingo-policy-and-terms.vercel.app';
+
+  /// Caminho do App Link https.
+  static const String webPath = '/join';
+
   /// Prefixo do deep link gerado por [toDeepLink].
   static const String deepLinkPrefix = '$scheme://$host?$dataParam=';
+
+  /// Prefixo do App Link gerado por [toWebLink].
+  static const String webLinkPrefix = 'https://$webHost$webPath?$dataParam=';
 
   final String ip;
   final int port;
@@ -69,9 +82,10 @@ class BingoInvite {
   /// URI do WebSocket do host, com o JWT na query string.
   String get webSocketUri => 'ws://$ip:$port/?token=$token';
 
-  /// Interpreta a string lida do QR Code ou do deep link.
+  /// Interpreta a string lida do QR Code ou do link recebido.
   ///
-  /// Aceita o deep link `bingo://join?data=...`, um link http(s) com o mesmo
+  /// Aceita o App Link `https://bingo-policy-and-terms.vercel.app/join?data=...`,
+  /// o deep link `bingo://join?data=...`, qualquer link http(s) com o mesmo
   /// parâmetro `data`, ou o Base64 puro. Retorna `null` quando inválido.
   static BingoInvite? parse(String data) {
     try {
@@ -108,6 +122,15 @@ class BingoInvite {
     return base64Url.encode(utf8.encode(jsonPayload));
   }
 
-  /// Deep link completo: `bingo://join?data=<base64>`.
+  /// Deep link com esquema próprio: `bingo://join?data=<base64>`.
+  ///
+  /// Apps de mensagem não tornam esquemas próprios clicáveis; para
+  /// compartilhar e para o QR use [toWebLink].
   String toDeepLink() => '$deepLinkPrefix${toBase64()}';
+
+  /// App Link https: `https://bingo-policy-and-terms.vercel.app/join?data=<base64>`.
+  ///
+  /// Clicável em qualquer app de mensagem; o sistema abre o Bingo quando
+  /// instalado (intent-filter autoVerify / associated domain).
+  String toWebLink() => '$webLinkPrefix${toBase64()}';
 }

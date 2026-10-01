@@ -213,7 +213,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String inviteShareLinkMessage(String qrData) {
-    return 'ビンゴで遊ぼう！スマホからタップするだけ: $qrData';
+    return 'ビンゴで遊ぼう！スマホからリンクをタップするだけ:\n$qrData';
   }
 
   @override

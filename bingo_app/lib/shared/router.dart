@@ -18,13 +18,18 @@ import '../../features/player/game_screen.dart';
 import '../../features/player/scan_screen.dart';
 import '../../features/solo/solo_game_screen.dart';
 
-/// Deep link `bingo://join?data=<base64>`.
+/// Caminho do App Link https (`https://<BingoInvite.webHost>/join?data=`) e
+/// do deep link `bingo://join?data=`, como o go_router o recebe.
+const String joinPath = '/join';
+
+/// Convite recebido por link: `bingo://join?data=<base64>` ou
+/// `https://bingo-policy-and-terms.vercel.app/join?data=<base64>`.
 ///
-/// O sistema entrega o link como rota inicial (`?data=` ou `/join?data=`) ou
-/// via `pushRouteInformation` quando o app já está aberto. Em qualquer forma,
-/// se há `data` fora da tela de scan, redireciona para `/player/scan?data=`
-/// e a tela entra na sala automaticamente.
-String? _deepLinkRedirect(BuildContext context, GoRouterState state) {
+/// O sistema entrega o link como rota inicial (`?data=`, `/join?data=`) ou
+/// via `pushRouteInformation` quando o app já está aberto. Independente do
+/// caminho, se há `data` fora da tela de scan, redireciona para
+/// `/player/scan?data=` e a tela entra na sala automaticamente.
+String? deepLinkRedirect(BuildContext context, GoRouterState state) {
   final uri = state.uri;
   final data = uri.queryParameters[BingoInvite.dataParam];
   if (data == null || data.isEmpty) return null;
@@ -40,7 +45,7 @@ final GoRouter router = GoRouter(
   initialLocation: '/lobby',
   debugLogDiagnostics: kDebugMode,
   observers: [AnalyticsService.observer],
-  redirect: _deepLinkRedirect,
+  redirect: deepLinkRedirect,
   errorBuilder: (context, state) {
     if (kDebugMode) log('Route error: ${state.error}');
     return Scaffold(
@@ -57,57 +62,68 @@ final GoRouter router = GoRouter(
       ),
     );
   },
-  routes: <RouteBase>[
-    // A splash nativa (flutter_native_splash) é a única splash: o app abre
-    // direto no lobby. `/splash` segue válido só como redirecionamento.
-    GoRoute(path: '/', redirect: (context, state) => '/lobby'),
-    GoRoute(path: '/splash', redirect: (context, state) => '/lobby'),
-    GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
-    GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
-
-    // Aceita `?source=` para o funil de analytics (ex.: /paywall?source=lobby).
-    GoRoute(
-      path: '/paywall',
-      builder: (context, state) => PaywallScreen(
-        source: state.uri.queryParameters['source'] ?? 'unknown',
-      ),
-    ),
-    // Host Routes
-    GoRoute(
-      path: '/host/setup',
-      builder: (context, state) => const HostSetupScreen(),
-    ),
-    GoRoute(
-      path: '/host/room',
-      builder: (context, state) => const HostRoomScreen(),
-    ),
-    GoRoute(
-      path: '/host/invite',
-      builder: (context, state) {
-        final qrData = state.extra as String?;
-        if (qrData == null) {
-          return const HostSetupScreen();
-        }
-        return HostInviteScreen(qrData: qrData);
-      },
-    ),
-    // Player Routes
-    GoRoute(
-      path: '/player/scan',
-      builder: (context, state) => PlayerScanScreen(
-        initialData: state.uri.queryParameters[BingoInvite.dataParam],
-      ),
-    ),
-    GoRoute(
-      path: '/player/game',
-      builder: (context, state) {
-        final args = state.extra as PlayerGameArgs?;
-        if (args == null) {
-          return const PlayerScanScreen();
-        }
-        return PlayerGameScreen(args: args);
-      },
-    ),
-    GoRoute(path: '/solo', builder: (context, state) => const SoloGameScreen()),
-  ],
+  routes: appRoutes,
 );
+
+/// Tabela de rotas do app (separada do [router] para ser testável sem os
+/// singletons do Firebase que o observer de analytics exige).
+final List<RouteBase> appRoutes = <RouteBase>[
+  // A splash nativa (flutter_native_splash) é a única splash: o app abre
+  // direto no lobby. `/splash` segue válido só como redirecionamento.
+  GoRoute(path: '/', redirect: (context, state) => '/lobby'),
+  GoRoute(path: '/splash', redirect: (context, state) => '/lobby'),
+  GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
+  GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
+
+  // Aceita `?source=` para o funil de analytics (ex.: /paywall?source=lobby).
+  GoRoute(
+    path: '/paywall',
+    builder: (context, state) =>
+        PaywallScreen(source: state.uri.queryParameters['source'] ?? 'unknown'),
+  ),
+  // Host Routes
+  GoRoute(
+    path: '/host/setup',
+    builder: (context, state) => const HostSetupScreen(),
+  ),
+  GoRoute(
+    path: '/host/room',
+    builder: (context, state) => const HostRoomScreen(),
+  ),
+  GoRoute(
+    path: '/host/invite',
+    builder: (context, state) {
+      final qrData = state.extra as String?;
+      if (qrData == null) {
+        return const HostSetupScreen();
+      }
+      return HostInviteScreen(qrData: qrData);
+    },
+  ),
+  // Player Routes
+  GoRoute(
+    path: '/player/scan',
+    builder: (context, state) => PlayerScanScreen(
+      initialData: state.uri.queryParameters[BingoInvite.dataParam],
+    ),
+  ),
+  GoRoute(
+    path: '/player/game',
+    builder: (context, state) {
+      final args = state.extra as PlayerGameArgs?;
+      if (args == null) {
+        return const PlayerScanScreen();
+      }
+      return PlayerGameScreen(args: args);
+    },
+  ),
+  GoRoute(path: '/solo', builder: (context, state) => const SoloGameScreen()),
+  // App Link `/join?data=`: com `data` o redirect acima leva ao scan; sem
+  // `data` abre o leitor em vez da tela de erro.
+  GoRoute(
+    path: joinPath,
+    builder: (context, state) => PlayerScanScreen(
+      initialData: state.uri.queryParameters[BingoInvite.dataParam],
+    ),
+  ),
+];

@@ -226,7 +226,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String inviteShareLinkMessage(String qrData) {
-    return 'Vem pro Bingo! Só tocar pelo celular: $qrData';
+    return 'Vem pro Bingo! Só tocar no link pelo celular:\n$qrData';
   }
 
   @override

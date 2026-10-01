@@ -76,7 +76,7 @@
   "inviteRoomCode": "Room Code",
   "inviteTitle": "Invite Players",
   "inviteScanDesc": "Scan to join the room!",
-  "inviteShareLinkMessage": "Come play Bingo! Just tap from your phone: {qrData}",
+  "inviteShareLinkMessage": "Come play Bingo! Just tap the link from your phone:\n{qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {

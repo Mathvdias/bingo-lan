@@ -65,7 +65,9 @@ class HostSetupViewModel extends BaseViewModel {
 
       _invite = BingoInvite(ip: ip, port: port, token: token, roomName: name);
       unawaited(AnalyticsService.trackCreateRoom(name));
-      return _invite!.toDeepLink();
+      // App Link https: o mesmo texto vai para o QR, "Compartilhar" e
+      // "Copiar link", e fica clicável nos apps de mensagem.
+      return _invite!.toWebLink();
     } on HostStartException catch (e) {
       log('Could not start the room server: $e');
       return _fail(HostSetupError.portUnavailable);
