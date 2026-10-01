@@ -45,6 +45,12 @@ Future<void> mainCommon(AppConfig appConfig) async {
   // Ensure Flutter bindings are initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Retrato, como no Info.plist do iPhone: a grade da cartela e o número
+  // gigante do host estouram em paisagem.
+  await SystemChrome.setPreferredOrientations(const [
+    DeviceOrientation.portraitUp,
+  ]);
+
   await preloadBingoFonts();
 
   // Firebase: app Android separado por flavor; iOS dev reutiliza o app de prod

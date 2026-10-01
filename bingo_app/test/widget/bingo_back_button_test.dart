@@ -2,6 +2,8 @@ import 'package:bingo_app/shared/ui/widgets/back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../helpers/pump_app.dart';
+
 void main() {
   testWidgets('BingoBackButton chama onPressed', (tester) async {
     var back = false;
@@ -48,5 +50,20 @@ void main() {
     await tester.tap(find.byType(BingoBackButton));
     await tester.pumpAndSettle();
     expect(find.text('open'), findsOneWidget);
+  });
+
+  testWidgets('BingoBackButton: alvo de 48 px, semântica de botão e tooltip', (
+    tester,
+  ) async {
+    await pumpApp(tester, const Align(child: BingoBackButton()));
+
+    final size = tester.getSize(find.byType(BingoBackButton));
+    expect(size.width, greaterThanOrEqualTo(48));
+    expect(size.height, greaterThanOrEqualTo(48));
+
+    // "Voltar" vem do MaterialLocalizations em pt.
+    final semantics = tester.getSemantics(find.bySemanticsLabel('Voltar'));
+    expect(semantics.flagsCollection.isButton, isTrue);
+    expect(find.byTooltip('Voltar'), findsOneWidget);
   });
 }

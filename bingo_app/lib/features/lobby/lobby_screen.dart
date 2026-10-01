@@ -41,11 +41,47 @@ class _LobbyScreenState extends State<LobbyScreen> {
     }
   }
 
+  /// Ações do tour: "Pular" encerra tudo, "Próximo" avança. Sem isso o tour
+  /// só saía tocando passo a passo.
+  List<TooltipActionButton> _tourActions(AppLocalizations l10n) {
+    const labelStyle = TextStyle(
+      color: AppColors.text,
+      fontWeight: FontWeight.w700,
+      fontSize: 13,
+    );
+    return [
+      TooltipActionButton(
+        type: TooltipDefaultActionType.skip,
+        name: l10n.tourSkip,
+        backgroundColor: AppColors.card,
+        border: const Border.fromBorderSide(
+          BorderSide(color: AppColors.outline, width: 2),
+        ),
+        textStyle: labelStyle,
+      ),
+      TooltipActionButton(
+        type: TooltipDefaultActionType.next,
+        name: l10n.tourNext,
+        backgroundColor: AppColors.primary,
+        border: const Border.fromBorderSide(
+          BorderSide(color: AppColors.outline, width: 2),
+        ),
+        textStyle: labelStyle,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
+    final tourActions = _tourActions(l10n);
+    const tourActionConfig = TooltipActionConfig(
+      alignment: MainAxisAlignment.end,
+      actionGap: 8,
+      gapBetweenContentAndAction: 12,
+    );
 
     return Scaffold(
       key: const ValueKey<String>('lobby_screen'),
@@ -128,6 +164,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                     Showcase(
                       key: _hostKey,
                       description: l10n.lobbyHostShowcase,
+                      tooltipActions: tourActions,
+                      tooltipActionConfig: tourActionConfig,
                       child: Semantics(
                         label: l10n.startBingo,
                         button: true,
@@ -144,6 +182,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                     Showcase(
                       key: _joinKey,
                       description: l10n.lobbyJoinShowcase,
+                      tooltipActions: tourActions,
+                      tooltipActionConfig: tourActionConfig,
                       child: Semantics(
                         label: l10n.joinBingo,
                         button: true,
@@ -162,6 +202,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       Showcase(
                         key: _soloKey,
                         description: l10n.lobbySoloShowcase,
+                        tooltipActions: tourActions,
+                        tooltipActionConfig: tourActionConfig,
                         child: Semantics(
                           label: l10n.soloButton,
                           button: true,
