@@ -237,7 +237,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get lobbyPremiumTag => 'プレミアム';
 
   @override
-  String get lobbyUpgradeButton => 'アップグレード';
+  String get lobbyUpgradeButton => 'プレミアム';
 
   @override
   String get playerGameTitle => 'あなたのカード';

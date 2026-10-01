@@ -250,7 +250,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get lobbyPremiumTag => 'PREMIUM';
 
   @override
-  String get lobbyUpgradeButton => 'Potenzia';
+  String get lobbyUpgradeButton => 'Premium';
 
   @override
   String get playerGameTitle => 'La Tua Cartella';
