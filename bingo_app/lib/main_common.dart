@@ -27,7 +27,8 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-import 'firebase_options.dart';
+import 'firebase_options.dart' as prod;
+import 'firebase_options_dev.dart' as dev;
 import 'flavors/app_config.dart';
 
 Future<void> mainCommon(AppConfig appConfig) async {
@@ -47,10 +48,15 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   await preloadBingoFonts();
 
-  // Initialize Firebase
-  // Note: If you have different firebase_options for Dev/Prod, handle switching here
-  // using appConfig.flavor.
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Firebase: app Android separado por flavor; iOS dev reutiliza o app de prod
+  // enquanto não houver scheme dev no Xcode.
+  final useDevFirebase =
+      appConfig.isDev && defaultTargetPlatform == TargetPlatform.android;
+  await Firebase.initializeApp(
+    options: useDevFirebase
+        ? dev.DefaultFirebaseOptions.currentPlatform
+        : prod.DefaultFirebaseOptions.currentPlatform,
+  );
 
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
     kReleaseMode,

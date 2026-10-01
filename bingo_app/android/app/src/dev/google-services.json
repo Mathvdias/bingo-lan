@@ -28,7 +28,7 @@
       ],
       "api_key": [
         {
-          "current_key": "REDACTED_GOOGLE_KEY"
+          "current_key": "AIzaSyB_wCspXDauKAlkZihpzsBg6yuxSacBBgo"
         }
       ],
       "services": {
@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
+              "client_id": "46563147810-2io5rcp176895oblokp04c5ihpstch3m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.matheus.bingo"
+                "bundle_id": "com.nightstudios.bingo"
               }
             }
           ]
@@ -72,7 +72,7 @@
       ],
       "api_key": [
         {
-          "current_key": "REDACTED_GOOGLE_KEY"
+          "current_key": "AIzaSyB_wCspXDauKAlkZihpzsBg6yuxSacBBgo"
         }
       ],
       "services": {
@@ -83,10 +83,10 @@
               "client_type": 3
             },
             {
-              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
+              "client_id": "46563147810-2io5rcp176895oblokp04c5ihpstch3m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.matheus.bingo"
+                "bundle_id": "com.nightstudios.bingo"
               }
             }
           ]
@@ -102,13 +102,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "46563147810-a9k3l6dsdd8bols5d38p40ksknq77u75.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.matheus.bingo",
+            "certificate_hash": "cd1badbb8e0b71859f0453e9d5c5f0058d4f307d"
+          }
+        },
+        {
           "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "REDACTED_GOOGLE_KEY"
+          "current_key": "AIzaSyB_wCspXDauKAlkZihpzsBg6yuxSacBBgo"
         }
       ],
       "services": {
@@ -119,10 +127,10 @@
               "client_type": 3
             },
             {
-              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
+              "client_id": "46563147810-2io5rcp176895oblokp04c5ihpstch3m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.matheus.bingo"
+                "bundle_id": "com.nightstudios.bingo"
               }
             }
           ]
@@ -138,13 +146,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "46563147810-dehmrq3v83ee5g2tt3r0g8kjrub06ghl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.matheus.bingo.dev",
+            "certificate_hash": "cd1badbb8e0b71859f0453e9d5c5f0058d4f307d"
+          }
+        },
+        {
           "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "REDACTED_GOOGLE_KEY"
+          "current_key": "AIzaSyB_wCspXDauKAlkZihpzsBg6yuxSacBBgo"
         }
       ],
       "services": {
@@ -155,10 +171,82 @@
               "client_type": 3
             },
             {
-              "client_id": "46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com",
+              "client_id": "46563147810-2io5rcp176895oblokp04c5ihpstch3m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.matheus.bingo"
+                "bundle_id": "com.nightstudios.bingo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46563147810:android:1ea7278d7fb546cff34a7b",
+        "android_client_info": {
+          "package_name": "com.nightstudios.bingo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_wCspXDauKAlkZihpzsBg6yuxSacBBgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "46563147810-2io5rcp176895oblokp04c5ihpstch3m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nightstudios.bingo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46563147810:android:e959d3eb7c082fd6f34a7b",
+        "android_client_info": {
+          "package_name": "com.nightstudios.bingo.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_wCspXDauKAlkZihpzsBg6yuxSacBBgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46563147810-691otkpfrfu1uj2m760g6vadmho2fj53.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "46563147810-2io5rcp176895oblokp04c5ihpstch3m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nightstudios.bingo"
               }
             }
           ]

@@ -49,7 +49,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.matheus.bingo</string>
+			<string>com.nightstudios.bingo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>bingo</string>

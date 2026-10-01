@@ -1,4 +1,4 @@
-package com.matheus.bingo;
+package com.nightstudios.bingo;
 
 import androidx.test.rule.ActivityTestRule;
 import dev.flutter.plugins.integration_test.FlutterTestRunner;

@@ -2,24 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.46563147810-5dno8ifig2jnvad6aouuk56qo1n18boq</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>46563147810-mncbcv1qv24qgeb9ennoj4d8m18n3rb6.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>REDACTED_GOOGLE_KEY</string>
+	<string>AIzaSyCCIEu-JvA0RMl-13QqLSgKI-pvNCNpLqY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>46563147810</string>
+	<string>726195608166</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.matheus.bingo</string>
+	<string>com.nightstudios.bingo</string>
 	<key>PROJECT_ID</key>
-	<string>bingo-lucca-app</string>
+	<string>nightstudios-bingo</string>
 	<key>STORAGE_BUCKET</key>
-	<string>bingo-lucca-app.firebasestorage.app</string>
+	<string>nightstudios-bingo.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:46563147810:ios:21fdcca260b3eaebf34a7b</string>
+	<string>1:726195608166:ios:a3a1207aa579d5c28f2ba7</string>
 </dict>
 </plist>

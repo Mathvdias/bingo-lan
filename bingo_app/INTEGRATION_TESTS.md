@@ -16,7 +16,7 @@ bingo_app/
 ├── test_driver/              # Driver scripts
 │   └── integration_test.dart
 ├── android/app/src/androidTest/  # Configuração Android
-│   └── java/com/matheus/bingo/
+│   └── java/com/nightstudios/bingo/
 │       └── MainActivityTest.java
 └── scripts/
     ├── run_local_tests.sh    # Testes locais

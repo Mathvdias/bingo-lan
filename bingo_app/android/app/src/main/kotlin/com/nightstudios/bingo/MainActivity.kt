@@ -1,4 +1,4 @@
-package com.matheus.bingo
+package com.nightstudios.bingo
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
