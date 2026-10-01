@@ -49,7 +49,7 @@
       }
     }
   },
-  "scanManualButton": "Inserisci Codice Manualmente",
+  "scanManualButton": "Inserisci codice",
   "revealNetwork": "Rivela Rete",
   "privacyPolicy": "Informativa sulla privacy",
   "termsOfUse": "Termini di utilizzo",
@@ -95,7 +95,7 @@
   "inviteWaitingPlayers": "In attesa di giocatori...",
   "inviteStartBingo": "Inizia Bingo!",
   "lobbyPremiumTag": "PREMIUM",
-  "lobbyUpgradeButton": "Potenzia",
+  "lobbyUpgradeButton": "Premium",
   "playerGameTitle": "La Tua Cartella",
   "playerGameShout": "Urla BINGO!",
   "playerScanNameHint": "Es: Matteo",

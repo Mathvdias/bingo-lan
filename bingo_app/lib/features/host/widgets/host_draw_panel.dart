@@ -22,6 +22,9 @@ class HostDrawPanel extends StatelessWidget {
   /// Limite do plano grátis; `null` quando não há limite a mostrar.
   final int? maxPlayers;
 
+  /// Altura da faixa do histórico, reservada mesmo sem bolas.
+  static const double _historyHeight = 52;
+
   const HostDrawPanel({
     super.key,
     required this.lastNumber,
@@ -51,74 +54,90 @@ class HostDrawPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.outline, width: 2),
             ),
-            child: last == null
-                ? _EmptyState(l10n: l10n, textTheme: textTheme)
-                : Column(
-                    children: [
-                      // FittedBox: "G-75" a 120 px cabe em qualquer largura e
-                      // em qualquer escala de texto sem estourar.
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: StrokedText(
-                          key: const Key('host_last_number'),
-                          text: BingoCard.label(last),
-                          style: textTheme.headlineLarge,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        l10n.drawnCount(history.length),
-                        key: const Key('host_drawn_count'),
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
+            // Os dois estados são sempre medidos (o inativo fica invisível):
+            // a altura do cartão não muda quando a primeira bola sai e o
+            // botão SORTEAR fica onde estava, em qualquer escala de texto.
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Visibility(
+                  visible: last == null,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: _EmptyState(
+                    key: last == null ? const Key('host_empty_state') : null,
+                    l10n: l10n,
+                    textTheme: textTheme,
                   ),
+                ),
+                Visibility(
+                  visible: last != null,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: _DrawnState(
+                    // Sem bola ainda: mede com um rótulo qualquer.
+                    label: BingoCard.label(last ?? 75),
+                    count: l10n.drawnCount(history.length),
+                    numberKey: last == null
+                        ? null
+                        : const Key('host_last_number'),
+                    countKey: last == null
+                        ? null
+                        : const Key('host_drawn_count'),
+                    textTheme: textTheme,
+                  ),
+                ),
+              ],
+            ),
           ),
-          if (history.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            // Histórico: mais recente primeiro
-            SizedBox(
-              height: 52,
-              child: ListView.builder(
-                key: const Key('host_history'),
-                scrollDirection: Axis.horizontal,
-                itemCount: history.length,
-                itemBuilder: (context, index) {
-                  final number = history[index];
-                  final isLatest = index == 0;
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isLatest ? AppColors.primary : AppColors.success,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.outline,
-                        width: isLatest ? 2 : 1,
-                      ),
-                    ),
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          BingoCard.label(number),
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: AppColors.text,
-                            fontWeight: FontWeight.bold,
+          const SizedBox(height: 16),
+          // Histórico (mais recente primeiro). A faixa reserva a altura mesmo
+          // vazia para nada abaixo se mover na primeira bola.
+          SizedBox(
+            height: _historyHeight,
+            child: history.isEmpty
+                ? const SizedBox.shrink(key: Key('host_history_placeholder'))
+                : ListView.builder(
+                    key: const Key('host_history'),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: history.length,
+                    itemBuilder: (context, index) {
+                      final number = history[index];
+                      final isLatest = index == 0;
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isLatest
+                              ? AppColors.primary
+                              : AppColors.success,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.outline,
+                            width: isLatest ? 2 : 1,
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              BingoCard.label(number),
+                              style: textTheme.bodyLarge?.copyWith(
+                                color: AppColors.text,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
           const SizedBox(height: 12),
           // Desfazer fica sempre no mesmo lugar; desabilitado quando não há
           // bola para tirar ou o globo automático está rodando.
@@ -146,18 +165,60 @@ class HostDrawPanel extends StatelessWidget {
   }
 }
 
+/// Última bola sorteada em destaque + "N/75 sorteados".
+class _DrawnState extends StatelessWidget {
+  final String label;
+  final String count;
+  final Key? numberKey;
+  final Key? countKey;
+  final TextTheme textTheme;
+
+  const _DrawnState({
+    required this.label,
+    required this.count,
+    required this.numberKey,
+    required this.countKey,
+    required this.textTheme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // FittedBox: "G-75" a 120 px cabe em qualquer largura e em qualquer
+        // escala de texto sem estourar.
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: StrokedText(
+            key: numberKey,
+            text: label,
+            style: textTheme.headlineLarge,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          count,
+          key: countKey,
+          style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
+    );
+  }
+}
+
 /// Estado vazio: bola em contorno com "—", título e instrução. Substitui o
 /// "--" gigante amarelo que parecia duas pílulas.
 class _EmptyState extends StatelessWidget {
   final AppLocalizations l10n;
   final TextTheme textTheme;
 
-  const _EmptyState({required this.l10n, required this.textTheme});
+  const _EmptyState({super.key, required this.l10n, required this.textTheme});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      key: const Key('host_empty_state'),
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 88,

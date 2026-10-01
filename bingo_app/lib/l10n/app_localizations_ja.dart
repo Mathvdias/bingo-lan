@@ -130,7 +130,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get scanManualButton => '手動でコードを入力';
+  String get scanManualButton => 'コードを入力';
 
   @override
   String get revealNetwork => 'ネットワークを表示';
@@ -237,7 +237,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get lobbyPremiumTag => 'プレミアム';
 
   @override
-  String get lobbyUpgradeButton => 'アップグレード';
+  String get lobbyUpgradeButton => 'プレミアム';
 
   @override
   String get playerGameTitle => 'あなたのカード';

@@ -9,12 +9,17 @@ class BingoScaffold extends StatelessWidget {
   final List<Widget>? actions;
   final VoidCallback? onBack;
 
+  /// Barra fixa no rodapé (ex.: botão principal sempre visível). O corpo
+  /// encolhe para abrir espaço; respeite a área segura dentro dela.
+  final Widget? bottomNavigationBar;
+
   const BingoScaffold({
     super.key,
     required this.title,
     required this.body,
     this.actions,
     this.onBack,
+    this.bottomNavigationBar,
   });
 
   @override
@@ -28,14 +33,12 @@ class BingoScaffold extends StatelessWidget {
           backgroundColor: AppColors.card,
           onPressed: onBack,
         ),
-        title: StrokedText(
-          text: title,
-          style: textTheme.displaySmall,
-        ),
+        title: StrokedText(text: title, style: textTheme.displaySmall),
         centerTitle: true,
         actions: actions,
       ),
       body: body,
+      bottomNavigationBar: bottomNavigationBar,
     );
   }
 }

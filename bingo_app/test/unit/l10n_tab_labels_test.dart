@@ -18,4 +18,20 @@ void main() {
       }
     },
   );
+
+  test(
+    'rótulo "digitar código" cabe em uma linha (<= 20 caracteres)',
+    () async {
+      for (final locale in AppLocalizations.supportedLocales) {
+        final l10n = await AppLocalizations.delegate.load(locale);
+        expect(
+          l10n.scanManualButton.characters.length,
+          lessThanOrEqualTo(20),
+          reason:
+              '"${l10n.scanManualButton}" (${locale.languageCode}) quebraria '
+              'em duas linhas no botão',
+        );
+      }
+    },
+  );
 }

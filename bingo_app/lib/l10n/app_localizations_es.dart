@@ -136,7 +136,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get scanManualButton => 'Ingresar Código Manualmente';
+  String get scanManualButton => 'Ingresar código';
 
   @override
   String get revealNetwork => 'Revelar Red';
@@ -249,7 +249,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lobbyPremiumTag => 'PREMIUM';
 
   @override
-  String get lobbyUpgradeButton => 'Mejorar';
+  String get lobbyUpgradeButton => 'Premium';
 
   @override
   String get playerGameTitle => 'Tu Cartón';

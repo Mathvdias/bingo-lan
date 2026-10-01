@@ -49,7 +49,7 @@
       }
     }
   },
-  "scanManualButton": "手動でコードを入力",
+  "scanManualButton": "コードを入力",
   "revealNetwork": "ネットワークを表示",
   "privacyPolicy": "プライバシーポリシー",
   "termsOfUse": "利用規約",
@@ -95,7 +95,7 @@
   "inviteWaitingPlayers": "プレイヤーを待っています...",
   "inviteStartBingo": "ビンゴを開始！",
   "lobbyPremiumTag": "プレミアム",
-  "lobbyUpgradeButton": "アップグレード",
+  "lobbyUpgradeButton": "プレミアム",
   "playerGameTitle": "あなたのカード",
   "playerGameShout": "ビンゴと叫ぶ！",
   "playerScanNameHint": "例：マテウス",

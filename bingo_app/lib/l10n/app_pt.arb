@@ -49,7 +49,7 @@
       }
     }
   },
-  "scanManualButton": "Digitar Código Manualmente",
+  "scanManualButton": "Digitar código",
   "revealNetwork": "Revelar Rede",
   "privacyPolicy": "Política de Privacidade",
   "termsOfUse": "Termos de Uso",
@@ -95,7 +95,7 @@
   "inviteWaitingPlayers": "Aguardando jogadores...",
   "inviteStartBingo": "Iniciar Bingo!",
   "lobbyPremiumTag": "PREMIUM",
-  "lobbyUpgradeButton": "Upgrade",
+  "lobbyUpgradeButton": "Premium",
   "playerGameTitle": "Sua Cartela",
   "playerGameShout": "Gritar BINGO!",
   "playerScanNameHint": "Ex: Matheus",

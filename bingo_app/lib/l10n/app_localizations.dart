@@ -325,7 +325,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanManualButton.
   ///
   /// In en, this message translates to:
-  /// **'Enter Code Manually'**
+  /// **'Enter code'**
   String get scanManualButton;
 
   /// No description provided for @revealNetwork.
