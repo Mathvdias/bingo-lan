@@ -87,8 +87,11 @@ class BingoInvite {
         payloadToDecode = param;
       }
 
+      // `+` vira espaço quando o link passa por decodificação de URL; base64
+      // nunca contém espaços, então a troca é segura. normalize() aceita os
+      // alfabetos padrão e URL-safe e completa o padding.
       final String decodedJson = utf8.decode(
-        base64Decode(base64.normalize(payloadToDecode)),
+        base64Decode(base64.normalize(payloadToDecode.replaceAll(' ', '+'))),
       );
       final decoded = jsonDecode(decodedJson);
       if (decoded is! Map<String, dynamic>) return null;
@@ -98,10 +101,11 @@ class BingoInvite {
     }
   }
 
-  /// Payload Base64 (sem o prefixo do deep link).
+  /// Payload Base64 URL-safe (sem o prefixo do deep link), para sobreviver a
+  /// apps de mensagem e à decodificação de query string.
   String toBase64() {
     final String jsonPayload = jsonEncode(toJson());
-    return base64Encode(utf8.encode(jsonPayload));
+    return base64Url.encode(utf8.encode(jsonPayload));
   }
 
   /// Deep link completo: `bingo://join?data=<base64>`.

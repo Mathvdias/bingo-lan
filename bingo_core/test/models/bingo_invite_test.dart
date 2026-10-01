@@ -63,6 +63,21 @@ void main() {
       expect(BingoInvite.parse('  ${invite.toDeepLink()}\n'), isNotNull);
     });
 
+    test('parse tolera + decodificado como espaço e base64 padrão', () {
+      final standard = base64Encode(utf8.encode(jsonEncode(invite.toJson())));
+      expect(BingoInvite.parse(standard)?.token, invite.token);
+      expect(
+        BingoInvite.parse(standard.replaceAll('+', ' '))?.token,
+        invite.token,
+      );
+    });
+
+    test('toBase64 é URL-safe', () {
+      final b64 = invite.toBase64();
+      expect(b64.contains('+'), isFalse);
+      expect(b64.contains('/'), isFalse);
+    });
+
     test('webSocketUri inclui host, porta e token', () {
       expect(invite.webSocketUri, 'ws://192.168.0.10:4242/?token=jwt-token');
     });
