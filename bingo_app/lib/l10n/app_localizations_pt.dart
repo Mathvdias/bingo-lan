@@ -54,10 +54,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get paywallTitle => 'Recurso Pago';
 
   @override
-  String get paywallMessage =>
-      'O Globo Automático é um recurso pago. Faça upgrade!';
-
-  @override
   String get stopRoomTitle => 'Encerrar Sala';
 
   @override
@@ -295,4 +291,125 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get splashSubtitle => 'O jeito mais divertido de jogar!';
+
+  @override
+  String get paywallHeroTitle => 'Seja Premium';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Festas maiores, sem limites e sem interrupções.';
+
+  @override
+  String get paywallBenefitUnlimitedPlayers => 'Jogadores ilimitados por sala';
+
+  @override
+  String get paywallBenefitAutoGlobe =>
+      'Globo automático: o app sorteia as bolas por você';
+
+  @override
+  String get paywallBenefitNoAds => 'Sem anúncios';
+
+  @override
+  String get paywallPeriodWeekly => 'Semanal';
+
+  @override
+  String get paywallPeriodMonthly => 'Mensal';
+
+  @override
+  String get paywallPeriodTwoMonth => 'Bimestral';
+
+  @override
+  String get paywallPeriodThreeMonth => 'Trimestral';
+
+  @override
+  String get paywallPeriodSixMonth => 'Semestral';
+
+  @override
+  String get paywallPeriodAnnual => 'Anual';
+
+  @override
+  String get paywallPeriodLifetime => 'Vitalício';
+
+  @override
+  String get paywallPeriodCustom => 'Plano';
+
+  @override
+  String get paywallBilledWeekly => 'Cobrado toda semana';
+
+  @override
+  String get paywallBilledMonthly => 'Cobrado todo mês';
+
+  @override
+  String get paywallBilledTwoMonth => 'Cobrado a cada 2 meses';
+
+  @override
+  String get paywallBilledThreeMonth => 'Cobrado a cada 3 meses';
+
+  @override
+  String get paywallBilledSixMonth => 'Cobrado a cada 6 meses';
+
+  @override
+  String get paywallBilledAnnual => 'Cobrado uma vez por ano';
+
+  @override
+  String get paywallBilledCustom => 'Assinatura';
+
+  @override
+  String get paywallOneTimePayment => 'Pagamento único';
+
+  @override
+  String paywallSavings(int percent) {
+    return 'Economize $percent%';
+  }
+
+  @override
+  String paywallCta(String price) {
+    return 'Continuar por $price';
+  }
+
+  @override
+  String get paywallRestore => 'Restaurar compras';
+
+  @override
+  String get paywallLegal =>
+      'As assinaturas renovam automaticamente, salvo cancelamento com pelo menos 24 horas de antecedência do fim do período atual. Cancele quando quiser nas configurações da sua conta na loja.';
+
+  @override
+  String get paywallEmpty => 'Nenhum plano disponível no momento.';
+
+  @override
+  String get paywallRetry => 'Tentar de novo';
+
+  @override
+  String get paywallErrorLoad =>
+      'Não foi possível carregar os planos. Verifique sua conexão e tente de novo.';
+
+  @override
+  String get paywallErrorPurchase =>
+      'Não foi possível concluir a compra. Tente de novo.';
+
+  @override
+  String get paywallErrorRestore =>
+      'Não foi possível restaurar suas compras. Tente de novo.';
+
+  @override
+  String get paywallRestoreNothing =>
+      'Nenhuma compra anterior encontrada para esta conta.';
+
+  @override
+  String get paywallRestoreSuccess =>
+      'Compras restauradas. Bem-vindo ao Premium!';
+
+  @override
+  String get paywallClose => 'Fechar';
+
+  @override
+  String playersCapacity(int count, int max) {
+    return '$count/$max jogadores (plano grátis)';
+  }
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return 'Jogadores Conectados: $count/$max grátis';
+  }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 
@@ -33,7 +34,11 @@ class HostSetupViewModel extends BaseViewModel {
     setLoading(true);
 
     try {
-      return await _createLocalRoom();
+      final deepLink = await _createLocalRoom();
+      if (deepLink != null) {
+        AnalyticsService.trackCreateRoom(roomName.trim());
+      }
+      return deepLink;
     } finally {
       setLoading(false);
     }

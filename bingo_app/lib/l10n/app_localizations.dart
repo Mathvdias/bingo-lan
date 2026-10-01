@@ -196,12 +196,6 @@ abstract class AppLocalizations {
   /// **'Premium Feature'**
   String get paywallTitle;
 
-  /// No description provided for @paywallMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto Globe is a premium feature. Upgrade now!'**
-  String get paywallMessage;
-
   /// No description provided for @stopRoomTitle.
   ///
   /// In en, this message translates to:
@@ -627,6 +621,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The most fun way to play!'**
   String get splashSubtitle;
+
+  /// No description provided for @paywallHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Premium'**
+  String get paywallHeroTitle;
+
+  /// No description provided for @paywallHeroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bigger parties, zero limits, no interruptions.'**
+  String get paywallHeroSubtitle;
+
+  /// No description provided for @paywallBenefitUnlimitedPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited players per room'**
+  String get paywallBenefitUnlimitedPlayers;
+
+  /// No description provided for @paywallBenefitAutoGlobe.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto globe: the app draws the balls for you'**
+  String get paywallBenefitAutoGlobe;
+
+  /// No description provided for @paywallBenefitNoAds.
+  ///
+  /// In en, this message translates to:
+  /// **'No ads'**
+  String get paywallBenefitNoAds;
+
+  /// No description provided for @paywallPeriodWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get paywallPeriodWeekly;
+
+  /// No description provided for @paywallPeriodMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get paywallPeriodMonthly;
+
+  /// No description provided for @paywallPeriodTwoMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 2 months'**
+  String get paywallPeriodTwoMonth;
+
+  /// No description provided for @paywallPeriodThreeMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get paywallPeriodThreeMonth;
+
+  /// No description provided for @paywallPeriodSixMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 6 months'**
+  String get paywallPeriodSixMonth;
+
+  /// No description provided for @paywallPeriodAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual'**
+  String get paywallPeriodAnnual;
+
+  /// No description provided for @paywallPeriodLifetime.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime'**
+  String get paywallPeriodLifetime;
+
+  /// No description provided for @paywallPeriodCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get paywallPeriodCustom;
+
+  /// No description provided for @paywallBilledWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed every week'**
+  String get paywallBilledWeekly;
+
+  /// No description provided for @paywallBilledMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed every month'**
+  String get paywallBilledMonthly;
+
+  /// No description provided for @paywallBilledTwoMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed every 2 months'**
+  String get paywallBilledTwoMonth;
+
+  /// No description provided for @paywallBilledThreeMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed every 3 months'**
+  String get paywallBilledThreeMonth;
+
+  /// No description provided for @paywallBilledSixMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed every 6 months'**
+  String get paywallBilledSixMonth;
+
+  /// No description provided for @paywallBilledAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed once a year'**
+  String get paywallBilledAnnual;
+
+  /// No description provided for @paywallBilledCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get paywallBilledCustom;
+
+  /// No description provided for @paywallOneTimePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time payment'**
+  String get paywallOneTimePayment;
+
+  /// No description provided for @paywallSavings.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String paywallSavings(int percent);
+
+  /// No description provided for @paywallCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue for {price}'**
+  String paywallCta(String price);
+
+  /// No description provided for @paywallRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get paywallRestore;
+
+  /// No description provided for @paywallLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Cancel anytime in your store account settings.'**
+  String get paywallLegal;
+
+  /// No description provided for @paywallEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans available right now.'**
+  String get paywallEmpty;
+
+  /// No description provided for @paywallRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get paywallRetry;
+
+  /// No description provided for @paywallErrorLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load the plans. Check your connection and try again.'**
+  String get paywallErrorLoad;
+
+  /// No description provided for @paywallErrorPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'The purchase could not be completed. Please try again.'**
+  String get paywallErrorPurchase;
+
+  /// No description provided for @paywallErrorRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t restore your purchases. Please try again.'**
+  String get paywallErrorRestore;
+
+  /// No description provided for @paywallRestoreNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous purchases were found for this account.'**
+  String get paywallRestoreNothing;
+
+  /// No description provided for @paywallRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases restored. Welcome to Premium!'**
+  String get paywallRestoreSuccess;
+
+  /// No description provided for @paywallClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get paywallClose;
+
+  /// No description provided for @playersCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/{max} players (free plan)'**
+  String playersCapacity(int count, int max);
+
+  /// No description provided for @inviteConnectedPlayersCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Players: {count}/{max} free'**
+  String inviteConnectedPlayersCapacity(int count, int max);
 }
 
 class _AppLocalizationsDelegate

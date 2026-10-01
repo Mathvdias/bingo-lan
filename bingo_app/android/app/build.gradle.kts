@@ -57,10 +57,15 @@ android {
 
     buildTypes {
         release {
-            if (!keystorePropertiesFile.exists()) {
+            // Só exige a keystore quando um build release é pedido; builds debug
+            // (PRs, testes) continuam funcionando sem key.properties.
+            val releaseRequested = gradle.startParameter.taskNames.any {
+                it.contains("Release", ignoreCase = true) || it.contains("bundle", ignoreCase = true)
+            }
+            if (!keystorePropertiesFile.exists() && releaseRequested) {
                 error("android/key.properties não encontrado: o build release exige a keystore de upload. Copie key.properties.example e preencha.")
             }
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (keystorePropertiesFile.exists()) signingConfigs.getByName("release") else null
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

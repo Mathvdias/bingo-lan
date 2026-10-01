@@ -310,12 +310,9 @@ dependencies:
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // 1. Inicializa SDK
-  await BingoSDK.initialize(
-    supabaseUrl: "...",
-    supabaseKey: "...",
-    revenueCatKey: "...",
-  );
+  // 1. Inicializa SDK (sem chaves: o RevenueCat é configurado
+  //    uma única vez pelo app, em SubscriptionService.initialize)
+  await BingoSDK.initialize();
 
   // 2. Busca Flags (Gatekeeper)
   final config = GetIt.I.get<IConfigDriver>();

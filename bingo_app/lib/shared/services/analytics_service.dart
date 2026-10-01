@@ -1,5 +1,7 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dart:developer';
+
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 
 /// Service for tracking analytics events via Firebase Analytics
 class AnalyticsService {
@@ -12,13 +14,18 @@ class AnalyticsService {
     return _observer!;
   }
 
+  /// Logs só em debug: várias mensagens contêm ids (sala, produto, usuário).
+  static void _debugLog(String message) {
+    if (kDebugMode) log(message);
+  }
+
   // ==================== App Lifecycle ====================
 
   /// Track app open
   static Future<void> trackAppOpen() async {
     try {
       await _analytics.logAppOpen();
-      log('Analytics: App opened');
+      _debugLog('Analytics: App opened');
     } catch (e) {
       log('Error tracking app open: $e');
     }
@@ -36,7 +43,7 @@ class AnalyticsService {
         screenName: screenName,
         screenClass: screenClass ?? screenName,
       );
-      log('Analytics: Screen viewed - $screenName');
+      _debugLog('Analytics: Screen viewed - $screenName');
     } catch (e) {
       log('Error tracking screen: $e');
     }
@@ -48,7 +55,7 @@ class AnalyticsService {
   static Future<void> setUserId(String userId) async {
     try {
       await _analytics.setUserId(id: userId);
-      log('Analytics: User ID set - $userId');
+      _debugLog('Analytics: User ID set - $userId');
     } catch (e) {
       log('Error setting user ID: $e');
     }
@@ -58,7 +65,7 @@ class AnalyticsService {
   static Future<void> setUserProperty(String name, String value) async {
     try {
       await _analytics.setUserProperty(name: name, value: value);
-      log('Analytics: User property set - $name: $value');
+      _debugLog('Analytics: User property set - $name: $value');
     } catch (e) {
       log('Error setting user property: $e');
     }
@@ -78,7 +85,7 @@ class AnalyticsService {
   static Future<void> trackSignUp(String method) async {
     try {
       await _analytics.logSignUp(signUpMethod: method);
-      log('Analytics: Sign up - $method');
+      _debugLog('Analytics: Sign up - $method');
     } catch (e) {
       log('Error tracking sign up: $e');
     }
@@ -88,7 +95,7 @@ class AnalyticsService {
   static Future<void> trackLogin(String method) async {
     try {
       await _analytics.logLogin(loginMethod: method);
-      log('Analytics: Login - $method');
+      _debugLog('Analytics: Login - $method');
     } catch (e) {
       log('Error tracking login: $e');
     }
@@ -106,7 +113,7 @@ class AnalyticsService {
           'timestamp': DateTime.now().toIso8601String(),
         },
       );
-      log('Analytics: Room created - $roomId');
+      _debugLog('Analytics: Room created - $roomId');
     } catch (e) {
       log('Error tracking create room: $e');
     }
@@ -122,7 +129,7 @@ class AnalyticsService {
           'timestamp': DateTime.now().toIso8601String(),
         },
       );
-      log('Analytics: Room joined - $roomId');
+      _debugLog('Analytics: Room joined - $roomId');
     } catch (e) {
       log('Error tracking join room: $e');
     }
@@ -143,20 +150,20 @@ class AnalyticsService {
           'player_count': players,
         },
       );
-      log('Analytics: Game completed - $roomId');
+      _debugLog('Analytics: Game completed - $roomId');
     } catch (e) {
       log('Error tracking game complete: $e');
     }
   }
 
   /// Track bingo win
-  static Future<void> trackBingoWin(String roomId) async {
+  static Future<void> trackBingoWin(String roomId, {int? cardId}) async {
     try {
       await _analytics.logEvent(
         name: 'bingo_win',
-        parameters: {'room_id': roomId},
+        parameters: {'room_id': roomId, 'card_id': ?cardId},
       );
-      log('Analytics: Bingo won - $roomId');
+      _debugLog('Analytics: Bingo won - $roomId');
     } catch (e) {
       log('Error tracking bingo win: $e');
     }
@@ -173,7 +180,7 @@ class AnalyticsService {
           'source': source, // 'onboarding', 'feature_gate', 'settings', etc.
         },
       );
-      log('Analytics: Paywall viewed - $source');
+      _debugLog('Analytics: Paywall viewed - $source');
     } catch (e) {
       log('Error tracking paywall view: $e');
     }
@@ -190,7 +197,7 @@ class AnalyticsService {
           ],
         },
       );
-      log('Analytics: Purchase intent - $productId');
+      _debugLog('Analytics: Purchase intent - $productId');
     } catch (e) {
       log('Error tracking purchase intent: $e');
     }
@@ -214,9 +221,22 @@ class AnalyticsService {
           ],
         },
       );
-      log('Analytics: Purchase completed - $productId ($value $currency)');
+      _debugLog('Analytics: Purchase completed - $productId ($value $currency)');
     } catch (e) {
       log('Error tracking purchase: $e');
+    }
+  }
+
+  /// Track restore purchases attempt (`result`: granted | none | error)
+  static Future<void> trackRestorePurchases(String result) async {
+    try {
+      await _analytics.logEvent(
+        name: 'restore_purchases',
+        parameters: {'result': result},
+      );
+      _debugLog('Analytics: Restore purchases - $result');
+    } catch (e) {
+      log('Error tracking restore purchases: $e');
     }
   }
 
@@ -227,7 +247,7 @@ class AnalyticsService {
         name: 'subscription_renewal',
         parameters: {'product_id': productId},
       );
-      log('Analytics: Subscription renewed - $productId');
+      _debugLog('Analytics: Subscription renewed - $productId');
     } catch (e) {
       log('Error tracking renewal: $e');
     }
@@ -242,7 +262,7 @@ class AnalyticsService {
         name: 'feature_used',
         parameters: {'feature_name': featureName},
       );
-      log('Analytics: Feature used - $featureName');
+      _debugLog('Analytics: Feature used - $featureName');
     } catch (e) {
       log('Error tracking feature usage: $e');
     }
@@ -256,7 +276,7 @@ class AnalyticsService {
         itemId: itemId,
         method: 'qr_code',
       );
-      log('Analytics: Content shared - $contentType');
+      _debugLog('Analytics: Content shared - $contentType');
     } catch (e) {
       log('Error tracking share: $e');
     }
@@ -274,7 +294,7 @@ class AnalyticsService {
         name: 'app_error',
         parameters: {'error_message': errorMessage, 'stack_trace': ?stackTrace},
       );
-      log('Analytics: Error tracked - $errorMessage');
+      _debugLog('Analytics: Error tracked - $errorMessage');
     } catch (e) {
       log('Error tracking error: $e');
     }
@@ -289,7 +309,7 @@ class AnalyticsService {
   ) async {
     try {
       await _analytics.logEvent(name: eventName, parameters: parameters);
-      log('Analytics: Custom event - $eventName');
+      _debugLog('Analytics: Custom event - $eventName');
     } catch (e) {
       log('Error tracking custom event: $e');
     }

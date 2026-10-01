@@ -1,6 +1,8 @@
 import 'package:bingo_app/features/host/host_invite_view_model.dart'; // Import ViewModel
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/di/service_locator.dart'; // Import serviceLocator
+import 'package:bingo_app/shared/services/revenue_config_service.dart';
+import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
@@ -148,10 +150,26 @@ class HostInviteScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Text(
-                          l10n.inviteConnectedPlayers(players.length),
-                          style: textTheme.headlineSmall,
-                          textAlign: TextAlign.center,
+                        // "Conectados: N" ou "N/M grátis" quando há limite e
+                        // o host não é premium (modelo paywall_host).
+                        ValueListenableBuilder<bool>(
+                          valueListenable: SubscriptionService.isPremium,
+                          builder: (context, isPremium, _) {
+                            final showCap =
+                                RevenueConfigService.hasFreePlayerCap &&
+                                !isPremium;
+                            return Text(
+                              showCap
+                                  ? l10n.inviteConnectedPlayersCapacity(
+                                      players.length,
+                                      RevenueConfigService.maxFreePlayersPathA,
+                                    )
+                                  : l10n.inviteConnectedPlayers(players.length),
+                              key: const Key('invite_player_count'),
+                              style: textTheme.headlineSmall,
+                              textAlign: TextAlign.center,
+                            );
+                          },
                         ),
                         if (players.isEmpty)
                           Text(

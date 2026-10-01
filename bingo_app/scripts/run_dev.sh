@@ -10,12 +10,16 @@ if [ -f .env ]; then
   . ./.env
   set +a
 else
-  echo "Aviso: .env não encontrado; rodando sem chaves (compras e Clarity desativados)."
+  echo "Aviso: .env não encontrado; rodando sem chaves (compras desativadas)."
+fi
+
+if [ -n "${RC_TEST_STORE_KEY:-}" ]; then
+  echo "RevenueCat: usando Test Store (RC_TEST_STORE_KEY)."
 fi
 
 flutter run -t lib/main_dev.dart --flavor dev \
   --dart-define=RC_ANDROID_KEY="${RC_ANDROID_KEY:-}" \
   --dart-define=RC_IOS_KEY="${RC_IOS_KEY:-}" \
-  --dart-define=CLARITY_PROJECT_ID="${CLARITY_PROJECT_ID:-}" \
+  --dart-define=RC_TEST_STORE_KEY="${RC_TEST_STORE_KEY:-}" \
   --dart-define=ENVIRONMENT=dev \
   "$@"

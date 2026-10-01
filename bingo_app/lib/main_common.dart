@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:bingo_app/core/config/env.dart';
@@ -10,7 +10,6 @@ import 'package:bingo_app/shared/router.dart';
 import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/att_service.dart';
-import 'package:bingo_app/shared/services/clarity_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/app_fonts.dart';
@@ -73,23 +72,20 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   Env.validate(appConfig);
 
-  // 2. Initialize the Bingo SDK
+  // 2. Initialize the Bingo SDK (não configura o RevenueCat)
   try {
-    await BingoSDK.initialize(
-      revenueCatKey: Platform.isIOS
-          ? Env.revenueCatIosKey
-          : Env.revenueCatAndroidKey,
-    );
+    await BingoSDK.initialize();
   } catch (e) {
     log('BingoSDK (Core) initialization failed: $e');
   }
 
-  // 2.5 Initialize RevenueCat for subscriptions (non-blocking)
+  // 2.5 RevenueCat: configuração única + cache do status premium.
+  // Em dev com RC_TEST_STORE_KEY usa o Test Store. Nunca derruba o startup.
   try {
-    await SubscriptionService.initialize().timeout(const Duration(seconds: 5));
+    await SubscriptionService.initialize(
+      appConfig: appConfig,
+    ).timeout(const Duration(seconds: 5));
   } catch (e) {
-    // Ignore RevenueCat errors during development
-    // App will work without monetization features
     log('RevenueCat initialization skipped: $e');
   }
 
@@ -104,21 +100,22 @@ Future<void> mainCommon(AppConfig appConfig) async {
   final config = GetIt.I.get<IConfigDriver>();
   await config.fetchAndActivate();
 
-  // 4. Remote Config da receita, ATT (iOS) se anúncios ativos, depois AdMob.
+  // 4. Remote Config da receita; se anúncios ativos: ATT (iOS), consentimento
+  //    UMP e AdMob. Não bloqueia o primeiro frame: o formulário de
+  //    consentimento aparece sobre a splash e o SDK inicializa quando puder.
   await RevenueConfigService.initialize();
-  if (RevenueConfigService.adsEnabled) {
+  if (RevenueConfigService.adsEnabled && !SubscriptionService.isPremium.value) {
     await AttService.requestIfNeeded();
+    unawaited(AdService.ensureInitialized());
   }
-  await AdService.initialize();
 
   // 5. Initialize global Showcase scope for app tours
   ShowcaseView.register();
 
-  // Run the main Flutter application wrapped with Clarity and Provider
   runApp(
     ChangeNotifierProvider(
       create: (_) => LocaleProvider(),
-      child: ClarityService.wrapApp(BingoApp(appConfig: appConfig)),
+      child: BingoApp(appConfig: appConfig),
     ),
   );
 }

@@ -54,10 +54,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paywallTitle => 'Fonctionnalité Payante';
 
   @override
-  String get paywallMessage =>
-      'Le Globe Automatique est payant. Mettez à niveau!';
-
-  @override
   String get stopRoomTitle => 'Fermer la Salle';
 
   @override
@@ -296,4 +292,125 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get splashSubtitle => 'La façon la plus amusante de jouer !';
+
+  @override
+  String get paywallHeroTitle => 'Passez Premium';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Des fêtes plus grandes, sans limites ni interruptions.';
+
+  @override
+  String get paywallBenefitUnlimitedPlayers => 'Joueurs illimités par salle';
+
+  @override
+  String get paywallBenefitAutoGlobe =>
+      'Globe automatique : l\'app tire les boules pour vous';
+
+  @override
+  String get paywallBenefitNoAds => 'Sans publicité';
+
+  @override
+  String get paywallPeriodWeekly => 'Hebdomadaire';
+
+  @override
+  String get paywallPeriodMonthly => 'Mensuel';
+
+  @override
+  String get paywallPeriodTwoMonth => 'Tous les 2 mois';
+
+  @override
+  String get paywallPeriodThreeMonth => 'Trimestriel';
+
+  @override
+  String get paywallPeriodSixMonth => 'Semestriel';
+
+  @override
+  String get paywallPeriodAnnual => 'Annuel';
+
+  @override
+  String get paywallPeriodLifetime => 'À vie';
+
+  @override
+  String get paywallPeriodCustom => 'Forfait';
+
+  @override
+  String get paywallBilledWeekly => 'Facturé chaque semaine';
+
+  @override
+  String get paywallBilledMonthly => 'Facturé chaque mois';
+
+  @override
+  String get paywallBilledTwoMonth => 'Facturé tous les 2 mois';
+
+  @override
+  String get paywallBilledThreeMonth => 'Facturé tous les 3 mois';
+
+  @override
+  String get paywallBilledSixMonth => 'Facturé tous les 6 mois';
+
+  @override
+  String get paywallBilledAnnual => 'Facturé une fois par an';
+
+  @override
+  String get paywallBilledCustom => 'Abonnement';
+
+  @override
+  String get paywallOneTimePayment => 'Paiement unique';
+
+  @override
+  String paywallSavings(int percent) {
+    return 'Économisez $percent%';
+  }
+
+  @override
+  String paywallCta(String price) {
+    return 'Continuer pour $price';
+  }
+
+  @override
+  String get paywallRestore => 'Restaurer les achats';
+
+  @override
+  String get paywallLegal =>
+      'Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Annulez à tout moment dans les réglages de votre compte de la boutique.';
+
+  @override
+  String get paywallEmpty => 'Aucun forfait disponible pour le moment.';
+
+  @override
+  String get paywallRetry => 'Réessayer';
+
+  @override
+  String get paywallErrorLoad =>
+      'Impossible de charger les forfaits. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get paywallErrorPurchase =>
+      'L\'achat n\'a pas pu être finalisé. Veuillez réessayer.';
+
+  @override
+  String get paywallErrorRestore =>
+      'Impossible de restaurer vos achats. Veuillez réessayer.';
+
+  @override
+  String get paywallRestoreNothing =>
+      'Aucun achat précédent trouvé pour ce compte.';
+
+  @override
+  String get paywallRestoreSuccess =>
+      'Achats restaurés. Bienvenue dans Premium !';
+
+  @override
+  String get paywallClose => 'Fermer';
+
+  @override
+  String playersCapacity(int count, int max) {
+    return '$count/$max joueurs (offre gratuite)';
+  }
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return 'Joueurs connectés : $count/$max gratuits';
+  }
 }

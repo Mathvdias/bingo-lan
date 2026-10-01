@@ -54,9 +54,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get paywallTitle => '有料機能';
 
   @override
-  String get paywallMessage => '自動グローブは有料機能です。アップグレードしてください！';
-
-  @override
   String get stopRoomTitle => 'ルームを閉じる';
 
   @override
@@ -281,4 +278,118 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get splashSubtitle => '最も楽しい遊び方！';
+
+  @override
+  String get paywallHeroTitle => 'プレミアムになる';
+
+  @override
+  String get paywallHeroSubtitle => 'もっと大きなパーティーを、制限も広告もなしで。';
+
+  @override
+  String get paywallBenefitUnlimitedPlayers => '1ルームの参加人数が無制限';
+
+  @override
+  String get paywallBenefitAutoGlobe => '自動グローブ：アプリが自動でボールを抽選';
+
+  @override
+  String get paywallBenefitNoAds => '広告なし';
+
+  @override
+  String get paywallPeriodWeekly => '週額';
+
+  @override
+  String get paywallPeriodMonthly => '月額';
+
+  @override
+  String get paywallPeriodTwoMonth => '2か月ごと';
+
+  @override
+  String get paywallPeriodThreeMonth => '3か月ごと';
+
+  @override
+  String get paywallPeriodSixMonth => '6か月ごと';
+
+  @override
+  String get paywallPeriodAnnual => '年額';
+
+  @override
+  String get paywallPeriodLifetime => '買い切り';
+
+  @override
+  String get paywallPeriodCustom => 'プラン';
+
+  @override
+  String get paywallBilledWeekly => '毎週請求';
+
+  @override
+  String get paywallBilledMonthly => '毎月請求';
+
+  @override
+  String get paywallBilledTwoMonth => '2か月ごとに請求';
+
+  @override
+  String get paywallBilledThreeMonth => '3か月ごとに請求';
+
+  @override
+  String get paywallBilledSixMonth => '6か月ごとに請求';
+
+  @override
+  String get paywallBilledAnnual => '年に1回請求';
+
+  @override
+  String get paywallBilledCustom => 'サブスクリプション';
+
+  @override
+  String get paywallOneTimePayment => '1回限りのお支払い';
+
+  @override
+  String paywallSavings(int percent) {
+    return '$percent%お得';
+  }
+
+  @override
+  String paywallCta(String price) {
+    return '$priceで続ける';
+  }
+
+  @override
+  String get paywallRestore => '購入を復元';
+
+  @override
+  String get paywallLegal =>
+      'サブスクリプションは、現在の期間終了の24時間前までに解約しない限り自動更新されます。ストアのアカウント設定からいつでも解約できます。';
+
+  @override
+  String get paywallEmpty => '現在利用できるプランはありません。';
+
+  @override
+  String get paywallRetry => '再試行';
+
+  @override
+  String get paywallErrorLoad => 'プランを読み込めませんでした。接続を確認してもう一度お試しください。';
+
+  @override
+  String get paywallErrorPurchase => '購入を完了できませんでした。もう一度お試しください。';
+
+  @override
+  String get paywallErrorRestore => '購入を復元できませんでした。もう一度お試しください。';
+
+  @override
+  String get paywallRestoreNothing => 'このアカウントに過去の購入は見つかりませんでした。';
+
+  @override
+  String get paywallRestoreSuccess => '購入を復元しました。プレミアムへようこそ！';
+
+  @override
+  String get paywallClose => '閉じる';
+
+  @override
+  String playersCapacity(int count, int max) {
+    return '$count/$max人（無料プラン）';
+  }
+
+  @override
+  String inviteConnectedPlayersCapacity(int count, int max) {
+    return '接続中のプレイヤー: $count/$max（無料）';
+  }
 }

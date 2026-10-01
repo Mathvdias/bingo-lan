@@ -28,7 +28,6 @@ fi
 MISSING_VARS=()
 [ -z "$RC_ANDROID_KEY" ] && MISSING_VARS+=("RC_ANDROID_KEY")
 [ -z "$RC_IOS_KEY" ] && MISSING_VARS+=("RC_IOS_KEY")
-[ -z "$CLARITY_PROJECT_ID" ] && MISSING_VARS+=("CLARITY_PROJECT_ID")
 
 if [ ${#MISSING_VARS[@]} -ne 0 ]; then
     echo "❌ Erro: As seguintes variáveis de ambiente são obrigatórias para produção:"
@@ -38,7 +37,7 @@ if [ ${#MISSING_VARS[@]} -ne 0 ]; then
     echo ""
     echo "Crie um arquivo .env na pasta 'bingo_app' ou defina-as na linha de comando antes de rodar o build."
     echo "Exemplo de comando:"
-    echo "   RC_ANDROID_KEY=xxx RC_IOS_KEY=xxx CLARITY_PROJECT_ID=xxx ./build_release.sh"
+    echo "   RC_ANDROID_KEY=xxx RC_IOS_KEY=xxx ./build_release.sh"
     exit 1
 fi
 
@@ -48,7 +47,6 @@ flutter build appbundle --release --flavor prod \
   --obfuscate --split-debug-info=build/symbols \
   --dart-define=RC_ANDROID_KEY="$RC_ANDROID_KEY" \
   --dart-define=RC_IOS_KEY="$RC_IOS_KEY" \
-  --dart-define=CLARITY_PROJECT_ID="$CLARITY_PROJECT_ID" \
   --dart-define=ENVIRONMENT=prod
 
 echo "✅ App Bundle gerado com sucesso!"

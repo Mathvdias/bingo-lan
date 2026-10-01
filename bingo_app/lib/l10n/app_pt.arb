@@ -14,7 +14,6 @@
   "errorInvalidNumber": "Número deve ser entre 1 e 75",
   "errorNumberDrawn": "Número já foi sorteado!",
   "paywallTitle": "Recurso Pago",
-  "paywallMessage": "O Globo Automático é um recurso pago. Faça upgrade!",
   "stopRoomTitle": "Encerrar Sala",
   "stopRoomMessage": "Você tem certeza que deseja encerrar a sala? Todos os jogadores serão desconectados.",
   "no": "Não",
@@ -120,5 +119,74 @@
   "hostSetupWifiWarning": "Aviso: Todos os jogadores DEVEM estar conectados à MESMA REDE WI-FI para conseguir entrar na sala.",
   "hostSetupWifiDesc": "Jogue com pessoas na mesma rede Wi-Fi. Ideal para festas e encontros.",
   "playerScanCameraHint": "Aponte a câmera para o QR Code do Host",
-  "splashSubtitle": "O jeito mais divertido de jogar!"
+  "splashSubtitle": "O jeito mais divertido de jogar!",
+  "paywallHeroTitle": "Seja Premium",
+  "paywallHeroSubtitle": "Festas maiores, sem limites e sem interrupções.",
+  "paywallBenefitUnlimitedPlayers": "Jogadores ilimitados por sala",
+  "paywallBenefitAutoGlobe": "Globo automático: o app sorteia as bolas por você",
+  "paywallBenefitNoAds": "Sem anúncios",
+  "paywallPeriodWeekly": "Semanal",
+  "paywallPeriodMonthly": "Mensal",
+  "paywallPeriodTwoMonth": "Bimestral",
+  "paywallPeriodThreeMonth": "Trimestral",
+  "paywallPeriodSixMonth": "Semestral",
+  "paywallPeriodAnnual": "Anual",
+  "paywallPeriodLifetime": "Vitalício",
+  "paywallPeriodCustom": "Plano",
+  "paywallBilledWeekly": "Cobrado toda semana",
+  "paywallBilledMonthly": "Cobrado todo mês",
+  "paywallBilledTwoMonth": "Cobrado a cada 2 meses",
+  "paywallBilledThreeMonth": "Cobrado a cada 3 meses",
+  "paywallBilledSixMonth": "Cobrado a cada 6 meses",
+  "paywallBilledAnnual": "Cobrado uma vez por ano",
+  "paywallBilledCustom": "Assinatura",
+  "paywallOneTimePayment": "Pagamento único",
+  "paywallSavings": "Economize {percent}%",
+  "@paywallSavings": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallCta": "Continuar por {price}",
+  "@paywallCta": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallRestore": "Restaurar compras",
+  "paywallLegal": "As assinaturas renovam automaticamente, salvo cancelamento com pelo menos 24 horas de antecedência do fim do período atual. Cancele quando quiser nas configurações da sua conta na loja.",
+  "paywallEmpty": "Nenhum plano disponível no momento.",
+  "paywallRetry": "Tentar de novo",
+  "paywallErrorLoad": "Não foi possível carregar os planos. Verifique sua conexão e tente de novo.",
+  "paywallErrorPurchase": "Não foi possível concluir a compra. Tente de novo.",
+  "paywallErrorRestore": "Não foi possível restaurar suas compras. Tente de novo.",
+  "paywallRestoreNothing": "Nenhuma compra anterior encontrada para esta conta.",
+  "paywallRestoreSuccess": "Compras restauradas. Bem-vindo ao Premium!",
+  "paywallClose": "Fechar",
+  "playersCapacity": "{count}/{max} jogadores (plano grátis)",
+  "@playersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteConnectedPlayersCapacity": "Jogadores Conectados: {count}/{max} grátis",
+  "@inviteConnectedPlayersCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }
