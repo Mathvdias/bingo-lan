@@ -8,6 +8,7 @@ import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Layout da sala do host, sem plugins, DI nem navegação: a tela
 /// ([HostRoomScreen]) cuida de wakelock, anúncios, GetIt e rotas; aqui só
@@ -384,7 +385,18 @@ class _ManualInputControlState extends State<_ManualInputControl> {
                 key: const Key('host_manual_field'),
                 controller: _controller,
                 enabled: widget.enabled,
-                keyboardType: TextInputType.number,
+                // Só dígitos, no máximo dois (1 a 75): o teclado numérico
+                // sozinho não impede letras em teclados físicos, tablets e
+                // alguns teclados Android.
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: false,
+                  decimal: false,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(2),
+                ],
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                   labelText: l10n.numberInput,
                   border: const OutlineInputBorder(),
