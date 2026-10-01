@@ -76,7 +76,18 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   setupServiceLocator();
 
-  Env.validate(appConfig);
+  // Chave do RevenueCat ausente não derruba o app: fica registrada no
+  // Crashlytics (não fatal) e as compras ficam desativadas nesta sessão.
+  final envError = Env.validate(appConfig);
+  if (envError != null && kReleaseMode) {
+    unawaited(
+      FirebaseCrashlytics.instance.recordError(
+        StateError(envError),
+        StackTrace.current,
+        reason: 'env_validate',
+      ),
+    );
+  }
 
   // 2. Initialize the Bingo SDK (não configura o RevenueCat)
   try {

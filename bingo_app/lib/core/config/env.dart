@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bingo_app/flavors/app_config.dart';
+import 'package:flutter/foundation.dart';
 
 /// Environment configuration via `--dart-define=KEY=value` (CI / release).
 /// Nunca commite chaves reais; use secrets no pipeline de build.
@@ -8,9 +9,7 @@ class Env {
   static const String revenueCatAndroidKey = String.fromEnvironment(
     'RC_ANDROID_KEY',
   );
-  static const String revenueCatIosKey = String.fromEnvironment(
-    'RC_IOS_KEY',
-  );
+  static const String revenueCatIosKey = String.fromEnvironment('RC_IOS_KEY');
 
   /// Chave do RevenueCat Test Store (`test_...`). Usada apenas no flavor dev
   /// para testar o paywall sem produtos reais na Play/App Store.
@@ -39,31 +38,47 @@ class Env {
     return isIOS ? revenueCatIosKey : revenueCatAndroidKey;
   }
 
-  /// Em [Flavor.prod] exige as chaves do RevenueCat. Em dev apenas registra
-  /// avisos no log.
-  static void validate(AppConfig appConfig) {
+  /// Nomes das variáveis obrigatórias que faltam para [appConfig] na
+  /// plataforma atual. Em prod só a chave da plataforma em execução conta:
+  /// um build Android não precisa de `RC_IOS_KEY` e vice-versa.
+  ///
+  /// Puro para ser testável: as chaves entram por parâmetro (por padrão as
+  /// constantes de `--dart-define`).
+  static List<String> missingKeys(
+    AppConfig appConfig, {
+    required bool isIOS,
+    String androidKey = revenueCatAndroidKey,
+    String iosKey = revenueCatIosKey,
+    String testStoreKey = revenueCatTestStoreKey,
+  }) {
     if (appConfig.isDev) {
-      if (revenueCatTestStoreKey.isEmpty &&
-          (revenueCatAndroidKey.isEmpty || revenueCatIosKey.isEmpty)) {
-        log(
-          'Env: RevenueCat ausente — defina RC_TEST_STORE_KEY (Test Store) ou '
-          'RC_ANDROID_KEY/RC_IOS_KEY se precisar de compras.',
-        );
-      }
-      return;
+      if (testStoreKey.isNotEmpty) return const [];
+      final key = isIOS ? iosKey : androidKey;
+      return key.isEmpty
+          ? [isIOS ? 'RC_IOS_KEY' : 'RC_ANDROID_KEY', 'RC_TEST_STORE_KEY']
+          : const [];
     }
+    final key = isIOS ? iosKey : androidKey;
+    return key.isEmpty ? [isIOS ? 'RC_IOS_KEY' : 'RC_ANDROID_KEY'] : const [];
+  }
 
-    final missingKeys = <String>[];
-    if (revenueCatAndroidKey.isEmpty) missingKeys.add('RC_ANDROID_KEY');
-    if (revenueCatIosKey.isEmpty) missingKeys.add('RC_IOS_KEY');
-
-    if (missingKeys.isNotEmpty) {
-      throw Exception(
-        'Build prod sem variáveis obrigatórias:\n'
-        '${missingKeys.join('\n')}\n'
-        'Passe via --dart-define ou configure o CI.',
-      );
-    }
+  /// Verifica as variáveis de ambiente e devolve a mensagem de erro, ou
+  /// `null` quando está tudo certo.
+  ///
+  /// NUNCA lança: uma chave ausente desliga as compras, não o app. Antes
+  /// disto um build prod sem `RC_IOS_KEY` lançava aqui, a exceção era
+  /// engolida pelo handler do Crashlytics e o app ficava preso na splash.
+  static String? validate(AppConfig appConfig, {bool? isIOS}) {
+    final ios = isIOS ?? (defaultTargetPlatform == TargetPlatform.iOS);
+    final missing = missingKeys(appConfig, isIOS: ios);
+    if (missing.isEmpty) return null;
+    final message = appConfig.isDev
+        ? 'Env: RevenueCat ausente — defina RC_TEST_STORE_KEY (Test Store) ou '
+              '${missing.first} se precisar de compras.'
+        : 'Build prod sem ${missing.join(', ')}: compras desativadas. '
+              'Passe via --dart-define ou configure o CI.';
+    log(message);
+    return message;
   }
 
   static bool get isDev => environment == 'dev';

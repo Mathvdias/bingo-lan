@@ -62,6 +62,12 @@ jobs:
           storeFile=upload-keystore.jks
           PROPS
 
+      - name: Checar secrets obrigatórios do build
+        env:
+          RC_ANDROID_KEY: ${{ secrets.RC_ANDROID_KEY }}
+        run: |
+          test -n "$RC_ANDROID_KEY" || { echo "::error::Secret RC_ANDROID_KEY vazio: o paywall não funcionaria no build prod"; exit 1; }
+
       - name: Build AAB (prod, ofuscado)
         working-directory: bingo_app
         run: |
