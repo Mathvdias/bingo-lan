@@ -43,7 +43,9 @@ if [ ${#MISSING_VARS[@]} -ne 0 ]; then
 fi
 
 echo "🏗️ Gerando App Bundle de release com as chaves de produção..."
+mkdir -p build/symbols
 flutter build appbundle --release --flavor prod \
+  --obfuscate --split-debug-info=build/symbols \
   --dart-define=RC_ANDROID_KEY="$RC_ANDROID_KEY" \
   --dart-define=RC_IOS_KEY="$RC_IOS_KEY" \
   --dart-define=CLARITY_PROJECT_ID="$CLARITY_PROJECT_ID" \
@@ -54,7 +56,7 @@ echo "📍 Localização: build/app/outputs/bundle/prodRelease/app-prod-release.
 
 echo "📊 Informações do build:"
 echo "   - Minificação: ✅ Ativada"
-echo "   - Ofuscação: ✅ Ativada"
+echo "   - Ofuscação: ✅ Ativada (símbolos em build/symbols, envie ao Crashlytics)"
 echo "   - Otimização de recursos: ✅ Ativada"
 echo "   - Assinatura: ✅ Configurada"
 

@@ -3,10 +3,7 @@ import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/providers/locale_provider.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
-import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,28 +15,10 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  String? _wifiName;
 
   @override
   void initState() {
     super.initState();
-    _fetchWifiName();
-  }
-
-  Future<void> _fetchWifiName() async {
-    try {
-      final status = await Permission.locationWhenInUse.request();
-      if (status.isGranted) {
-        final name = await GetIt.I.get<INetworkInfoDriver>().getWifiName();
-        if (mounted) {
-          setState(() {
-            _wifiName = name?.replaceAll('"', '');
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('Error fetching Wi-Fi name: $e');
-    }
   }
 
   Future<void> _launchUrl(String url) async {
@@ -93,30 +72,14 @@ class _AboutScreenState extends State<AboutScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      _wifiName != null
-                          ? l10n.lobbyWifiBannerConnected(_wifiName!)
-                          : l10n.lobbyWifiBannerDefault,
+                      l10n.lobbyWifiBannerDefault,
                       style: textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.error,
                       ),
                     ),
                   ),
-                  if (_wifiName == null)
-                    TextButton(
-                      onPressed: _fetchWifiName,
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.error,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: Size.zero,
-                      ),
-                      child: Text(
-                        l10n.revealNetwork,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  else
-                    TextButton(
+                  TextButton(
                       onPressed: () => AppSettings.openAppSettings(
                         type: AppSettingsType.wifi,
                       ),

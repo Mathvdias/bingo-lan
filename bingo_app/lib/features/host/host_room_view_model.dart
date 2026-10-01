@@ -4,7 +4,7 @@ import 'dart:math' hide log;
 
 import 'package:intl/intl.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
-import 'package:bingo_app/shared/services/ai_service.dart';
+import 'package:bingo_app/shared/services/caller_phrases.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart'; // Import core types including events
 
@@ -171,8 +171,8 @@ class HostRoomViewModel extends BaseViewModel {
     // Broadcast the number to all connected players
     await _gameConnection.broadcastEvent(NumberDrawnEvent(number: number));
 
-    // Announce AI Joke (Local or Remote)
-    final joke = AiService.getJokeForNumber(number, locale: Intl.defaultLocale);
+    // Frase do cantador (local)
+    final joke = CallerPhrases.getJokeForNumber(number, locale: Intl.defaultLocale);
     // TODO(ux): trocar ShowError por uma acao AnnounceNumber (PR de UX).
     _actionController.add(ShowError(joke));
 

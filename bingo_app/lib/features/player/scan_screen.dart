@@ -7,12 +7,9 @@ import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
-import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart'; // Import go_router
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -30,7 +27,6 @@ class PlayerScanScreen extends StatefulWidget {
 class _PlayerScanScreenState extends State<PlayerScanScreen> {
   late final MobileScannerController controller;
   final GlobalKey _scannerShowcaseKey = GlobalKey();
-  String? _wifiName;
 
   @override
   void initState() {
@@ -174,22 +170,6 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     );
   }
 
-  Future<void> _fetchWifiName() async {
-    try {
-      final status = await Permission.locationWhenInUse.request();
-      if (status.isGranted) {
-        final name = await GetIt.I.get<INetworkInfoDriver>().getWifiName();
-        if (mounted) {
-          setState(() {
-            _wifiName = name?.replaceAll('"', '');
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('Error fetching Wi-Fi name: $e');
-    }
-  }
-
   void _onDetect(BarcodeCapture capture, PlayerScanViewModel viewModel) {
     final List<Barcode> barcodes = capture.barcodes;
     if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
@@ -298,25 +278,14 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            _wifiName != null
-                                ? l10n.scanWifiBannerConnected(_wifiName!)
-                                : l10n.scanWifiBannerDefault,
+                            l10n.scanWifiBannerDefault,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 13,
                             ),
                           ),
                         ),
-                        if (_wifiName == null)
-                          TextButton(
-                            onPressed: _fetchWifiName,
-                            child: Text(
-                              l10n.revealNetwork,
-                              style: const TextStyle(color: AppColors.primary),
-                            ),
-                          )
-                        else
-                          TextButton(
+                        TextButton(
                             onPressed: () => AppSettings.openAppSettings(
                               type: AppSettingsType.wifi,
                             ),
