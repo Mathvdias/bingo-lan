@@ -361,7 +361,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutImportantTitle.
   ///
   /// In en, this message translates to:
-  /// **'⚠️ Important: Same Wi-Fi Network'**
+  /// **'Important: Same Wi-Fi Network'**
   String get aboutImportantTitle;
 
   /// No description provided for @aboutImportantBody.
@@ -373,7 +373,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutHowToPlayTitle.
   ///
   /// In en, this message translates to:
-  /// **'📖 How to Play (Step by Step)'**
+  /// **'How to Play (Step by Step)'**
   String get aboutHowToPlayTitle;
 
   /// No description provided for @aboutStep1Title.
@@ -427,7 +427,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutLanguage.
   ///
   /// In en, this message translates to:
-  /// **'🌐 Language'**
+  /// **'Language'**
   String get aboutLanguage;
 
   /// No description provided for @scanEnterName.

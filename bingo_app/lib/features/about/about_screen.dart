@@ -72,13 +72,15 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
             const SizedBox(height: 24),
 
-            Text(
-              l10n.aboutImportantTitle,
+            _SectionTitle(
+              icon: BingoLavaIcon.warning,
+              iconKey: const Key('about_warning_icon'),
+              fallbackIcon: Icons.warning_amber_rounded,
+              text: l10n.aboutImportantTitle,
               style: textTheme.headlineSmall?.copyWith(
                 color: AppColors.warningText,
                 fontWeight: FontWeight.w700,
               ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
@@ -97,10 +99,12 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
             const SizedBox(height: 32),
 
-            Text(
-              l10n.aboutHowToPlayTitle,
+            _SectionTitle(
+              icon: BingoLavaIcon.book,
+              iconKey: const Key('about_book_icon'),
+              fallbackIcon: Icons.menu_book_rounded,
+              text: l10n.aboutHowToPlayTitle,
               style: textTheme.headlineSmall,
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             _buildStep(context, '1', l10n.aboutStep1Title, l10n.aboutStep1Desc),
@@ -111,10 +115,12 @@ class _AboutScreenState extends State<AboutScreen> {
             const Divider(),
             const SizedBox(height: 16),
 
-            Text(
-              l10n.aboutLanguage,
+            _SectionTitle(
+              icon: BingoLavaIcon.globe,
+              iconKey: const Key('about_globe_icon'),
+              fallbackIcon: Icons.language_rounded,
+              text: l10n.aboutLanguage,
               style: textTheme.titleMedium,
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             Consumer<LocaleProvider>(
@@ -133,25 +139,25 @@ class _AboutScreenState extends State<AboutScreen> {
                   items: const [
                     DropdownMenuItem(
                       value: 'en',
-                      child: Text('English (US) 🇺🇸'),
+                      child: Text('English (US)'),
                     ),
                     DropdownMenuItem(
                       value: 'pt',
-                      child: Text('Português (BR) 🇧🇷'),
+                      child: Text('Português (BR)'),
                     ),
                     DropdownMenuItem(
                       value: 'es',
-                      child: Text('Español (ES) 🇪🇸'),
+                      child: Text('Español (ES)'),
                     ),
                     DropdownMenuItem(
                       value: 'fr',
-                      child: Text('Français (FR) 🇫🇷'),
+                      child: Text('Français (FR)'),
                     ),
                     DropdownMenuItem(
                       value: 'it',
-                      child: Text('Italiano (IT) 🇮🇹'),
+                      child: Text('Italiano (IT)'),
                     ),
-                    DropdownMenuItem(value: 'ja', child: Text('日本語 (JA) 🇯🇵')),
+                    DropdownMenuItem(value: 'ja', child: Text('日本語 (JA)')),
                   ],
                   onChanged: (String? newLocale) {
                     if (newLocale != null) {
@@ -265,6 +271,42 @@ class _AboutScreenState extends State<AboutScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Título de seção com um ícone Lava em linha, à esquerda do texto (no lugar
+/// dos emojis que abriam os títulos). O ícone Material fica até o bundle
+/// carregar.
+class _SectionTitle extends StatelessWidget {
+  final BingoLavaIcon icon;
+  final Key iconKey;
+  final IconData fallbackIcon;
+  final String text;
+  final TextStyle? style;
+
+  const _SectionTitle({
+    required this.icon,
+    required this.iconKey,
+    required this.fallbackIcon,
+    required this.text,
+    required this.style,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        BingoLavaIconView(
+          key: iconKey,
+          icon: icon,
+          size: 40,
+          fallback: Icon(fallbackIcon, size: 28, color: AppColors.text),
+        ),
+        const SizedBox(width: 12),
+        Expanded(child: Text(text, style: style)),
+      ],
     );
   }
 }

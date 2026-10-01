@@ -91,8 +91,15 @@ class _LobbyScreenState extends State<LobbyScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          // Balão "?" 3D (Lava) com o mesmo alvo de toque; o ícone Material
+          // fica até o bundle carregar.
           IconButton(
-            icon: const Icon(Icons.help_outline),
+            icon: const BingoLavaIconView(
+              key: Key('lobby_help_icon'),
+              icon: BingoLavaIcon.helpBubble,
+              size: 40,
+              fallback: Icon(Icons.help_outline),
+            ),
             onPressed: () => context.push('/about'),
           ),
           // Selo premium ou botão de upgrade, lendo o cache do status.
