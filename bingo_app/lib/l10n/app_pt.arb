@@ -47,6 +47,7 @@
   "privacyPolicy": "Política de Privacidade",
   "termsOfUse": "Termos de Uso",
   "aboutDeveloper": "Desenvolvedor (GitHub)",
+  "aboutVersion": "Versão {version}",
   "aboutTitle": "Sobre o Bingo",
   "aboutImportantTitle": "Importante: Mesma Rede Wi-Fi",
   "aboutImportantBody": "O Bingo funciona através de uma conexão local segura. Para que os jogadores encontrem a sua sala, TODOS (inclusive o organizador) devem estar conectados à mesma rede Wi-Fi.",

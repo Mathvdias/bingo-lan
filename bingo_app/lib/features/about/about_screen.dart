@@ -1,25 +1,95 @@
+import 'dart:developer';
+
 import 'package:app_settings/app_settings.dart';
+import 'package:bingo_app/core/config/debug_tools.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/providers/locale_provider.dart';
+import 'package:bingo_app/shared/router.dart' show debugFlagsPath;
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/warning_box.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
+  /// Liga a entrada escondida (5 toques na versão abrem `/debug/flags`).
+  /// Nulo = segue [debugToolsEnabled] (dev/alpha sim, prod não).
+  final bool? debugTools;
+
+  /// Relógio da janela de toques (injetável em teste).
+  final DateTime Function()? now;
+
+  const AboutScreen({super.key, this.debugTools, this.now});
 
   @override
   State<AboutScreen> createState() => _AboutScreenState();
 }
 
 class _AboutScreenState extends State<AboutScreen> {
+  /// Toques na versão para abrir as flags, e janela máxima entre o primeiro
+  /// e o último (como o "modo desenvolvedor" do Android).
+  static const int _tapsToUnlock = 5;
+  static const Duration _tapWindow = Duration(seconds: 3);
+
+  String? _version;
+  int _versionTaps = 0;
+  DateTime? _firstTapAt;
+
+  bool get _debugTools => widget.debugTools ?? debugToolsEnabled;
+
   @override
   void initState() {
     super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() => _version = '${info.version} (${info.buildNumber})');
+    } catch (e) {
+      // Sem plugin (testes) ou falha na plataforma: a linha fica sem número.
+      log('AboutScreen: versão indisponível: $e');
+    }
+  }
+
+  void _onVersionTap() {
+    if (!_debugTools) return;
+    final now = (widget.now ?? DateTime.now)();
+    final first = _firstTapAt;
+    if (first == null || now.difference(first) > _tapWindow) {
+      _firstTapAt = now;
+      _versionTaps = 0;
+    }
+    _versionTaps++;
+
+    final remaining = _tapsToUnlock - _versionTaps;
+    final messenger = ScaffoldMessenger.of(context);
+    if (remaining <= 0) {
+      _versionTaps = 0;
+      _firstTapAt = null;
+      messenger.hideCurrentSnackBar();
+      context.push(debugFlagsPath);
+    } else if (remaining <= 2) {
+      // Só nos toques 3 e 4, discreto, como o Android faz.
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            key: const Key('about_debug_hint'),
+            content: Text(
+              remaining == 1 ? 'mais 1 toque…' : 'mais $remaining toques…',
+            ),
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+    }
   }
 
   Future<void> _launchUrl(String url) async {
@@ -213,6 +283,25 @@ class _AboutScreenState extends State<AboutScreen> {
                 subtitle: const Text('@Mathvdias'),
                 trailing: const Icon(Icons.open_in_new),
                 onTap: () => _launchUrl('https://github.com/Mathvdias'),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Versão do app. Em dev/alpha, 5 toques aqui abrem /debug/flags;
+            // em prod o toque não faz nada.
+            InkWell(
+              key: const Key('about_version_row'),
+              onTap: _onVersionTap,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  l10n.aboutVersion(_version ?? '—'),
+                  key: const Key('about_version_text'),
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ),
             ),
           ],

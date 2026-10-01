@@ -47,6 +47,7 @@
   "privacyPolicy": "プライバシーポリシー",
   "termsOfUse": "利用規約",
   "aboutDeveloper": "開発者 (GitHub)",
+  "aboutVersion": "バージョン {version}",
   "aboutTitle": "ビンゴについて",
   "aboutImportantTitle": "重要：同じWi-Fiネットワーク",
   "aboutImportantBody": "ビンゴは安全なローカル接続で機能します。プレイヤーがあなたのルームを見つけるには、全員（ホストを含む）が全く同じWi-Fiネットワークに接続している必要があります。",
