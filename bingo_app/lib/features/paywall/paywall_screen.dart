@@ -531,8 +531,12 @@ class _PackageCard extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
+            // Cor opaca: com fill translúcido a sombra preta de baixo aparecia.
             color: selected
-                ? AppColors.primary.withValues(alpha: 0.18)
+                ? Color.alphaBlend(
+                    AppColors.primary.withValues(alpha: 0.25),
+                    AppColors.card,
+                  )
                 : AppColors.card,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
