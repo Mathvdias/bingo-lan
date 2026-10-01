@@ -19,7 +19,7 @@
   "no": "Non",
   "yes": "Oui",
   "hostRoomTitle": "Salle de Bingo (Host)",
-  "playersInRoom": "joueurs dans la salle",
+  "playersInRoom": "{count, plural, =0{Aucun joueur dans la salle} =1{1 joueur dans la salle} other{{count} joueurs dans la salle}}",
   "shoutedBingo": "a crié BINGO !",
   "cardId": "ID de Carte :",
   "manualInputInstruction": "Tapez le numéro tiré sur le globe physique",
@@ -86,7 +86,7 @@
     }
   },
   "inviteShareCodeTooltip": "Partager le code",
-  "inviteShareLinkMessage": "Viens jouer au Bingo ! Clique simplement depuis ton téléphone : bingo://room/{qrData}",
+  "inviteShareLinkMessage": "Viens jouer au Bingo ! Appuie simplement depuis ton téléphone : {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {
@@ -94,7 +94,7 @@
       }
     }
   },
-  "inviteConnectedPlayers": "Joueurs Connectés : {count}",
+  "inviteConnectedPlayers": "{count, plural, =0{Aucun joueur connecté pour l'instant} =1{1 joueur connecté} other{{count} joueurs connectés}}",
   "@inviteConnectedPlayers": {
     "placeholders": {
       "count": {
@@ -185,6 +185,78 @@
         "type": "int"
       },
       "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@playersInRoom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeErrorMessage": "Impossible d'ouvrir cet écran.",
+  "cardFree": "LIBRE",
+  "inviteDefaultRoomName": "Salle de Bingo",
+  "hostSetupErrorEmptyName": "Le nom de la salle ne peut pas être vide.",
+  "hostSetupErrorNoWifi": "Impossible d'obtenir l'adresse Wi-Fi. Vérifiez votre connexion Wi-Fi.",
+  "hostSetupErrorPortUnavailable": "Aucun port réseau disponible pour créer la salle. Fermez les autres applis qui utilisent le réseau et réessayez.",
+  "hostSetupErrorUnexpected": "Une erreur est survenue lors de la création de la salle. Réessayez.",
+  "hostRoomErrorConnection": "Problème de connexion avec un joueur.",
+  "hostRoomWinnerTitle": "BINGO !",
+  "hostRoomWinnerMessage": "{name} a gagné cette manche !",
+  "@hostRoomWinnerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomNewRound": "Nouvelle manche",
+  "hostRoomEndRoom": "Fermer la salle",
+  "hostRoomWaitingDraw": "Tirez le premier numéro pour commencer la manche.",
+  "hostRoomRoundOverHint": "Manche terminée. Lancez une nouvelle manche ou fermez la salle.",
+  "drawnCount": "{count}/75 tirés",
+  "@drawnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanErrorInvalidCode": "Code invalide. Demandez un nouveau QR code à l'hôte.",
+  "scanErrorRejected": "L'hôte a refusé la connexion. Vérifiez le réseau Wi-Fi et le code de la salle.",
+  "scanErrorTimeout": "L'hôte n'a pas répondu. Vérifiez que vous êtes sur le même réseau Wi-Fi.",
+  "scanErrorUnexpected": "Erreur inattendue en rejoignant la salle.",
+  "playerGameLastCalled": "Dernier numéro",
+  "playerGameNoCallsYet": "Aucun numéro tiré pour l'instant",
+  "connectionConnecting": "Connexion à l'hôte...",
+  "connectionReconnecting": "Connexion perdue. Reconnexion...",
+  "connectionDisconnected": "Déconnecté de l'hôte.",
+  "connectionRetry": "Réessayer",
+  "playerGameYouWon": "BINGO ! Vous avez gagné !",
+  "playerGameSomeoneWon": "{name} a gagné cette manche.",
+  "@playerGameSomeoneWon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerGameWaitNextRound": "Attendez que l'hôte lance une nouvelle manche ou revenez à l'accueil.",
+  "backToLobby": "Retour à l'accueil",
+  "playerGameClaimRejected": "Pas encore de bingo ! Vérifiez votre carte et continuez à jouer.",
+  "playerGameRoomClosedTitle": "L'hôte a fermé la salle",
+  "playerGameRoomClosedMessage": "La partie est terminée. Merci d'avoir joué !",
+  "playerGameLeaveTitle": "Quitter la partie ?",
+  "playerGameLeaveMessage": "Vous perdrez votre carte et quitterez la salle.",
+  "playerGameLeave": "Quitter",
+  "playerGameStay": "Rester",
+  "playerGameShoutCooldown": "Patientez {seconds}s",
+  "@playerGameShoutCooldown": {
+    "placeholders": {
+      "seconds": {
         "type": "int"
       }
     }

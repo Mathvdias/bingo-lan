@@ -70,7 +70,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hostRoomTitle => 'Sala de Bingo (Host)';
 
   @override
-  String get playersInRoom => 'jugadores en la sala';
+  String playersInRoom(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jugadores en la sala',
+      one: '1 jugador en la sala',
+      zero: 'Ningún jugador en la sala',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get shoutedBingo => 'gritó ¡BINGO!';
@@ -226,12 +235,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String inviteShareLinkMessage(String qrData) {
-    return '¡Ven a jugar Bingo! Solo haz clic desde tu teléfono: bingo://room/$qrData';
+    return '¡Ven a jugar Bingo! Solo toca desde tu celular: $qrData';
   }
 
   @override
   String inviteConnectedPlayers(int count) {
-    return 'Jugadores Conectados: $count';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jugadores conectados',
+      one: '1 jugador conectado',
+      zero: 'Ningún jugador conectado todavía',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -410,5 +426,138 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String inviteConnectedPlayersCapacity(int count, int max) {
     return 'Jugadores Conectados: $count/$max gratis';
+  }
+
+  @override
+  String get routeErrorMessage => 'No se pudo abrir esta pantalla.';
+
+  @override
+  String get cardFree => 'LIBRE';
+
+  @override
+  String get inviteDefaultRoomName => 'Sala de Bingo';
+
+  @override
+  String get hostSetupErrorEmptyName =>
+      'El nombre de la sala no puede estar vacío.';
+
+  @override
+  String get hostSetupErrorNoWifi =>
+      'No se pudo obtener la dirección Wi-Fi. Revisa tu conexión Wi-Fi.';
+
+  @override
+  String get hostSetupErrorPortUnavailable =>
+      'No hay ningún puerto de red disponible para crear la sala. Cierra otras apps que usen la red e inténtalo de nuevo.';
+
+  @override
+  String get hostSetupErrorUnexpected =>
+      'Algo salió mal al crear la sala. Inténtalo de nuevo.';
+
+  @override
+  String get hostRoomErrorConnection =>
+      'Hubo un problema de conexión con un jugador.';
+
+  @override
+  String get hostRoomWinnerTitle => '¡BINGO!';
+
+  @override
+  String hostRoomWinnerMessage(String name) {
+    return '¡$name ganó esta ronda!';
+  }
+
+  @override
+  String get hostRoomNewRound => 'Nueva ronda';
+
+  @override
+  String get hostRoomEndRoom => 'Cerrar sala';
+
+  @override
+  String get hostRoomWaitingDraw =>
+      'Sortea el primer número para empezar la ronda.';
+
+  @override
+  String get hostRoomRoundOverHint =>
+      'Ronda terminada. Empieza una nueva ronda o cierra la sala.';
+
+  @override
+  String drawnCount(int count) {
+    return '$count/75 sorteados';
+  }
+
+  @override
+  String get scanErrorInvalidCode =>
+      'Código inválido. Pide un nuevo código QR al anfitrión.';
+
+  @override
+  String get scanErrorRejected =>
+      'El anfitrión no aceptó la conexión. Revisa la red Wi-Fi y el código de la sala.';
+
+  @override
+  String get scanErrorTimeout =>
+      'El anfitrión no respondió. Asegúrate de estar en la misma red Wi-Fi.';
+
+  @override
+  String get scanErrorUnexpected => 'Error inesperado al entrar a la sala.';
+
+  @override
+  String get playerGameLastCalled => 'Última bola';
+
+  @override
+  String get playerGameNoCallsYet => 'Aún no hay números sorteados';
+
+  @override
+  String get connectionConnecting => 'Conectando con el anfitrión...';
+
+  @override
+  String get connectionReconnecting => 'Conexión perdida. Reconectando...';
+
+  @override
+  String get connectionDisconnected => 'Desconectado del anfitrión.';
+
+  @override
+  String get connectionRetry => 'Reintentar';
+
+  @override
+  String get playerGameYouWon => '¡BINGO! ¡Ganaste!';
+
+  @override
+  String playerGameSomeoneWon(String name) {
+    return '$name ganó esta ronda.';
+  }
+
+  @override
+  String get playerGameWaitNextRound =>
+      'Espera a que el anfitrión empiece una nueva ronda o vuelve al inicio.';
+
+  @override
+  String get backToLobby => 'Volver al inicio';
+
+  @override
+  String get playerGameClaimRejected =>
+      '¡Todavía no es bingo! Revisa tu cartón y sigue jugando.';
+
+  @override
+  String get playerGameRoomClosedTitle => 'El anfitrión cerró la sala';
+
+  @override
+  String get playerGameRoomClosedMessage =>
+      'Este juego terminó. ¡Gracias por jugar!';
+
+  @override
+  String get playerGameLeaveTitle => '¿Salir del juego?';
+
+  @override
+  String get playerGameLeaveMessage =>
+      'Perderás tu cartón y saldrás de la sala.';
+
+  @override
+  String get playerGameLeave => 'Salir';
+
+  @override
+  String get playerGameStay => 'Quedarme';
+
+  @override
+  String playerGameShoutCooldown(int seconds) {
+    return 'Espera ${seconds}s';
   }
 }

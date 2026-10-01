@@ -19,7 +19,7 @@
   "no": "No",
   "yes": "Yes",
   "hostRoomTitle": "Bingo Room (Host)",
-  "playersInRoom": "players in room",
+  "playersInRoom": "{count, plural, =0{No players in the room} =1{1 player in the room} other{{count} players in the room}}",
   "shoutedBingo": "shouted BINGO!",
   "cardId": "Card ID:",
   "manualInputInstruction": "Type the number drawn on the physical globe",
@@ -86,7 +86,7 @@
     }
   },
   "inviteShareCodeTooltip": "Share Code",
-  "inviteShareLinkMessage": "Come play Bingo! Just click from your phone: bingo://room/{qrData}",
+  "inviteShareLinkMessage": "Come play Bingo! Just tap from your phone: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {
@@ -94,7 +94,7 @@
       }
     }
   },
-  "inviteConnectedPlayers": "Connected Players: {count}",
+  "inviteConnectedPlayers": "{count, plural, =0{No players connected yet} =1{1 player connected} other{{count} players connected}}",
   "@inviteConnectedPlayers": {
     "placeholders": {
       "count": {
@@ -185,6 +185,78 @@
         "type": "int"
       },
       "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@playersInRoom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeErrorMessage": "We couldn't open this page.",
+  "cardFree": "FREE",
+  "inviteDefaultRoomName": "Bingo Room",
+  "hostSetupErrorEmptyName": "The room name can't be empty.",
+  "hostSetupErrorNoWifi": "We couldn't get your Wi-Fi address. Check your Wi-Fi connection.",
+  "hostSetupErrorPortUnavailable": "No network port is available to host the room. Close other apps using the network and try again.",
+  "hostSetupErrorUnexpected": "Something went wrong while creating the room. Please try again.",
+  "hostRoomErrorConnection": "There was a connection problem with a player.",
+  "hostRoomWinnerTitle": "BINGO!",
+  "hostRoomWinnerMessage": "{name} won this round!",
+  "@hostRoomWinnerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomNewRound": "New round",
+  "hostRoomEndRoom": "End room",
+  "hostRoomWaitingDraw": "Draw the first number to start the round.",
+  "hostRoomRoundOverHint": "Round over. Start a new round or end the room.",
+  "drawnCount": "{count}/75 drawn",
+  "@drawnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanErrorInvalidCode": "Invalid code. Ask the host for a new QR code.",
+  "scanErrorRejected": "The host didn't accept the connection. Check the Wi-Fi network and the room code.",
+  "scanErrorTimeout": "The host didn't answer. Make sure you're on the same Wi-Fi network.",
+  "scanErrorUnexpected": "Unexpected error while joining the room.",
+  "playerGameLastCalled": "Last called",
+  "playerGameNoCallsYet": "No numbers called yet",
+  "connectionConnecting": "Connecting to the host...",
+  "connectionReconnecting": "Connection lost. Reconnecting...",
+  "connectionDisconnected": "Disconnected from the host.",
+  "connectionRetry": "Retry",
+  "playerGameYouWon": "BINGO! You won!",
+  "playerGameSomeoneWon": "{name} won this round.",
+  "@playerGameSomeoneWon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerGameWaitNextRound": "Wait for the host to start a new round, or go back to the lobby.",
+  "backToLobby": "Back to lobby",
+  "playerGameClaimRejected": "Not a bingo yet! Check your card and keep playing.",
+  "playerGameRoomClosedTitle": "The host closed the room",
+  "playerGameRoomClosedMessage": "This game is over. Thanks for playing!",
+  "playerGameLeaveTitle": "Leave the game?",
+  "playerGameLeaveMessage": "You'll lose your card and leave the room.",
+  "playerGameLeave": "Leave",
+  "playerGameStay": "Stay",
+  "playerGameShoutCooldown": "Wait {seconds}s",
+  "@playerGameShoutCooldown": {
+    "placeholders": {
+      "seconds": {
         "type": "int"
       }
     }

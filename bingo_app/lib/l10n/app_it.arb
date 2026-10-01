@@ -19,7 +19,7 @@
   "no": "No",
   "yes": "Sì",
   "hostRoomTitle": "Stanza Bingo (Ospite)",
-  "playersInRoom": "giocatori nella stanza",
+  "playersInRoom": "{count, plural, =0{Nessun giocatore nella sala} =1{1 giocatore nella sala} other{{count} giocatori nella sala}}",
   "shoutedBingo": "ha gridato BINGO!",
   "cardId": "ID Cartella:",
   "manualInputInstruction": "Scrivi il numero estratto sul globo fisico",
@@ -86,7 +86,7 @@
     }
   },
   "inviteShareCodeTooltip": "Condividi Codice",
-  "inviteShareLinkMessage": "Vieni a giocare a Bingo! Clicca dal tuo telefono: bingo://room/{qrData}",
+  "inviteShareLinkMessage": "Vieni a giocare a Bingo! Basta toccare dal telefono: {qrData}",
   "@inviteShareLinkMessage": {
     "placeholders": {
       "qrData": {
@@ -94,7 +94,7 @@
       }
     }
   },
-  "inviteConnectedPlayers": "Giocatori Connessi: {count}",
+  "inviteConnectedPlayers": "{count, plural, =0{Nessun giocatore connesso finora} =1{1 giocatore connesso} other{{count} giocatori connessi}}",
   "@inviteConnectedPlayers": {
     "placeholders": {
       "count": {
@@ -185,6 +185,78 @@
         "type": "int"
       },
       "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@playersInRoom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeErrorMessage": "Impossibile aprire questa schermata.",
+  "cardFree": "LIBERO",
+  "inviteDefaultRoomName": "Sala Bingo",
+  "hostSetupErrorEmptyName": "Il nome della sala non può essere vuoto.",
+  "hostSetupErrorNoWifi": "Impossibile ottenere l'indirizzo Wi-Fi. Controlla la connessione Wi-Fi.",
+  "hostSetupErrorPortUnavailable": "Nessuna porta di rete disponibile per creare la sala. Chiudi le altre app che usano la rete e riprova.",
+  "hostSetupErrorUnexpected": "Qualcosa è andato storto nella creazione della sala. Riprova.",
+  "hostRoomErrorConnection": "Problema di connessione con un giocatore.",
+  "hostRoomWinnerTitle": "BINGO!",
+  "hostRoomWinnerMessage": "{name} ha vinto questo round!",
+  "@hostRoomWinnerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostRoomNewRound": "Nuovo round",
+  "hostRoomEndRoom": "Chiudi sala",
+  "hostRoomWaitingDraw": "Estrai il primo numero per iniziare il round.",
+  "hostRoomRoundOverHint": "Round terminato. Inizia un nuovo round o chiudi la sala.",
+  "drawnCount": "{count}/75 estratti",
+  "@drawnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanErrorInvalidCode": "Codice non valido. Chiedi un nuovo codice QR all'host.",
+  "scanErrorRejected": "L'host non ha accettato la connessione. Controlla la rete Wi-Fi e il codice della sala.",
+  "scanErrorTimeout": "L'host non ha risposto. Assicurati di essere sulla stessa rete Wi-Fi.",
+  "scanErrorUnexpected": "Errore inatteso nell'entrare nella sala.",
+  "playerGameLastCalled": "Ultimo numero",
+  "playerGameNoCallsYet": "Nessun numero estratto finora",
+  "connectionConnecting": "Connessione all'host...",
+  "connectionReconnecting": "Connessione persa. Riconnessione...",
+  "connectionDisconnected": "Disconnesso dall'host.",
+  "connectionRetry": "Riprova",
+  "playerGameYouWon": "BINGO! Hai vinto!",
+  "playerGameSomeoneWon": "{name} ha vinto questo round.",
+  "@playerGameSomeoneWon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerGameWaitNextRound": "Aspetta che l'host inizi un nuovo round o torna alla home.",
+  "backToLobby": "Torna alla home",
+  "playerGameClaimRejected": "Non è ancora bingo! Controlla la tua cartella e continua a giocare.",
+  "playerGameRoomClosedTitle": "L'host ha chiuso la sala",
+  "playerGameRoomClosedMessage": "La partita è finita. Grazie per aver giocato!",
+  "playerGameLeaveTitle": "Uscire dalla partita?",
+  "playerGameLeaveMessage": "Perderai la tua cartella e uscirai dalla sala.",
+  "playerGameLeave": "Esci",
+  "playerGameStay": "Resta",
+  "playerGameShoutCooldown": "Attendi {seconds}s",
+  "@playerGameShoutCooldown": {
+    "placeholders": {
+      "seconds": {
         "type": "int"
       }
     }
