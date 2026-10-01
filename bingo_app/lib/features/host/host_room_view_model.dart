@@ -88,6 +88,10 @@ class HostRoomViewModel extends BaseViewModel {
   /// Sortear só é permitido fora de [GamePhase.over] e com números restantes.
   bool get canDraw => !isGameOver && _availableNumbers.isNotEmpty;
 
+  /// Desfazer: há bola para tirar, a rodada não acabou e o globo automático
+  /// não está rodando (pausado pode).
+  bool get canUndo => _drawnNumbers.isNotEmpty && !isGameOver && !isAutoRunning;
+
   // Bingo numbers state
   final Set<int> _availableNumbers = _allNumbers();
 
@@ -126,11 +130,20 @@ class HostRoomViewModel extends BaseViewModel {
 
   Timer? _autoPlayTimer;
   bool _isAutoPlaying = false;
+  bool _autoPaused = false;
+
+  /// Globo automático ligado (rodando ou pausado).
   bool get isAutoPlaying => _isAutoPlaying;
+
+  /// Globo automático ligado e em pausa: o host pode sortear ou desfazer.
+  bool get isAutoPaused => _isAutoPlaying && _autoPaused;
+
+  /// Globo automático sorteando sozinho neste momento.
+  bool get isAutoRunning => _isAutoPlaying && !_autoPaused;
 
   // Manual Mode: Host enters a number
   Future<void> drawManualNumber(int number) async {
-    if (_isAutoPlaying || isGameOver) return;
+    if (isAutoRunning || isGameOver) return;
 
     if (number < 1 || number > 75) {
       _actionController.add(ShowError(HostRoomError.invalidNumber));
@@ -162,9 +175,14 @@ class HostRoomViewModel extends BaseViewModel {
     }
 
     _isAutoPlaying = true;
+    _autoPaused = false;
     notifyListeners();
     unawaited(AnalyticsService.trackFeatureUsed('auto_globe'));
+    _scheduleAutoPlay();
+  }
 
+  void _scheduleAutoPlay() {
+    _autoPlayTimer?.cancel();
     _autoPlayTimer = Timer.periodic(autoPlayInterval, (_) {
       if (!canDraw) {
         _stopAutoPlay();
@@ -174,9 +192,27 @@ class HostRoomViewModel extends BaseViewModel {
     });
   }
 
+  /// Pausa o globo automático sem desligá-lo: o timer para, o switch continua
+  /// ligado e o host pode desfazer ou sortear na mão até [resumeAutoPlay].
+  void pauseAutoPlay() {
+    if (!isAutoRunning) return;
+    _autoPlayTimer?.cancel();
+    _autoPlayTimer = null;
+    _autoPaused = true;
+    notifyListeners();
+  }
+
+  void resumeAutoPlay() {
+    if (!isAutoPaused || isGameOver) return;
+    _autoPaused = false;
+    notifyListeners();
+    _scheduleAutoPlay();
+  }
+
   void _stopAutoPlay() {
     _autoPlayTimer?.cancel();
     _autoPlayTimer = null;
+    _autoPaused = false;
     if (_isAutoPlaying) {
       _isAutoPlaying = false;
       notifyListeners();
@@ -185,8 +221,27 @@ class HostRoomViewModel extends BaseViewModel {
 
   /// Sorteio aleatório único (globo virtual).
   Future<void> drawRandomNumber() async {
-    if (_isAutoPlaying) return;
+    if (isAutoRunning) return;
     await _drawRandomNumber();
+  }
+
+  /// Desfaz a última bola: sai do histórico, volta ao globo e os jogadores
+  /// recebem um STATE_SYNC com a lista corrigida.
+  Future<void> undoLastDraw() async {
+    if (!canUndo) return;
+    final removed = _drawnNumbers.last;
+    _drawnNumbers = List<int>.unmodifiable(
+      _drawnNumbers.sublist(0, _drawnNumbers.length - 1),
+    );
+    _availableNumbers.add(removed);
+    _lastNumber = _drawnNumbers.isEmpty ? null : _drawnNumbers.last;
+    if (_drawnNumbers.isEmpty) _phase = GamePhase.waiting;
+    notifyListeners();
+    _actionController.add(AnnounceUndo(number: removed));
+
+    await _gameConnection.broadcastEvent(
+      StateSyncEvent(drawnNumbers: _drawnNumbers),
+    );
   }
 
   Future<void> _drawRandomNumber() async {
@@ -261,11 +316,16 @@ class HostRoomViewModel extends BaseViewModel {
       await _gameConnection.broadcastEvent(
         GameOverEvent(winnerName: claim.playerName, winnerId: claim.playerId),
       );
-      unawaited(AnalyticsService.trackBingoWin('host_room', cardId: claim.cardId));
+      unawaited(
+        AnalyticsService.trackBingoWin('host_room', cardId: claim.cardId),
+      );
     } else {
       notifyListeners();
       await _gameConnection.broadcastEvent(
-        RejectClaimEvent(playerName: claim.playerName, playerId: claim.playerId),
+        RejectClaimEvent(
+          playerName: claim.playerName,
+          playerId: claim.playerId,
+        ),
       );
     }
 
@@ -285,7 +345,9 @@ class HostRoomViewModel extends BaseViewModel {
     _winnerId = null;
     _phase = GamePhase.waiting;
     notifyListeners();
-    await _gameConnection.broadcastEvent(StateSyncEvent(drawnNumbers: const []));
+    await _gameConnection.broadcastEvent(
+      StateSyncEvent(drawnNumbers: const []),
+    );
   }
 
   /// Encerra a sala: ROOM_CLOSED para todos e servidor derrubado.
@@ -324,4 +386,10 @@ class AnnounceNumber extends HostRoomAction {
   final int number;
   final String phrase;
   AnnounceNumber({required this.number, required this.phrase});
+}
+
+/// Bola desfeita pelo host (toast neutro).
+class AnnounceUndo extends HostRoomAction {
+  final int number;
+  AnnounceUndo({required this.number});
 }

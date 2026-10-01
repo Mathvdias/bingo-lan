@@ -7,11 +7,7 @@ void main() {
     var back = false;
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(
-          body: BingoBackButton(
-            onPressed: () => back = true,
-          ),
-        ),
+        home: Scaffold(body: BingoBackButton(onPressed: () => back = true)),
       ),
     );
 
@@ -19,7 +15,9 @@ void main() {
     expect(back, isTrue);
   });
 
-  testWidgets('BingoBackButton usa Navigator.pop quando onPressed null', (tester) async {
+  testWidgets('BingoBackButton usa Navigator.pop quando onPressed null', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -31,9 +29,7 @@ void main() {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => Scaffold(
-                            body: BingoBackButton(),
-                          ),
+                          builder: (_) => Scaffold(body: BingoBackButton()),
                         ),
                       );
                     },

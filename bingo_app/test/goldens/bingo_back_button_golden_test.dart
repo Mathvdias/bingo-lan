@@ -171,7 +171,9 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: theme,
-            home: Scaffold(body: Center(child: BingoBackButton(onPressed: () {}))),
+            home: Scaffold(
+              body: Center(child: BingoBackButton(onPressed: () {})),
+            ),
           ),
         );
 
