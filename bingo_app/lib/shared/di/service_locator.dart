@@ -5,6 +5,7 @@ import 'package:bingo_app/features/host/host_setup_view_model.dart';
 import 'package:bingo_app/features/paywall/paywall_analytics.dart';
 import 'package:bingo_app/features/paywall/paywall_view_model.dart';
 import 'package:bingo_app/features/paywall/purchases_gateway.dart';
+import 'package:bingo_app/features/player/player_game_args.dart';
 import 'package:bingo_app/features/player/player_game_view_model.dart';
 import 'package:bingo_app/features/player/player_scan_view_model.dart';
 import 'package:bingo_app/features/solo/solo_game_view_model.dart';
@@ -38,9 +39,9 @@ void setupServiceLocator() {
         PlayerScanViewModel(gameConnection: serviceLocator<IGameConnection>()),
   );
 
-  serviceLocator.registerFactoryParam<PlayerGameViewModel, int, void>(
-    (cardId, _) => PlayerGameViewModel(
-      cardId: cardId,
+  serviceLocator.registerFactoryParam<PlayerGameViewModel, PlayerGameArgs, void>(
+    (args, _) => PlayerGameViewModel(
+      args: args,
       gameConnection: serviceLocator<IGameConnection>(),
     ),
   );
