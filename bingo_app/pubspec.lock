@@ -494,11 +494,10 @@ packages:
   lava_flutter:
     dependency: transitive
     description:
-      path: "packages/lava_flutter"
-      ref: main
-      resolved-ref: f6518a5d1b0e30bd5de4ad082c3635a0e35c5e53
-      url: "https://github.com/Mathvdias/portfolio.git"
-    source: git
+      name: lava_flutter
+      sha256: "9c50076bc8610f8f2c29fb56841ebdc4d32325ba09a6e1b1550277162f65e45a"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   leak_tracker:
     dependency: transitive

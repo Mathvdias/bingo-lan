@@ -156,14 +156,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get aboutTitle => 'Sobre o Bingo';
 
   @override
-  String get aboutImportantTitle => '⚠️ Importante: Mesma Rede Wi-Fi';
+  String get aboutImportantTitle => 'Importante: Mesma Rede Wi-Fi';
 
   @override
   String get aboutImportantBody =>
       'O Bingo funciona através de uma conexão local segura. Para que os jogadores encontrem a sua sala, TODOS (inclusive o organizador) devem estar conectados à mesma rede Wi-Fi.';
 
   @override
-  String get aboutHowToPlayTitle => '📖 Como Jogar (Passo a Passo)';
+  String get aboutHowToPlayTitle => 'Como Jogar (Passo a Passo)';
 
   @override
   String get aboutStep1Title => 'Escolha o Organizador';
@@ -194,7 +194,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Completou a cartela? Aperte o botão \'GRITAR BINGO\' antes de todo mundo para vencer!';
 
   @override
-  String get aboutLanguage => '🌐 Idioma / Language';
+  String get aboutLanguage => 'Idioma / Language';
 
   @override
   String get scanEnterName => 'Digite seu nome';

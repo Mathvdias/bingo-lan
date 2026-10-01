@@ -1,10 +1,12 @@
 import 'package:bingo_app/features/host/host_setup_view_model.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
+import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
 import 'package:bingo_app/shared/ui/widgets/flippable_card.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
 import 'package:bingo_app/shared/ui/widgets/warning_box.dart';
+import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -56,8 +58,20 @@ class HostSetupScreen extends StatelessWidget {
                       const SizedBox(height: 24),
                       WarningBox(text: l10n.hostSetupWifiWarning),
                       const SizedBox(height: 32),
+                      // Roteador Wi-Fi com bolas (Lava, 220 px) no lugar da
+                      // ilustração de 8 MB; toque vira o cartão e mostra o
+                      // texto.
                       FlippableCard(
-                        image: 'assets/images/bingo_local.webp',
+                        hero: const BingoLavaIconView(
+                          key: Key('host_setup_wifi_hero'),
+                          icon: BingoLavaIcon.wifiRouter,
+                          size: 220,
+                          fallback: Icon(
+                            Icons.wifi_rounded,
+                            size: 96,
+                            color: AppColors.secondary,
+                          ),
+                        ),
                         text: l10n.hostSetupWifiDesc,
                       ),
                       const SizedBox(height: 32),

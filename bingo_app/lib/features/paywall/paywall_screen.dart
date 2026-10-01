@@ -304,6 +304,9 @@ class _Benefits extends StatelessWidget {
   }
 }
 
+/// Linha de benefício: disco azul com o ícone Material. As três linhas são
+/// estáticas de propósito, para a lista se ler como lista e a roseta Lava
+/// acima ficar como único movimento da tela.
 class _BenefitRow extends StatelessWidget {
   final IconData icon;
   final String text;

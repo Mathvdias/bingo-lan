@@ -24,3 +24,6 @@
 
 # Golden test failure output
 **/test/goldens/failures/
+
+# Worktrees e estado do Claude Code
+.claude/
