@@ -102,11 +102,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get lobbyWifiBannerDefault => 'Gioca sulla rete Wi-Fi dell\'host!';
 
   @override
-  String lobbyWifiBannerConnected(String wifiName) {
-    return 'Rete attuale: $wifiName\nGioca sulla rete dell\'host!';
-  }
-
-  @override
   String get buttonWifi => 'WIFI';
 
   @override
@@ -131,8 +126,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get scanWifiBannerDefault => 'Connettiti alla rete Wi-Fi dell\'host.';
 
   @override
-  String scanWifiBannerConnected(String wifiName) {
-    return 'Rete: $wifiName\nConnettiti alla rete dell\'host.';
+  String get scanWifiBannerNoWifi =>
+      'Non sei connesso al Wi-Fi. Connettiti alla rete dell\'host.';
+
+  @override
+  String scanWifiBannerOnWifi(String ip) {
+    return 'Wi-Fi connesso ($ip). Usa la stessa rete dell\'host.';
   }
 
   @override
@@ -481,6 +480,23 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get scanErrorUnexpected => 'Errore inatteso nell\'entrare nella sala.';
+
+  @override
+  String get scanErrorNotOnWifi =>
+      'Non sei connesso al Wi-Fi. Connettiti alla rete dell\'host e riprova.';
+
+  @override
+  String scanErrorDifferentNetwork(String playerIp, String hostIp) {
+    return 'Sembri essere su un\'altra rete (il tuo IP $playerIp, host $hostIp). Entra nella rete Wi-Fi dell\'host.';
+  }
+
+  @override
+  String get scanErrorHostUnreachable =>
+      'Non riesco a raggiungere l\'host. Controlla di essere sulla stessa rete Wi-Fi. Le reti ospiti, di hotel o di condominio spesso bloccano la comunicazione tra dispositivi; in quel caso usa l\'hotspot dell\'host.';
+
+  @override
+  String get scanErrorRoomClosed =>
+      'La stanza non è più aperta. Chiedi un nuovo invito all\'host.';
 
   @override
   String get playerGameLastCalled => 'Ultimo numero';

@@ -26,14 +26,6 @@
   "lobbySubtitle": "Votre fête, vos règles",
   "lobbyWifiShowcase": "Le Bingo fonctionne uniquement localement ! Assurez-vous d'être sur le même réseau Wi-Fi que vos invités.",
   "lobbyWifiBannerDefault": "Jouez sur le réseau Wi-Fi de l'hôte !",
-  "lobbyWifiBannerConnected": "Réseau actuel: {wifiName}\nJouez sur le réseau de l'hôte !",
-  "@lobbyWifiBannerConnected": {
-    "placeholders": {
-      "wifiName": {
-        "type": "String"
-      }
-    }
-  },
   "buttonWifi": "WIFI",
   "lobbyHostShowcase": "Cliquez ici si VOUS êtes l'hôte et que vous voulez tirer les boules de bingo.",
   "lobbyJoinShowcase": "Cliquez ici pour scanner le code QR et jouer avec une carte sur votre téléphone.",
@@ -41,10 +33,11 @@
   "soloButton": "Bingo Solo",
   "buttonConfig": "CONFIG",
   "scanWifiBannerDefault": "Connectez-vous au réseau Wi-Fi de l'hôte.",
-  "scanWifiBannerConnected": "Réseau: {wifiName}\nConnectez-vous au réseau de l'hôte.",
-  "@scanWifiBannerConnected": {
+  "scanWifiBannerNoWifi": "Vous n'êtes pas en Wi-Fi. Connectez-vous au réseau de l'hôte.",
+  "scanWifiBannerOnWifi": "Wi-Fi connecté ({ip}). Utilisez le même réseau que l'hôte.",
+  "@scanWifiBannerOnWifi": {
     "placeholders": {
-      "wifiName": {
+      "ip": {
         "type": "String"
       }
     }
@@ -207,6 +200,20 @@
   "scanErrorRejected": "L'hôte a refusé la connexion. Vérifiez le réseau Wi-Fi et le code de la salle.",
   "scanErrorTimeout": "L'hôte n'a pas répondu. Vérifiez que vous êtes sur le même réseau Wi-Fi.",
   "scanErrorUnexpected": "Erreur inattendue en rejoignant la salle.",
+  "scanErrorNotOnWifi": "Vous n'êtes pas en Wi-Fi. Connectez-vous au réseau de l'hôte et réessayez.",
+  "scanErrorDifferentNetwork": "Vous semblez être sur un autre réseau (votre IP {playerIp}, hôte {hostIp}). Rejoignez le réseau Wi-Fi de l'hôte.",
+  "@scanErrorDifferentNetwork": {
+    "placeholders": {
+      "playerIp": {
+        "type": "String"
+      },
+      "hostIp": {
+        "type": "String"
+      }
+    }
+  },
+  "scanErrorHostUnreachable": "Impossible de joindre l'hôte. Vérifiez que vous êtes sur le même réseau Wi-Fi. Les réseaux invités, d'hôtel ou d'immeuble bloquent souvent la communication entre appareils ; dans ce cas, utilisez le point d'accès de l'hôte.",
+  "scanErrorRoomClosed": "La salle n'est plus ouverte. Demandez une nouvelle invitation à l'hôte.",
   "playerGameLastCalled": "Dernier numéro",
   "playerGameNoCallsYet": "Aucun numéro tiré pour l'instant",
   "connectionConnecting": "Connexion à l'hôte...",

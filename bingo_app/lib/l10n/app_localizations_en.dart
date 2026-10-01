@@ -102,11 +102,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lobbyWifiBannerDefault => 'Play on the host\'s Wi-Fi network!';
 
   @override
-  String lobbyWifiBannerConnected(String wifiName) {
-    return 'Current network: $wifiName\nPlay on the host\'s network!';
-  }
-
-  @override
   String get buttonWifi => 'WIFI';
 
   @override
@@ -131,8 +126,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanWifiBannerDefault => 'Connect to the host\'s Wi-Fi network.';
 
   @override
-  String scanWifiBannerConnected(String wifiName) {
-    return 'Network: $wifiName\nConnect to the host\'s network.';
+  String get scanWifiBannerNoWifi =>
+      'You\'re not on Wi-Fi. Connect to the host\'s network.';
+
+  @override
+  String scanWifiBannerOnWifi(String ip) {
+    return 'Wi-Fi connected ($ip). Use the same network as the host.';
   }
 
   @override
@@ -475,6 +474,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanErrorUnexpected => 'Unexpected error while joining the room.';
+
+  @override
+  String get scanErrorNotOnWifi =>
+      'You\'re not on Wi-Fi. Connect to the host\'s network and try again.';
+
+  @override
+  String scanErrorDifferentNetwork(String playerIp, String hostIp) {
+    return 'You seem to be on a different network (your IP $playerIp, host $hostIp). Join the host\'s Wi-Fi network.';
+  }
+
+  @override
+  String get scanErrorHostUnreachable =>
+      'Couldn\'t reach the host. Make sure you\'re on the same Wi-Fi network. Guest, hotel or building networks often block devices from talking to each other; in that case use the host\'s hotspot.';
+
+  @override
+  String get scanErrorRoomClosed =>
+      'The room is no longer open. Ask the host for a new invite.';
 
   @override
   String get playerGameLastCalled => 'Last called';

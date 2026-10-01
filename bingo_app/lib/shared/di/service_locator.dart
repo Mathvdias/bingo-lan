@@ -35,8 +35,11 @@ void setupServiceLocator() {
   );
 
   serviceLocator.registerFactory(
-    () =>
-        PlayerScanViewModel(gameConnection: serviceLocator<IGameConnection>()),
+    () => PlayerScanViewModel(
+      gameConnection: serviceLocator<IGameConnection>(),
+      networkInfo: serviceLocator<INetworkInfoDriver>(),
+      reachability: serviceLocator<IHostReachability>(),
+    ),
   );
 
   serviceLocator.registerFactoryParam<PlayerGameViewModel, PlayerGameArgs, void>(

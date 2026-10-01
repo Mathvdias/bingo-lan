@@ -27,13 +27,19 @@ class PlayerScanScreen extends StatefulWidget {
   State<PlayerScanScreen> createState() => _PlayerScanScreenState();
 }
 
-class _PlayerScanScreenState extends State<PlayerScanScreen> {
+class _PlayerScanScreenState extends State<PlayerScanScreen>
+    with WidgetsBindingObserver {
   late final MobileScannerController controller;
   final GlobalKey _scannerShowcaseKey = GlobalKey();
+  PlayerScanViewModel? _viewModel;
+
+  /// Último convite lido, para o "Tentar de novo" do aviso de erro.
+  String? _lastScanData;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.normal,
       facing: CameraFacing.back,
@@ -56,19 +62,29 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Voltou das configurações de Wi-Fi: atualiza o aviso de rede.
+    if (state == AppLifecycleState.resumed) {
+      _viewModel?.refreshNetwork();
+    }
+  }
+
   Future<void> _handleScan(PlayerScanViewModel viewModel, String data) async {
     if (viewModel.isLoading) return;
+    _lastScanData = data;
 
     final joined = await viewModel.onQrCodeScanned(data);
     if (!mounted) return;
 
     if (joined == null) {
       final error = viewModel.error;
-      if (error != null) _showError(error);
+      if (error != null) _showError(viewModel, error);
       return;
     }
 
@@ -99,18 +115,47 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     );
   }
 
-  void _showError(PlayerScanError error) {
+  void _showError(PlayerScanViewModel viewModel, PlayerScanError error) {
     final l10n = AppLocalizations.of(context)!;
     final text = switch (error) {
       PlayerScanError.invalidCode => l10n.scanErrorInvalidCode,
+      PlayerScanError.notOnWifi => l10n.scanErrorNotOnWifi,
+      PlayerScanError.differentNetwork => l10n.scanErrorDifferentNetwork(
+        viewModel.wifiIp ?? '?',
+        viewModel.invite?.ip ?? '?',
+      ),
+      PlayerScanError.hostUnreachable => l10n.scanErrorHostUnreachable,
+      PlayerScanError.roomClosed => l10n.scanErrorRoomClosed,
       PlayerScanError.rejected => l10n.scanErrorRejected,
       PlayerScanError.timeout => l10n.scanErrorTimeout,
       PlayerScanError.unexpected => l10n.scanErrorUnexpected,
     };
-    ScaffoldMessenger.of(context).showSnackBar(
+    // Erros de rede merecem tempo de leitura e um atalho para repetir (o
+    // QR já foi lido; sem isso, quem veio pelo link teria que reabri-lo).
+    final isNetwork = switch (error) {
+      PlayerScanError.notOnWifi ||
+      PlayerScanError.differentNetwork ||
+      PlayerScanError.hostUnreachable ||
+      PlayerScanError.timeout => true,
+      _ => false,
+    };
+    final lastData = _lastScanData;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
       SnackBar(
+        key: const Key('scan_error_snackbar'),
         content: Text(text),
         backgroundColor: Theme.of(context).colorScheme.error,
+        duration: Duration(seconds: isNetwork ? 8 : 4),
+        action: isNetwork && lastData != null
+            ? SnackBarAction(
+                key: const Key('scan_retry_action'),
+                label: l10n.connectionRetry,
+                textColor: Colors.white,
+                onPressed: () => _handleScan(viewModel, lastData),
+              )
+            : null,
       ),
     );
   }
@@ -169,6 +214,22 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
     }
   }
 
+  /// Sem permissão de localização não dá para ler o nome da rede; o IP do
+  /// Wi-Fi (que não exige permissão) já diz se o aparelho está no Wi-Fi.
+  String _bannerText(AppLocalizations l10n, PlayerScanViewModel viewModel) {
+    if (!viewModel.networkChecked) return l10n.scanWifiBannerDefault;
+    final ip = viewModel.wifiIp;
+    if (ip == null) return l10n.scanWifiBannerNoWifi;
+    return l10n.scanWifiBannerOnWifi(ip);
+  }
+
+  IconData _bannerIcon(PlayerScanViewModel viewModel) {
+    if (viewModel.networkChecked && viewModel.wifiIp == null) {
+      return Icons.wifi_off_rounded;
+    }
+    return Icons.wifi_rounded;
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -176,6 +237,8 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
 
     return ViewModelProvider<PlayerScanViewModel>(
       onReady: (viewModel) {
+        _viewModel = viewModel;
+        viewModel.refreshNetwork();
         // Deep link bingo://join?data=...: entra na sala sem ler o QR.
         final initialData = widget.initialData;
         if (initialData != null && initialData.isNotEmpty) {
@@ -276,15 +339,17 @@ class _PlayerScanScreenState extends State<PlayerScanScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.wifi_rounded,
+                        Icon(
+                          _bannerIcon(viewModel),
+                          key: const Key('scan_wifi_banner_icon'),
                           color: Colors.white,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            l10n.scanWifiBannerDefault,
+                            _bannerText(l10n, viewModel),
+                            key: const Key('scan_wifi_banner_text'),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 13,

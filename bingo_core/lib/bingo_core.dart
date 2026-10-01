@@ -15,6 +15,10 @@ export 'src/drivers/i_uuid_driver.dart'; // New export
 // Logic
 export 'src/logic/access_control_service.dart';
 
+// Network
+export 'src/network/host_reachability.dart';
+export 'src/network/lan_subnet.dart';
+
 // Services
 export 'src/services/jwt_service.dart';
 

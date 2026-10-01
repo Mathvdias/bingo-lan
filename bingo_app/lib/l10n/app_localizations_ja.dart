@@ -99,11 +99,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get lobbyWifiBannerDefault => 'ホストのWi-Fiネットワークでプレイしましょう！';
 
   @override
-  String lobbyWifiBannerConnected(String wifiName) {
-    return '現在のネットワーク：$wifiName\nホストのネットワークでプレイしましょう！';
-  }
-
-  @override
   String get buttonWifi => 'Wi-Fi';
 
   @override
@@ -125,8 +120,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get scanWifiBannerDefault => 'ホストのWi-Fiネットワークに接続します。';
 
   @override
-  String scanWifiBannerConnected(String wifiName) {
-    return 'ネットワーク：$wifiName\nホストのネットワークに接続します。';
+  String get scanWifiBannerNoWifi => 'Wi-Fiに接続されていません。ホストのネットワークに接続してください。';
+
+  @override
+  String scanWifiBannerOnWifi(String ip) {
+    return 'Wi-Fi接続中（$ip）。ホストと同じネットワークを使ってください。';
   }
 
   @override
@@ -450,6 +448,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get scanErrorUnexpected => 'ルームへの参加中に予期しないエラーが発生しました。';
+
+  @override
+  String get scanErrorNotOnWifi =>
+      'Wi-Fiに接続されていません。ホストと同じネットワークに接続してからやり直してください。';
+
+  @override
+  String scanErrorDifferentNetwork(String playerIp, String hostIp) {
+    return '別のネットワークにいるようです（あなたのIP $playerIp、ホスト $hostIp）。ホストと同じWi-Fiネットワークに接続してください。';
+  }
+
+  @override
+  String get scanErrorHostUnreachable =>
+      'ホストに接続できませんでした。同じWi-Fiネットワークにいるか確認してください。ゲスト用、ホテル、マンションのネットワークは端末同士の通信を遮断することが多いので、その場合はホストのテザリングを使ってください。';
+
+  @override
+  String get scanErrorRoomClosed => 'ルームはもう開いていません。ホストに新しい招待をもらってください。';
 
   @override
   String get playerGameLastCalled => '最新の番号';

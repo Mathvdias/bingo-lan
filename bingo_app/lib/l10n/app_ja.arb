@@ -26,14 +26,6 @@
   "lobbySubtitle": "あなたのパーティー、あなたのルール",
   "lobbyWifiShowcase": "ビンゴはローカルでのみ動作します！ゲストと同じWi-Fiネットワークに接続していることを確認してください。",
   "lobbyWifiBannerDefault": "ホストのWi-Fiネットワークでプレイしましょう！",
-  "lobbyWifiBannerConnected": "現在のネットワーク：{wifiName}\nホストのネットワークでプレイしましょう！",
-  "@lobbyWifiBannerConnected": {
-    "placeholders": {
-      "wifiName": {
-        "type": "String"
-      }
-    }
-  },
   "buttonWifi": "Wi-Fi",
   "lobbyHostShowcase": "あなたがホストでビンゴの球を引きたい場合はここをクリックしてください。",
   "lobbyJoinShowcase": "QRコードをスキャンして電話のカードでプレイする場合はここをクリックしてください。",
@@ -41,10 +33,11 @@
   "soloButton": "ソロビンゴ",
   "buttonConfig": "設定",
   "scanWifiBannerDefault": "ホストのWi-Fiネットワークに接続します。",
-  "scanWifiBannerConnected": "ネットワーク：{wifiName}\nホストのネットワークに接続します。",
-  "@scanWifiBannerConnected": {
+  "scanWifiBannerNoWifi": "Wi-Fiに接続されていません。ホストのネットワークに接続してください。",
+  "scanWifiBannerOnWifi": "Wi-Fi接続中（{ip}）。ホストと同じネットワークを使ってください。",
+  "@scanWifiBannerOnWifi": {
     "placeholders": {
-      "wifiName": {
+      "ip": {
         "type": "String"
       }
     }
@@ -207,6 +200,20 @@
   "scanErrorRejected": "ホストが接続を受け付けませんでした。Wi-Fiネットワークとルームコードを確認してください。",
   "scanErrorTimeout": "ホストから応答がありません。同じWi-Fiネットワークに接続しているか確認してください。",
   "scanErrorUnexpected": "ルームへの参加中に予期しないエラーが発生しました。",
+  "scanErrorNotOnWifi": "Wi-Fiに接続されていません。ホストと同じネットワークに接続してからやり直してください。",
+  "scanErrorDifferentNetwork": "別のネットワークにいるようです（あなたのIP {playerIp}、ホスト {hostIp}）。ホストと同じWi-Fiネットワークに接続してください。",
+  "@scanErrorDifferentNetwork": {
+    "placeholders": {
+      "playerIp": {
+        "type": "String"
+      },
+      "hostIp": {
+        "type": "String"
+      }
+    }
+  },
+  "scanErrorHostUnreachable": "ホストに接続できませんでした。同じWi-Fiネットワークにいるか確認してください。ゲスト用、ホテル、マンションのネットワークは端末同士の通信を遮断することが多いので、その場合はホストのテザリングを使ってください。",
+  "scanErrorRoomClosed": "ルームはもう開いていません。ホストに新しい招待をもらってください。",
   "playerGameLastCalled": "最新の番号",
   "playerGameNoCallsYet": "まだ番号は引かれていません",
   "connectionConnecting": "ホストに接続中...",

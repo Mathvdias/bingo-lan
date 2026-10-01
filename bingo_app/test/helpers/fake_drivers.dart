@@ -33,3 +33,41 @@ class FakePaymentDriver implements IPaymentDriver {
   @override
   Future<void> restorePurchases() async {}
 }
+
+/// Rede falsa: IP e máscara configuráveis, sem plugin.
+class FakeNetworkInfoDriver implements INetworkInfoDriver {
+  String? ip;
+  String? mask;
+  Object? ipError;
+  int ipReads = 0;
+
+  FakeNetworkInfoDriver({this.ip = '192.168.0.20', this.mask});
+
+  @override
+  Future<String?> getWifiIP() async {
+    ipReads++;
+    if (ipError != null) throw ipError!;
+    return ip;
+  }
+
+  @override
+  Future<String?> getWifiSubnetMask() async => mask;
+}
+
+/// Sondagem falsa do host: devolve o resultado configurado.
+class FakeHostReachability implements IHostReachability {
+  HostProbeResult result;
+  final List<(String, int)> probes = [];
+
+  FakeHostReachability([this.result = HostProbeResult.reachable]);
+
+  @override
+  Future<HostProbeResult> probe(
+    String ip,
+    int port, {
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
+    probes.add((ip, port));
+    return result;
+  }
+}
