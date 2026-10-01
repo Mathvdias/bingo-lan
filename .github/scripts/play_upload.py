@@ -46,7 +46,7 @@ def main():
     ap.add_argument("--track", default="internal")
     ap.add_argument("--status", default="completed")
     ap.add_argument("--mapping")
-    ap.add_argument("--symbols", help="diretório com os símbolos nativos (--split-debug-info)")
+    ap.add_argument("--symbols", help="diretório com símbolos nativos no formato NDK (os .symbols do Flutter NÃO servem: a Play responde 400)")
     ap.add_argument("--notes-pt")
     ap.add_argument("--notes-en")
     args = ap.parse_args()

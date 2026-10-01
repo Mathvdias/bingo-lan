@@ -109,7 +109,6 @@ jobs:
             --track "${{ github.event.inputs.track || 'internal' }}" \
             --status completed \
             --mapping bingo_app/build/app/outputs/mapping/prodRelease/mapping.txt \
-            --symbols bingo_app/build/symbols \
             --notes-pt "Versão ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})." \
             --notes-en "Version ${{ steps.ver.outputs.name }} (${{ steps.ver.outputs.number }})."
 
