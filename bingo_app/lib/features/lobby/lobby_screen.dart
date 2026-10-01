@@ -89,10 +89,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
         ],
       ),
       // Único lugar do app com banner. Ocupa zero altura quando não há anúncio.
-      bottomNavigationBar: const SafeArea(
-        top: false,
-        child: Center(child: BannerAdWidget()),
-      ),
+      // Sem Center aqui: ele se expandiria até a altura máxima que o Scaffold
+      // oferece à barra inferior e deixaria o corpo com altura zero.
+      bottomNavigationBar: const SafeArea(top: false, child: BannerAdWidget()),
       body: Stack(
         children: [
           _LobbyBackground(),

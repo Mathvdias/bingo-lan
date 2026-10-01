@@ -102,12 +102,15 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   Widget build(BuildContext context) {
     final ad = _bannerAd;
     if (_isLoaded && ad != null) {
-      return RepaintBoundary(
-        child: Container(
-          alignment: Alignment.center,
-          width: ad.size.width.toDouble(),
-          height: ad.size.height.toDouble(),
-          child: AdWidget(ad: ad),
+      // heightFactor: 1 encolhe na vertical mesmo com altura máxima folgada.
+      return Align(
+        heightFactor: 1,
+        child: RepaintBoundary(
+          child: SizedBox(
+            width: ad.size.width.toDouble(),
+            height: ad.size.height.toDouble(),
+            child: AdWidget(ad: ad),
+          ),
         ),
       );
     }
@@ -115,9 +118,12 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       return const SizedBox.shrink();
     }
     // Reserva o espaço enquanto carrega para evitar salto de layout.
-    return SizedBox(
-      width: widget.size.width.toDouble(),
-      height: widget.size.height.toDouble(),
+    return Align(
+      heightFactor: 1,
+      child: SizedBox(
+        width: widget.size.width.toDouble(),
+        height: widget.size.height.toDouble(),
+      ),
     );
   }
 }
