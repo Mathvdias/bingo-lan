@@ -209,17 +209,18 @@ class _DrawnState extends StatelessWidget {
   }
 }
 
-/// Estado vazio: globo de bingo 3D girando (bola em contorno com "—" até o
-/// bundle carregar), título e instrução. Substitui o "--" gigante amarelo que
-/// parecia duas pílulas.
+/// Estado vazio: globo de bingo 3D girando no eixo, com bolas dentro (bola
+/// em contorno com "—" até o bundle carregar), título e instrução. Substitui
+/// o "--" gigante amarelo que parecia duas pílulas.
 class _EmptyState extends StatelessWidget {
   final AppLocalizations l10n;
   final TextTheme textTheme;
   final bool animated;
 
-  /// Lado do globo; o placeholder tem o mesmo tamanho para o cartão não mudar
-  /// de altura entre os dois estados.
-  static const double _heroSize = 88;
+  /// Lado do globo (120 px: o bundle é renderizado em 2x para isso); o
+  /// placeholder tem o mesmo tamanho para o cartão não mudar de altura entre
+  /// os dois estados.
+  static const double _heroSize = 120;
 
   const _EmptyState({
     super.key,

@@ -148,14 +148,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutTitle => 'ビンゴについて';
 
   @override
-  String get aboutImportantTitle => '⚠️ 重要：同じWi-Fiネットワーク';
+  String get aboutImportantTitle => '重要：同じWi-Fiネットワーク';
 
   @override
   String get aboutImportantBody =>
       'ビンゴは安全なローカル接続で機能します。プレイヤーがあなたのルームを見つけるには、全員（ホストを含む）が全く同じWi-Fiネットワークに接続している必要があります。';
 
   @override
-  String get aboutHowToPlayTitle => '📖 遊び方 (ステップバイステップ)';
+  String get aboutHowToPlayTitle => '遊び方 (ステップバイステップ)';
 
   @override
   String get aboutStep1Title => 'ホストを選ぶ';
@@ -182,7 +182,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutStep4Desc => 'カードが完成しましたか？誰よりも早く「ビンゴと叫ぶ」ボタンを押して勝ちましょう！';
 
   @override
-  String get aboutLanguage => '🌐 言語';
+  String get aboutLanguage => '言語';
 
   @override
   String get scanEnterName => '名前を入力';

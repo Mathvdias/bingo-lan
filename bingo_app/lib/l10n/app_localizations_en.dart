@@ -154,14 +154,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutTitle => 'About Bingo';
 
   @override
-  String get aboutImportantTitle => '⚠️ Important: Same Wi-Fi Network';
+  String get aboutImportantTitle => 'Important: Same Wi-Fi Network';
 
   @override
   String get aboutImportantBody =>
       'Bingo works over a secure local connection. For players to find your room, EVERYONE (including the host) must be connected to the exact same Wi-Fi network.';
 
   @override
-  String get aboutHowToPlayTitle => '📖 How to Play (Step by Step)';
+  String get aboutHowToPlayTitle => 'How to Play (Step by Step)';
 
   @override
   String get aboutStep1Title => 'Choose the Host';
@@ -192,7 +192,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Completed your card? Press the \'SHOUT BINGO\' button before everyone else to win!';
 
   @override
-  String get aboutLanguage => '🌐 Language';
+  String get aboutLanguage => 'Language';
 
   @override
   String get scanEnterName => 'Enter your name';

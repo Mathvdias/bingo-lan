@@ -29,3 +29,4 @@ export 'src/models/player_events.dart'; // New export
 // UI
 export 'package:lava_flutter/lava_flutter.dart' show LavaBundle;
 export 'src/ui/bingo_lava_icon.dart';
+export 'src/ui/bingo_lava_tab_icon.dart';
