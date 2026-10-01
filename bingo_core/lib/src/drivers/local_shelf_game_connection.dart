@@ -110,6 +110,7 @@ class LocalShelfGameConnection implements IGameConnection {
   final _gameEventController = StreamController<GameEvent>.broadcast();
   final _connectedPlayersController =
       StreamController<List<String>>.broadcast();
+  List<String> _connectedPlayers = const [];
   final _errorController = StreamController<String>.broadcast();
   final _stateController = StreamController<GameConnectionState>.broadcast();
 
@@ -118,6 +119,9 @@ class LocalShelfGameConnection implements IGameConnection {
 
   @override
   Stream<GameEvent> get eventStream => _gameEventController.stream;
+
+  @override
+  List<String> get connectedPlayers => _connectedPlayers;
 
   @override
   Stream<List<String>> get connectedPlayersStream =>
@@ -502,11 +506,15 @@ class LocalShelfGameConnection implements IGameConnection {
     _emitPlayers();
   }
 
+  /// Atualiza a lista atual e avisa quem já está ouvindo. A lista fica em
+  /// [connectedPlayers] para quem assinar depois (ex.: a tela da sala, criada
+  /// depois que os jogadores entraram pela tela de convite).
   void _emitPlayers() {
+    _connectedPlayers = _attached.values
+        .map((s) => s.name)
+        .toList(growable: false);
     if (_connectedPlayersController.isClosed) return;
-    _connectedPlayersController.add(
-      _attached.values.map((s) => s.name).toList(growable: false),
-    );
+    _connectedPlayersController.add(_connectedPlayers);
   }
 
   int _newCardId() {

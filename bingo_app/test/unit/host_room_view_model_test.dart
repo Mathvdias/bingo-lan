@@ -350,6 +350,31 @@ void main() {
       );
     });
 
+    test('jogador que entrou antes da sala abrir já conta', () async {
+      // O stream não repete o valor atual: o VM parte de connectedPlayers.
+      final local = FakeGameConnection(connectedPlayers: const ['Ana']);
+      final config = _Config();
+      final localVm = HostRoomViewModel(
+        gameConnection: local,
+        accessControlService: AccessControlService(
+          config: config,
+          payment: _Payment(),
+        ),
+        configDriver: config,
+      );
+      // LIFO: o VM (que chama disconnect) sai antes da conexão fechar.
+      addTearDown(local.dispose);
+      addTearDown(localVm.dispose);
+
+      expect(localVm.players, ['Ana']);
+      expect(localVm.playerCount, 1);
+
+      // E continua acompanhando as mudanças.
+      local.emitPlayers(const ['Ana', 'Bob']);
+      await pumpEventQueue();
+      expect(localVm.players.length, 2);
+    });
+
     test('lista de jogadores acompanha a conexão', () async {
       connection.emitPlayers(['Ana', 'Bob']);
       await pumpEventQueue();

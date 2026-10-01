@@ -13,6 +13,7 @@ class FakeGameConnection implements IGameConnection {
   final _states = StreamController<GameConnectionState>.broadcast();
 
   GameConnectionState _state;
+  List<String> _connectedPlayers;
 
   final List<GameEvent> broadcasts = [];
   final List<PlayerEvent> sent = [];
@@ -30,11 +31,17 @@ class FakeGameConnection implements IGameConnection {
 
   FakeGameConnection({
     GameConnectionState initialState = GameConnectionState.connected,
-  }) : _state = initialState;
+    List<String> connectedPlayers = const [],
+  }) : _state = initialState,
+       _connectedPlayers = connectedPlayers;
 
   // ------------------------------------------------------------ test helpers
   void emit(GameEvent event) => _events.add(event);
-  void emitPlayers(List<String> players) => _players.add(players);
+  /// Atualiza a lista atual e emite no stream, como o driver real.
+  void emitPlayers(List<String> players) {
+    _connectedPlayers = players;
+    _players.add(players);
+  }
   void emitError(String error) => _errors.add(error);
 
   void setState(GameConnectionState state) {
@@ -57,6 +64,9 @@ class FakeGameConnection implements IGameConnection {
   // ------------------------------------------------------- IGameConnection
   @override
   Stream<GameEvent> get eventStream => _events.stream;
+
+  @override
+  List<String> get connectedPlayers => _connectedPlayers;
 
   @override
   Stream<List<String>> get connectedPlayersStream => _players.stream;

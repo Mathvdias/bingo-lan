@@ -78,8 +78,16 @@ abstract class IGameConnection {
   GameConnectionState get connectionState;
   Stream<GameConnectionState> get connectionStateStream;
 
+  /// Lista atual de jogadores conectados (nomes), na mesma ordem em que
+  /// [connectedPlayersStream] a emitiu pela última vez. Vazia fora do papel
+  /// de host. Quem começa a ouvir o stream depois de uma entrada usa este
+  /// valor como ponto de partida: o stream só emite mudanças.
+  List<String> get connectedPlayers;
+
   /// A stream of the list of connected player names (or IDs).
-  /// Required for the Host to know who is in the room.
+  /// Required for the Host to know who is in the room. Emite a cada
+  /// entrada/saída/renomeação; não repete o valor atual para novos ouvintes
+  /// (veja [connectedPlayers]).
   Stream<List<String>> get connectedPlayersStream;
 
   /// A stream of system error messages (e.g. 'PAYWALL_TRIGGERED') intended for the Host.
