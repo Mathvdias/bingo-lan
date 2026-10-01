@@ -290,6 +290,7 @@ class _Benefits extends StatelessWidget {
       children: [
         _BenefitRow(
           icon: Icons.groups_rounded,
+          lava: BingoLavaIcon.players,
           text: l10n.paywallBenefitUnlimitedPlayers,
         ),
         const SizedBox(height: 12),
@@ -306,23 +307,37 @@ class _Benefits extends StatelessWidget {
 
 class _BenefitRow extends StatelessWidget {
   final IconData icon;
+
+  /// Ícone Lava no lugar do disco azul com [icon] (que fica de fallback).
+  final BingoLavaIcon? lava;
   final String text;
-  const _BenefitRow({required this.icon, required this.text});
+  const _BenefitRow({required this.icon, this.lava, required this.text});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    // 36 px: o disco (8 + 20 + 8) e o ícone Lava têm a mesma caixa.
+    final badge = Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: AppColors.secondary,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.outline, width: 2),
+      ),
+      child: Icon(icon, size: 20, color: AppColors.text),
+    );
+    final lavaIcon = lava;
     return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.secondary,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.outline, width: 2),
+        if (lavaIcon == null)
+          badge
+        else
+          BingoLavaIconView(
+            key: Key('paywall_benefit_${lavaIcon.name}'),
+            icon: lavaIcon,
+            size: 36,
+            fallback: badge,
           ),
-          child: Icon(icon, size: 20, color: AppColors.text),
-        ),
         const SizedBox(width: 12),
         Expanded(
           child: Text(
