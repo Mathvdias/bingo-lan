@@ -16,10 +16,6 @@ class Env {
     'CLARITY_PROJECT_ID',
   );
 
-  static const String geminiApiKey = String.fromEnvironment(
-    'GEMINI_API_KEY',
-  );
-
   // Feature Flags / Debug
   static const bool enableDebugLogs = bool.fromEnvironment(
     'ENABLE_DEBUG_LOGS',
@@ -40,9 +36,6 @@ class Env {
       }
       if (clarityProjectId.isEmpty) {
         log('Env: CLARITY_PROJECT_ID ausente — Microsoft Clarity não será configurado.');
-      }
-      if (geminiApiKey.isEmpty) {
-        log('Env: GEMINI_API_KEY ausente — piadas de IA usam fallback local.');
       }
       return;
     }
