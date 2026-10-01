@@ -1,1 +1,46 @@
-{"flutter":{"platforms":{"android":{"buildConfigurations":{"src/dev":{"projectId":"bingo-lucca-app","appId":"1:46563147810:android:e959d3eb7c082fd6f34a7b","fileOutput":"android/app/src/dev/google-services.json"},"src/prod":{"projectId":"nightstudios-bingo","appId":"1:726195608166:android:3d761008a74eb1d88f2ba7","fileOutput":"android/app/src/prod/google-services.json"}}},"ios":{"default":{"projectId":"nightstudios-bingo","appId":"1:726195608166:ios:a3a1207aa579d5c28f2ba7","uploadDebugSymbols":true,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"nightstudios-bingo","configurations":{"android":"1:726195608166:android:3d761008a74eb1d88f2ba7","ios":"1:726195608166:ios:a3a1207aa579d5c28f2ba7"}},"lib/firebase_options_dev.dart":{"projectId":"bingo-lucca-app","configurations":{"android":"1:46563147810:android:e959d3eb7c082fd6f34a7b"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "buildConfigurations": {
+          "src/dev": {
+            "projectId": "bingo-lucca-app",
+            "appId": "1:46563147810:android:e959d3eb7c082fd6f34a7b",
+            "fileOutput": "android/app/src/dev/google-services.json"
+          },
+          "src/prod": {
+            "projectId": "nightstudios-bingo",
+            "appId": "1:726195608166:android:3d761008a74eb1d88f2ba7",
+            "fileOutput": "android/app/src/prod/google-services.json"
+          }
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "nightstudios-bingo",
+          "appId": "1:726195608166:ios:a3a1207aa579d5c28f2ba7",
+          "uploadDebugSymbols": true,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "nightstudios-bingo",
+          "configurations": {
+            "android": "1:726195608166:android:3d761008a74eb1d88f2ba7",
+            "ios": "1:726195608166:ios:a3a1207aa579d5c28f2ba7"
+          }
+        },
+        "lib/firebase_options_dev.dart": {
+          "projectId": "bingo-lucca-app",
+          "configurations": {
+            "android": "1:46563147810:android:e959d3eb7c082fd6f34a7b"
+          }
+        }
+      }
+    }
+  },
+  "remoteconfig": {
+    "template": "remoteconfig/active.template.json"
+  }
+}
