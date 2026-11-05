@@ -11,6 +11,7 @@ import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/att_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
+import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/app_fonts.dart';
 import 'package:bingo_app/shared/ui/app_theme.dart';
@@ -104,6 +105,14 @@ Future<void> mainCommon(AppConfig appConfig) async {
     ).timeout(const Duration(seconds: 5));
   } catch (e) {
     log('RevenueCat initialization skipped: $e');
+  }
+
+  // 2.6 Som: lê as preferências salvas e prepara o player. Sem rede, rápido,
+  // e já resolvido antes do primeiro toque em um botão.
+  try {
+    await SoundService.initialize();
+  } catch (e) {
+    log('SoundService initialization skipped: $e');
   }
 
   // Track app open (non-blocking)
