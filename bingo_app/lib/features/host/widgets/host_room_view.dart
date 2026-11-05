@@ -275,6 +275,8 @@ class _VirtualGlobeControl extends StatelessWidget {
           key: const Key('host_draw_button'),
           label: l10n.drawRandom,
           enabled: canDraw,
+          // O sorteio já tem o seu som.
+          tapSound: false,
           onPressed: viewModel.drawRandomNumber,
         ),
         if (purchasesEnabled) ...[

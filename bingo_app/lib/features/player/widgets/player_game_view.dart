@@ -125,6 +125,8 @@ class _ShoutBar extends StatelessWidget {
                   )
                 : l10n.playerGameShout,
             enabled: viewModel.canShout,
+            // Cantar bingo já tem o seu som.
+            tapSound: false,
             onPressed: viewModel.shoutBingo,
           ),
         ),

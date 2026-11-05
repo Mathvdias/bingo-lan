@@ -66,6 +66,8 @@ class SoloGameScreen extends StatelessWidget {
                       child: BingoButton(
                         key: const Key('solo_draw_button'),
                         label: l10n.soloGameDraw,
+                        // O sorteio já tem o seu som.
+                        tapSound: false,
                         onPressed: viewModel.drawNextNumber,
                       ),
                     ),

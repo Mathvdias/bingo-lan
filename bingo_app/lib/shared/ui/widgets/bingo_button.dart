@@ -13,12 +13,20 @@ class BingoButton extends StatefulWidget {
   /// Desabilitado: fica cinza e ignora toques.
   final bool enabled;
 
+  /// Toca o clique genérico ao soltar.
+  ///
+  /// Passe `false` quando a própria ação já tem som com significado — sortear,
+  /// cantar bingo. Sem isso os dois tocam juntos: um clique de 50 ms em cima
+  /// de um sino de 750 ms, disparados no mesmo instante.
+  final bool tapSound;
+
   const BingoButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.color = AppColors.primary,
     this.enabled = true,
+    this.tapSound = true,
   });
 
   @override
@@ -40,8 +48,9 @@ class _BingoButtonState extends State<BingoButton> {
     });
     widget.onPressed();
     HapticFeedback.lightImpact();
-    // Um único ponto cobre todos os botões primários do app.
-    SoundService.play(BingoSfx.button);
+    // Um único ponto cobre todos os botões primários do app, menos aqueles
+    // cuja ação já traz o próprio som.
+    if (widget.tapSound) SoundService.play(BingoSfx.button);
   }
 
   void _onTapCancel() {
