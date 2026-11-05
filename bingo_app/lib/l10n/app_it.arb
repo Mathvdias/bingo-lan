@@ -289,5 +289,9 @@
   "settingsVolume": "Volume",
   "settingsVolumeTest": "Prova",
   "settingsCreditsSection": "Crediti",
-  "settingsAudioCredits": "Effetti sonori creati per questa app, senza licenze di terzi."
+  "settingsAudioCredits": "Effetti sonori creati per questa app, senza licenze di terzi.",
+  "premiumTitle": "Il tuo Premium",
+  "premiumActiveTitle": "Premium attivo",
+  "premiumActiveSubtitle": "Grazie per aver sostenuto il gioco. Ecco cosa hai sbloccato:",
+  "premiumManage": "Gestisci abbonamento"
 }

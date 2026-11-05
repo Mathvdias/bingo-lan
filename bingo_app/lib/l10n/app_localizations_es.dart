@@ -640,7 +640,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsSoundEffects => 'Efectos de sonido';
 
   @override
-  String get settingsSoundEffectsSubtitle => 'Sonidos al sortear, marcar y ganar';
+  String get settingsSoundEffectsSubtitle =>
+      'Sonidos al sortear, marcar y ganar';
 
   @override
   String get settingsVolume => 'Volumen';
@@ -652,5 +653,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsCreditsSection => 'Créditos';
 
   @override
-  String get settingsAudioCredits => 'Efectos de sonido creados para esta app, sin licencias de terceros.';
+  String get settingsAudioCredits =>
+      'Efectos de sonido creados para esta app, sin licencias de terceros.';
+
+  @override
+  String get premiumTitle => 'Tu Premium';
+
+  @override
+  String get premiumActiveTitle => 'Premium activo';
+
+  @override
+  String get premiumActiveSubtitle =>
+      'Gracias por apoyar el juego. Esto es lo que desbloqueaste:';
+
+  @override
+  String get premiumManage => 'Gestionar suscripción';
 }

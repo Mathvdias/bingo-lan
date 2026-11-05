@@ -289,5 +289,9 @@
   "settingsVolume": "Volume",
   "settingsVolumeTest": "Test",
   "settingsCreditsSection": "Credits",
-  "settingsAudioCredits": "Sound effects made for this app — no third-party licences."
+  "settingsAudioCredits": "Sound effects made for this app — no third-party licences.",
+  "premiumTitle": "Your Premium",
+  "premiumActiveTitle": "Premium is active",
+  "premiumActiveSubtitle": "Thanks for supporting the game. Here's what you unlocked:",
+  "premiumManage": "Manage subscription"
 }

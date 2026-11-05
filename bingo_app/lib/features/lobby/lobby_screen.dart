@@ -126,10 +126,14 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   return Padding(
                     padding: const EdgeInsets.all(12.0),
                     // Cores vêm do ChipThemeData: amarelo + texto preto.
-                    child: Chip(
+                    // ActionChip e não Chip: quem já assinou precisa de um
+                    // caminho para ver o que a assinatura liberou.
+                    child: ActionChip(
                       key: const Key('lobby_premium_chip'),
                       avatar: const Icon(Icons.workspace_premium),
                       label: Text(l10n.lobbyPremiumTag),
+                      tooltip: l10n.premiumTitle,
+                      onPressed: () => context.push('/premium'),
                     ),
                   );
                 }

@@ -1177,56 +1177,80 @@ abstract class AppLocalizations {
   /// No description provided for @lobbySettingsButton.
   ///
   /// In en, this message translates to:
-  /// **Settings**
+  /// **'Settings'**
   String get lobbySettingsButton;
 
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
-  /// **Settings**
+  /// **'Settings'**
   String get settingsTitle;
 
   /// No description provided for @settingsSoundSection.
   ///
   /// In en, this message translates to:
-  /// **Sound**
+  /// **'Sound'**
   String get settingsSoundSection;
 
   /// No description provided for @settingsSoundEffects.
   ///
   /// In en, this message translates to:
-  /// **Sound effects**
+  /// **'Sound effects'**
   String get settingsSoundEffects;
 
   /// No description provided for @settingsSoundEffectsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **Sounds when drawing, marking and winning**
+  /// **'Sounds when drawing, marking and winning'**
   String get settingsSoundEffectsSubtitle;
 
   /// No description provided for @settingsVolume.
   ///
   /// In en, this message translates to:
-  /// **Volume**
+  /// **'Volume'**
   String get settingsVolume;
 
   /// No description provided for @settingsVolumeTest.
   ///
   /// In en, this message translates to:
-  /// **Test**
+  /// **'Test'**
   String get settingsVolumeTest;
 
   /// No description provided for @settingsCreditsSection.
   ///
   /// In en, this message translates to:
-  /// **Credits**
+  /// **'Credits'**
   String get settingsCreditsSection;
 
   /// No description provided for @settingsAudioCredits.
   ///
   /// In en, this message translates to:
-  /// **Sound effects made for this app — no third-party licences.**
+  /// **'Sound effects made for this app — no third-party licences.'**
   String get settingsAudioCredits;
+
+  /// No description provided for @premiumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Premium'**
+  String get premiumTitle;
+
+  /// No description provided for @premiumActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium is active'**
+  String get premiumActiveTitle;
+
+  /// No description provided for @premiumActiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for supporting the game. Here\'s what you unlocked:'**
+  String get premiumActiveSubtitle;
+
+  /// No description provided for @premiumManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get premiumManage;
 }
 
 class _AppLocalizationsDelegate

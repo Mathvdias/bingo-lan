@@ -652,5 +652,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsCreditsSection => 'Créditos';
 
   @override
-  String get settingsAudioCredits => 'Efeitos sonoros feitos para este app — sem licença de terceiros.';
+  String get settingsAudioCredits =>
+      'Efeitos sonoros feitos para este app — sem licença de terceiros.';
+
+  @override
+  String get premiumTitle => 'Seu Premium';
+
+  @override
+  String get premiumActiveTitle => 'Premium ativo';
+
+  @override
+  String get premiumActiveSubtitle =>
+      'Obrigado por apoiar o jogo. Veja o que você liberou:';
+
+  @override
+  String get premiumManage => 'Gerenciar assinatura';
 }

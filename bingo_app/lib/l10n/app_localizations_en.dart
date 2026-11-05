@@ -636,7 +636,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSoundEffects => 'Sound effects';
 
   @override
-  String get settingsSoundEffectsSubtitle => 'Sounds when drawing, marking and winning';
+  String get settingsSoundEffectsSubtitle =>
+      'Sounds when drawing, marking and winning';
 
   @override
   String get settingsVolume => 'Volume';
@@ -648,5 +649,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCreditsSection => 'Credits';
 
   @override
-  String get settingsAudioCredits => 'Sound effects made for this app — no third-party licences.';
+  String get settingsAudioCredits =>
+      'Sound effects made for this app — no third-party licences.';
+
+  @override
+  String get premiumTitle => 'Your Premium';
+
+  @override
+  String get premiumActiveTitle => 'Premium is active';
+
+  @override
+  String get premiumActiveSubtitle =>
+      'Thanks for supporting the game. Here\'s what you unlocked:';
+
+  @override
+  String get premiumManage => 'Manage subscription';
 }

@@ -618,4 +618,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsAudioCredits => '本アプリのために制作した効果音です（第三者ライセンスなし）。';
+
+  @override
+  String get premiumTitle => 'プレミアム';
+
+  @override
+  String get premiumActiveTitle => 'プレミアム有効';
+
+  @override
+  String get premiumActiveSubtitle => 'ゲームを支えてくださりありがとうございます。利用できる特典はこちらです：';
+
+  @override
+  String get premiumManage => 'サブスクリプションの管理';
 }

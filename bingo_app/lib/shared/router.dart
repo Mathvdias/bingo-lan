@@ -16,6 +16,7 @@ import '../../features/lobby/lobby_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/player/game_screen.dart';
 import '../../features/player/scan_screen.dart';
+import '../../features/premium/premium_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/solo/solo_game_screen.dart';
 
@@ -79,6 +80,9 @@ final List<RouteBase> appRoutes = <RouteBase>[
     path: '/settings',
     builder: (context, state) => const SettingsScreen(),
   ),
+
+  // Destino do selo PREMIUM no lobby: o que a assinatura já liberou.
+  GoRoute(path: '/premium', builder: (context, state) => const PremiumScreen()),
 
   // Aceita `?source=` para o funil de analytics (ex.: /paywall?source=lobby).
   GoRoute(

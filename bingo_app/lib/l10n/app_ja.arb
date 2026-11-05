@@ -289,5 +289,9 @@
   "settingsVolume": "音量",
   "settingsVolumeTest": "再生",
   "settingsCreditsSection": "クレジット",
-  "settingsAudioCredits": "本アプリのために制作した効果音です（第三者ライセンスなし）。"
+  "settingsAudioCredits": "本アプリのために制作した効果音です（第三者ライセンスなし）。",
+  "premiumTitle": "プレミアム",
+  "premiumActiveTitle": "プレミアム有効",
+  "premiumActiveSubtitle": "ゲームを支えてくださりありがとうございます。利用できる特典はこちらです：",
+  "premiumManage": "サブスクリプションの管理"
 }
