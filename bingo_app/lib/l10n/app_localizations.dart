@@ -1173,6 +1173,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get scanOpenSettings;
+
+  /// No description provided for @lobbySettingsButton.
+  ///
+  /// In en, this message translates to:
+  /// **Settings**
+  String get lobbySettingsButton;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **Settings**
+  String get settingsTitle;
+
+  /// No description provided for @settingsSoundSection.
+  ///
+  /// In en, this message translates to:
+  /// **Sound**
+  String get settingsSoundSection;
+
+  /// No description provided for @settingsSoundEffects.
+  ///
+  /// In en, this message translates to:
+  /// **Sound effects**
+  String get settingsSoundEffects;
+
+  /// No description provided for @settingsSoundEffectsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **Sounds when drawing, marking and winning**
+  String get settingsSoundEffectsSubtitle;
+
+  /// No description provided for @settingsVolume.
+  ///
+  /// In en, this message translates to:
+  /// **Volume**
+  String get settingsVolume;
+
+  /// No description provided for @settingsVolumeTest.
+  ///
+  /// In en, this message translates to:
+  /// **Test**
+  String get settingsVolumeTest;
+
+  /// No description provided for @settingsCreditsSection.
+  ///
+  /// In en, this message translates to:
+  /// **Credits**
+  String get settingsCreditsSection;
+
+  /// No description provided for @settingsAudioCredits.
+  ///
+  /// In en, this message translates to:
+  /// **Sound effects made for this app — no third-party licences.**
+  String get settingsAudioCredits;
 }
 
 class _AppLocalizationsDelegate

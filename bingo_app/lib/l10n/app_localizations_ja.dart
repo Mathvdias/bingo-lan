@@ -591,4 +591,31 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get scanOpenSettings => '設定を開く';
+
+  @override
+  String get lobbySettingsButton => '設定';
+
+  @override
+  String get settingsTitle => '設定';
+
+  @override
+  String get settingsSoundSection => 'サウンド';
+
+  @override
+  String get settingsSoundEffects => '効果音';
+
+  @override
+  String get settingsSoundEffectsSubtitle => '抽選・マーク・勝利のときに音を鳴らします';
+
+  @override
+  String get settingsVolume => '音量';
+
+  @override
+  String get settingsVolumeTest => '再生';
+
+  @override
+  String get settingsCreditsSection => 'クレジット';
+
+  @override
+  String get settingsAudioCredits => '本アプリのために制作した効果音です（第三者ライセンスなし）。';
 }

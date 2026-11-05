@@ -280,5 +280,14 @@
   "scanCameraDeniedTitle": "Sin acceso a la cámara",
   "scanCameraDeniedMessage": "Permite el acceso a la cámara en Ajustes para leer el código QR, o ingresa el código manualmente.",
   "scanCameraErrorMessage": "No se pudo abrir la cámara. Inténtalo de nuevo o ingresa el código manualmente.",
-  "scanOpenSettings": "Abrir ajustes"
+  "scanOpenSettings": "Abrir ajustes",
+  "lobbySettingsButton": "Ajustes",
+  "settingsTitle": "Ajustes",
+  "settingsSoundSection": "Sonido",
+  "settingsSoundEffects": "Efectos de sonido",
+  "settingsSoundEffectsSubtitle": "Sonidos al sortear, marcar y ganar",
+  "settingsVolume": "Volumen",
+  "settingsVolumeTest": "Probar",
+  "settingsCreditsSection": "Créditos",
+  "settingsAudioCredits": "Efectos de sonido creados para esta app, sin licencias de terceros."
 }

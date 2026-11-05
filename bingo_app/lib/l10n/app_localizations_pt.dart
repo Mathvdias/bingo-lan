@@ -626,4 +626,31 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get scanOpenSettings => 'Abrir configurações';
+
+  @override
+  String get lobbySettingsButton => 'Configurações';
+
+  @override
+  String get settingsTitle => 'Configurações';
+
+  @override
+  String get settingsSoundSection => 'Som';
+
+  @override
+  String get settingsSoundEffects => 'Efeitos sonoros';
+
+  @override
+  String get settingsSoundEffectsSubtitle => 'Sons ao sortear, marcar e ganhar';
+
+  @override
+  String get settingsVolume => 'Volume';
+
+  @override
+  String get settingsVolumeTest => 'Testar';
+
+  @override
+  String get settingsCreditsSection => 'Créditos';
+
+  @override
+  String get settingsAudioCredits => 'Efeitos sonoros feitos para este app — sem licença de terceiros.';
 }

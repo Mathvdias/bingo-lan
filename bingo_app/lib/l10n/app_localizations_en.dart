@@ -622,4 +622,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanOpenSettings => 'Open Settings';
+
+  @override
+  String get lobbySettingsButton => 'Settings';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsSoundSection => 'Sound';
+
+  @override
+  String get settingsSoundEffects => 'Sound effects';
+
+  @override
+  String get settingsSoundEffectsSubtitle => 'Sounds when drawing, marking and winning';
+
+  @override
+  String get settingsVolume => 'Volume';
+
+  @override
+  String get settingsVolumeTest => 'Test';
+
+  @override
+  String get settingsCreditsSection => 'Credits';
+
+  @override
+  String get settingsAudioCredits => 'Sound effects made for this app — no third-party licences.';
 }

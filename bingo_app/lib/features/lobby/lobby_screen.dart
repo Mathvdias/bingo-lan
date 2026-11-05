@@ -102,13 +102,20 @@ class _LobbyScreenState extends State<LobbyScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          // Ajuda: disco branco com contorno preto, no estilo do botão
-          // "Upgrade" ao lado. Estático de propósito: um ícone animado no
-          // canto da barra distrairia do herói.
-          _HelpButton(
+          // Ajuda e configurações: discos brancos com contorno preto, no
+          // estilo do botão "Upgrade" ao lado. Estáticos de propósito: ícones
+          // animados no canto da barra distrairiam do herói.
+          _CircleIconButton(
             key: const Key('lobby_help_button'),
+            icon: Icons.help_outline,
             label: l10n.aboutTitle,
             onPressed: () => context.push('/about'),
+          ),
+          _CircleIconButton(
+            key: const Key('lobby_settings_button'),
+            icon: Icons.settings_outlined,
+            label: l10n.lobbySettingsButton,
+            onPressed: () => context.push('/settings'),
           ),
           // Selo premium ou botão de upgrade, lendo o cache do status.
           if (RevenueConfigService.purchasesEnabled)
@@ -301,11 +308,17 @@ class _BallFallback extends StatelessWidget {
 /// Botão de ajuda: disco branco de 40 px com contorno preto de 2 px e o "?"
 /// Material em preto, o mesmo desenho da pílula "Upgrade". Alvo de toque de
 /// 48 px; [label] vai para o tooltip e para os leitores de tela.
-class _HelpButton extends StatelessWidget {
+class _CircleIconButton extends StatelessWidget {
+  final IconData icon;
   final String label;
   final VoidCallback onPressed;
 
-  const _HelpButton({super.key, required this.label, required this.onPressed});
+  const _CircleIconButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -328,11 +341,7 @@ class _HelpButton extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.outline, width: 2),
                 ),
-                child: const Icon(
-                  Icons.help_outline,
-                  color: AppColors.text,
-                  size: 24,
-                ),
+                child: Icon(icon, color: AppColors.text, size: 24),
               ),
             ),
           ),

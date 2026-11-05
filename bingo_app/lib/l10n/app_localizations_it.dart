@@ -628,4 +628,31 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get scanOpenSettings => 'Apri impostazioni';
+
+  @override
+  String get lobbySettingsButton => 'Impostazioni';
+
+  @override
+  String get settingsTitle => 'Impostazioni';
+
+  @override
+  String get settingsSoundSection => 'Suono';
+
+  @override
+  String get settingsSoundEffects => 'Effetti sonori';
+
+  @override
+  String get settingsSoundEffectsSubtitle => 'Suoni all\'estrazione, alla marcatura e alla vittoria';
+
+  @override
+  String get settingsVolume => 'Volume';
+
+  @override
+  String get settingsVolumeTest => 'Prova';
+
+  @override
+  String get settingsCreditsSection => 'Crediti';
+
+  @override
+  String get settingsAudioCredits => 'Effetti sonori creati per questa app, senza licenze di terzi.';
 }

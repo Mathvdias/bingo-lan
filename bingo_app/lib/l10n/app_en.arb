@@ -280,5 +280,14 @@
   "scanCameraDeniedTitle": "Camera access needed",
   "scanCameraDeniedMessage": "Allow camera access in Settings to scan the QR code, or enter the code manually.",
   "scanCameraErrorMessage": "We couldn't open the camera. Try again or enter the code manually.",
-  "scanOpenSettings": "Open Settings"
+  "scanOpenSettings": "Open Settings",
+  "lobbySettingsButton": "Settings",
+  "settingsTitle": "Settings",
+  "settingsSoundSection": "Sound",
+  "settingsSoundEffects": "Sound effects",
+  "settingsSoundEffectsSubtitle": "Sounds when drawing, marking and winning",
+  "settingsVolume": "Volume",
+  "settingsVolumeTest": "Test",
+  "settingsCreditsSection": "Credits",
+  "settingsAudioCredits": "Sound effects made for this app — no third-party licences."
 }

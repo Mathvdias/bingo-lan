@@ -16,6 +16,7 @@ import '../../features/lobby/lobby_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/player/game_screen.dart';
 import '../../features/player/scan_screen.dart';
+import '../../features/settings/settings_screen.dart';
 import '../../features/solo/solo_game_screen.dart';
 
 /// Caminho do App Link https (`https://<BingoInvite.webHost>/join?data=`) e
@@ -74,6 +75,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
   GoRoute(path: '/splash', redirect: (context, state) => '/lobby'),
   GoRoute(path: '/lobby', builder: (context, state) => const LobbyScreen()),
   GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
+  GoRoute(
+    path: '/settings',
+    builder: (context, state) => const SettingsScreen(),
+  ),
 
   // Aceita `?source=` para o funil de analytics (ex.: /paywall?source=lobby).
   GoRoute(

@@ -280,5 +280,14 @@
   "scanCameraDeniedTitle": "カメラにアクセスできません",
   "scanCameraDeniedMessage": "QRコードを読み取るには設定でカメラの使用を許可するか、コードを手動で入力してください。",
   "scanCameraErrorMessage": "カメラを起動できませんでした。もう一度試すか、コードを手動で入力してください。",
-  "scanOpenSettings": "設定を開く"
+  "scanOpenSettings": "設定を開く",
+  "lobbySettingsButton": "設定",
+  "settingsTitle": "設定",
+  "settingsSoundSection": "サウンド",
+  "settingsSoundEffects": "効果音",
+  "settingsSoundEffectsSubtitle": "抽選・マーク・勝利のときに音を鳴らします",
+  "settingsVolume": "音量",
+  "settingsVolumeTest": "再生",
+  "settingsCreditsSection": "クレジット",
+  "settingsAudioCredits": "本アプリのために制作した効果音です（第三者ライセンスなし）。"
 }

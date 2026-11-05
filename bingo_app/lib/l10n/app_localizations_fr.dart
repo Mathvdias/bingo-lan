@@ -627,4 +627,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get scanOpenSettings => 'Ouvrir les réglages';
+
+  @override
+  String get lobbySettingsButton => 'Paramètres';
+
+  @override
+  String get settingsTitle => 'Paramètres';
+
+  @override
+  String get settingsSoundSection => 'Son';
+
+  @override
+  String get settingsSoundEffects => 'Effets sonores';
+
+  @override
+  String get settingsSoundEffectsSubtitle => 'Sons au tirage, au marquage et à la victoire';
+
+  @override
+  String get settingsVolume => 'Volume';
+
+  @override
+  String get settingsVolumeTest => 'Tester';
+
+  @override
+  String get settingsCreditsSection => 'Crédits';
+
+  @override
+  String get settingsAudioCredits => 'Effets sonores créés pour cette application, sans licence tierce.';
 }

@@ -280,5 +280,14 @@
   "scanCameraDeniedTitle": "Sem acesso à câmera",
   "scanCameraDeniedMessage": "Permita o uso da câmera nas configurações para ler o QR Code, ou digite o código manualmente.",
   "scanCameraErrorMessage": "Não foi possível abrir a câmera. Tente de novo ou digite o código manualmente.",
-  "scanOpenSettings": "Abrir configurações"
+  "scanOpenSettings": "Abrir configurações",
+  "lobbySettingsButton": "Configurações",
+  "settingsTitle": "Configurações",
+  "settingsSoundSection": "Som",
+  "settingsSoundEffects": "Efeitos sonoros",
+  "settingsSoundEffectsSubtitle": "Sons ao sortear, marcar e ganhar",
+  "settingsVolume": "Volume",
+  "settingsVolumeTest": "Testar",
+  "settingsCreditsSection": "Créditos",
+  "settingsAudioCredits": "Efeitos sonoros feitos para este app — sem licença de terceiros."
 }
