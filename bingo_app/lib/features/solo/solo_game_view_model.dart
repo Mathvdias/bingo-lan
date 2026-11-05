@@ -1,3 +1,4 @@
+import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'dart:math';
@@ -21,6 +22,7 @@ class SoloGameViewModel extends BaseViewModel {
     
     final number = _allNumbers.removeLast();
     _drawnNumbers.add(number);
+    SoundService.play(BingoSfx.draw);
     notifyListeners();
   }
 
@@ -28,8 +30,10 @@ class SoloGameViewModel extends BaseViewModel {
     if (bingoCard.matrix.contains(number)) {
       if (_markedNumbers.contains(number)) {
         _markedNumbers.remove(number);
+        SoundService.play(BingoSfx.unmark);
       } else {
         _markedNumbers.add(number);
+        SoundService.play(BingoSfx.mark);
       }
       _checkWin();
       notifyListeners();
@@ -45,6 +49,7 @@ class SoloGameViewModel extends BaseViewModel {
     if (_isGameOver) return;
     if (bingoCard.hasBingo(_markedNumbers.toList())) {
       _isGameOver = true;
+      SoundService.play(BingoSfx.win);
     }
   }
 

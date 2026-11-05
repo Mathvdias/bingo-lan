@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bingo_app/features/player/player_game_args.dart';
+import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
 
@@ -98,7 +99,12 @@ class PlayerGameViewModel extends BaseViewModel {
   void markNumber(int number) {
     if (_phase == PlayerGamePhase.over || _roomClosed) return;
     if (!bingoCard.matrix.contains(number) || number == 0) return;
-    if (!_markedNumbers.remove(number)) _markedNumbers.add(number);
+    if (_markedNumbers.remove(number)) {
+      SoundService.play(BingoSfx.unmark);
+    } else {
+      _markedNumbers.add(number);
+      SoundService.play(BingoSfx.mark);
+    }
     notifyListeners();
   }
 
@@ -108,6 +114,7 @@ class PlayerGameViewModel extends BaseViewModel {
     if (!canShout) return false;
     _lastShoutAt = _now();
     _startCooldownTicker();
+    SoundService.play(BingoSfx.bingo);
     notifyListeners();
     try {
       await _gameConnection.sendPlayerEvent(ShoutBingoEvent());
@@ -127,6 +134,7 @@ class PlayerGameViewModel extends BaseViewModel {
     if (event is NumberDrawnEvent) {
       if (!_calledSet.contains(event.number)) {
         _setDrawn([..._drawnNumbers, event.number]);
+        SoundService.play(BingoSfx.draw);
       }
     } else if (event is StateSyncEvent) {
       final newRound = event.drawnNumbers.isEmpty && _drawnNumbers.isNotEmpty;
@@ -140,6 +148,8 @@ class PlayerGameViewModel extends BaseViewModel {
       _isWinner = event.winnerId != null
           ? event.winnerId == playerId
           : event.winnerName == playerName;
+      // Só quem ganhou ouve a fanfarra; para os demais a rodada só acabou.
+      if (_isWinner) SoundService.play(BingoSfx.win);
     } else if (event is RejectClaimEvent) {
       if (event.playerId == null || event.playerId == playerId) {
         _actions.add(ClaimRejected());

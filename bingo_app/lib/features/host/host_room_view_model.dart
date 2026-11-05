@@ -4,6 +4,7 @@ import 'dart:math' hide log;
 
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/caller_phrases.dart';
+import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/view_models/base_view_model.dart';
 import 'package:bingo_core/bingo_core.dart';
@@ -263,6 +264,7 @@ class HostRoomViewModel extends BaseViewModel {
     _phase = GamePhase.playing;
 
     // A tela mostra o número antes de qualquer ida à rede.
+    SoundService.play(BingoSfx.draw);
     notifyListeners();
     final phrase = CallerPhrases.getJokeForNumber(
       number,
@@ -315,6 +317,7 @@ class HostRoomViewModel extends BaseViewModel {
       _winnerName = claim.playerName;
       _winnerId = claim.playerId;
       _stopAutoPlay();
+      SoundService.play(BingoSfx.win);
       notifyListeners();
       await _gameConnection.broadcastEvent(
         GameOverEvent(winnerName: claim.playerName, winnerId: claim.playerId),

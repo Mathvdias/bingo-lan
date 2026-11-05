@@ -1,3 +1,4 @@
+import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widget_previews.dart';
@@ -39,7 +40,8 @@ class _BingoButtonState extends State<BingoButton> {
     });
     widget.onPressed();
     HapticFeedback.lightImpact();
-    // SystemSound.play(SystemSoundType.click); // This can be uncommented if you want sound
+    // Um único ponto cobre todos os botões primários do app.
+    SoundService.play(BingoSfx.button);
   }
 
   void _onTapCancel() {
