@@ -36,10 +36,14 @@ class SoloGameViewModel extends BaseViewModel {
     }
   }
 
+  /// Vitória é uma linha, coluna ou diagonal inteiramente marcada — a mesma
+  /// regra que o modo com host aplica via [BingoCard.hasBingo].
+  ///
+  /// A versão anterior exigia `_markedNumbers.length >= 25`, ou seja, marcar
+  /// as 25 casas da cartela: no solo a vitória praticamente nunca disparava.
   void _checkWin() {
-    // For now, in Solo mode, we just check if they filled any row/column locally
-    // This is optional for a "v1 solo", but let's add a placeholder flag
-    if (_markedNumbers.length >= 25) { // Simple for now
+    if (_isGameOver) return;
+    if (bingoCard.hasBingo(_markedNumbers.toList())) {
       _isGameOver = true;
     }
   }
