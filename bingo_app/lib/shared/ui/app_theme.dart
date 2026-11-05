@@ -4,6 +4,27 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'tokens/app_colors.dart';
 
+/// Barras do sistema transparentes com ícones escuros: o conteúdo corre de
+/// ponta a ponta por baixo delas (edge-to-edge).
+///
+/// Precisa estar também no `appBarTheme`. O AppBar reaplica o próprio
+/// `systemOverlayStyle` sempre que entra em tela, e o padrão
+/// [SystemUiOverlayStyle.dark] traz `systemNavigationBarColor` preto com
+/// ícones claros — uma faixa preta no rodapé de um app creme, por cima do que
+/// o `main` tiver configurado.
+///
+/// `systemNavigationBarContrastEnforced: false` evita que o Android pinte um
+/// véu translúcido atrás da barra para "garantir contraste".
+const SystemUiOverlayStyle kBingoSystemUiStyle = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  statusBarIconBrightness: Brightness.dark,
+  statusBarBrightness: Brightness.light,
+  systemNavigationBarColor: Colors.transparent,
+  systemNavigationBarDividerColor: Colors.transparent,
+  systemNavigationBarIconBrightness: Brightness.dark,
+  systemNavigationBarContrastEnforced: false,
+);
+
 /// Fábrica de [TextStyle] para uma família (display ou corpo).
 ///
 /// Compatível com `GoogleFonts.fredoka` / `GoogleFonts.inter`; os testes
@@ -54,7 +75,7 @@ ThemeData buildBingoTheme({BingoFontBuilder? display, BingoFontBuilder? body}) {
       backgroundColor: Colors.transparent,
       elevation: 0,
       centerTitle: true,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
+      systemOverlayStyle: kBingoSystemUiStyle,
     ),
 
     // Text Theme

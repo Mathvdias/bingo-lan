@@ -15,7 +15,6 @@ import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/app_fonts.dart';
 import 'package:bingo_app/shared/ui/app_theme.dart';
-import 'package:bingo_app/shared/ui/tokens/app_colors.dart' show AppColors;
 import 'package:bingo_core/bingo_core.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -32,19 +31,17 @@ import 'firebase_options_dev.dart' as dev;
 import 'flavors/app_config.dart';
 
 Future<void> mainCommon(AppConfig appConfig) async {
-  // System UI
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: AppColors.surface,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
-
   // Ensure Flutter bindings are initialized.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Edge-to-edge: o app desenha sob a barra de status e a de navegação, e
+  // ambas ficam transparentes. Com targetSdk 36 o Android 15+ impõe isso de
+  // qualquer forma; declarar deixa de ser opcional e passa a ser intencional,
+  // e é o que permite pintar as barras em vez de aceitar o preto do sistema.
+  //
+  // Quem respeita os recortes é o BingoScaffold, via SafeArea.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(kBingoSystemUiStyle);
 
   // Retrato, como no Info.plist do iPhone: a grade da cartela e o número
   // gigante do host estouram em paisagem.
