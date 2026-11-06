@@ -77,6 +77,12 @@ dev_dependencies:
   integration_test:
     sdk: flutter
 
+  # Só para o teste do SfxPlayer, que troca a plataforma do audioplayers por
+  # uma falsa para conferir as chamadas que chegariam no nativo. É um pacote
+  # transitivo do audioplayers; está aqui apenas para o lint não reclamar de
+  # import de dependência não declarada.
+  audioplayers_platform_interface: ^7.1.1
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
