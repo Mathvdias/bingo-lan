@@ -107,6 +107,19 @@ Future<void> mainCommon(AppConfig appConfig) async {
   // 2.6 Som: lê as preferências salvas e prepara o player. Sem rede, rápido,
   // e já resolvido antes do primeiro toque em um botão.
   try {
+    // Falha de áudio é silenciosa por projeto — o jogo segue mudo em vez de
+    // quebrar. Sem isto, "não sai som" no aparelho de um usuário não deixa
+    // rastro nenhum para investigar.
+    SoundService.onError = (error, stack, reason) {
+      unawaited(
+        FirebaseCrashlytics.instance.recordError(
+          error,
+          stack,
+          reason: reason,
+          fatal: false,
+        ),
+      );
+    };
     await SoundService.initialize();
   } catch (e) {
     log('SoundService initialization skipped: $e');

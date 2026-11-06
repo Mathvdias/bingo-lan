@@ -37,8 +37,16 @@ abstract class SfxPlayer {
   Future<void> dispose();
 }
 
-/// Implementação real: um pequeno pool de players em modo de baixa latência,
-/// usado em rodízio para que dois sons curtos possam se sobrepor.
+/// Implementação real: um pequeno pool de players usado em rodízio, para que
+/// dois sons curtos possam se sobrepor.
+///
+/// Usa `lowLatency` (SoundPool no Android), **medido**: numa sonda rodando no
+/// aparelho, `lowLatency` produz um AudioTrack por efeito e o modo padrão
+/// `mediaPlayer` não produz nenhum — fica mudo sem lançar erro. A intuição
+/// aqui é traiçoeira, então a escolha é por medição e não por reputação.
+///
+/// Se mesmo assim o `lowLatency` lançar, cai para o modo padrão e não tenta de
+/// novo: um pouco de latência é melhor que silêncio.
 class AudioPlayersSfxPlayer implements SfxPlayer {
   AudioPlayersSfxPlayer({int poolSize = 3})
     : _players = List<AudioPlayer>.generate(
@@ -48,16 +56,28 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
 
   final List<AudioPlayer> _players;
   int _next = 0;
+  bool _lowLatency = true;
 
   @override
-  Future<void> play(String asset, double volume) {
+  Future<void> play(String asset, double volume) async {
     final player = _players[_next];
     _next = (_next + 1) % _players.length;
-    return player.play(
-      AssetSource(asset),
-      volume: volume,
-      mode: PlayerMode.lowLatency,
-    );
+
+    if (_lowLatency) {
+      try {
+        await player.play(
+          AssetSource(asset),
+          volume: volume,
+          mode: PlayerMode.lowLatency,
+        );
+        return;
+      } catch (e) {
+        _lowLatency = false;
+        log('SoundService: lowLatency falhou, usando o modo padrão: $e');
+      }
+    }
+
+    await player.play(AssetSource(asset), volume: volume);
   }
 
   @override
@@ -118,11 +138,36 @@ class SoundService {
       log('SoundService: falha ao ler preferências: $e');
     }
 
+    // Em blocos separados de propósito. Antes os dois dividiam um `try`: se o
+    // contexto de áudio falhasse, o player nunca era criado e o app ficava
+    // mudo para sempre — sem erro visível, porque o serviço engole falhas.
+    // O contexto é um ajuste fino; o player é o serviço.
+    if (player == null) {
+      try {
+        await _applyGameAudioContext();
+      } catch (e, s) {
+        _report(e, s, 'sound_audio_context');
+      }
+    }
+
     try {
-      if (player == null) await _applyGameAudioContext();
       _player = player ?? AudioPlayersSfxPlayer();
-    } catch (e) {
-      log('SoundService: falha ao criar o player: $e');
+    } catch (e, s) {
+      _report(e, s, 'sound_player_create');
+    }
+  }
+
+  /// Chamado em toda falha de áudio. O `main` liga isto ao Crashlytics para
+  /// que silêncio em aparelho de usuário vire dado, e não suposição: o
+  /// serviço engole exceções por projeto, e sem isto ninguém fica sabendo.
+  static void Function(Object error, StackTrace stack, String reason)? onError;
+
+  static void _report(Object e, StackTrace s, String reason) {
+    log('SoundService [$reason]: $e');
+    try {
+      onError?.call(e, s, reason);
+    } catch (_) {
+      // Telemetria nunca derruba o áudio.
     }
   }
 
@@ -140,9 +185,12 @@ class SoundService {
   static Future<void> _applyGameAudioContext() async {
     await AudioPlayer.global.setAudioContext(
       AudioContext(
+        // Só o foco muda em relação ao padrão do audioplayers. `music`/`media`
+        // é a combinação mais rodada do pacote e cai com certeza no canal de
+        // mídia; `game`/`sonification` é mais "correto" no papel, mas alguns
+        // otimizadores de jogo de fabricante mexem nesse roteamento, e não há
+        // como testar isso daqui.
         android: const AudioContextAndroid(
-          contentType: AndroidContentType.sonification,
-          usageType: AndroidUsageType.game,
           audioFocus: AndroidAudioFocus.none,
         ),
         iOS: AudioContextIOS(category: AVAudioSessionCategory.ambient),
@@ -158,9 +206,9 @@ class SoundService {
     if (player == null) return;
 
     unawaited(
-      player.play('audio/${sfx.name}.wav', volume.value).catchError((Object e) {
-        log('SoundService: falha ao tocar ${sfx.name}: $e');
-      }),
+      player
+          .play('audio/${sfx.name}.wav', volume.value)
+          .catchError((Object e, StackTrace s) => _report(e, s, 'sound_play')),
     );
   }
 
@@ -182,8 +230,8 @@ class SoundService {
   ) async {
     try {
       await write(await SharedPreferences.getInstance());
-    } catch (e) {
-      log('SoundService: falha ao salvar preferências: $e');
+    } catch (e, s) {
+      _report(e, s, 'sound_prefs_write');
     }
   }
 

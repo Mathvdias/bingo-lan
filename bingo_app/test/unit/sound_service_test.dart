@@ -17,7 +17,10 @@ void main() {
     );
   }
 
-  tearDown(() => SoundService.resetForTest());
+  tearDown(() async {
+    SoundService.onError = null;
+    await SoundService.resetForTest();
+  });
 
   group('SoundService', () {
     test('toca o asset do efeito no volume atual', () async {
@@ -108,6 +111,23 @@ void main() {
     test('sem initialize, tocar é inócuo', () async {
       await SoundService.resetForTest();
       expect(() => SoundService.play(BingoSfx.mark), returnsNormally);
+    });
+
+    test('falhas de áudio são reportadas para quem escuta', () async {
+      final reasons = <String>[];
+      SharedPreferences.setMockInitialValues({});
+      await SoundService.resetForTest();
+      SoundService.onError = (e, s, reason) => reasons.add(reason);
+      addTearDown(() => SoundService.onError = null);
+
+      await SoundService.initialize(
+        player: _ThrowingSfxPlayer(),
+        prefs: await SharedPreferences.getInstance(),
+      );
+      SoundService.play(BingoSfx.mark);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(reasons, contains('sound_play'));
     });
   });
 }
