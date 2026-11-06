@@ -37,31 +37,79 @@ abstract class SfxPlayer {
   Future<void> dispose();
 }
 
-/// Implementação real: um pequeno pool de players usado em rodízio, para que
-/// dois sons curtos possam se sobrepor.
+/// Implementação real: **um player por efeito**, reaproveitado, e um `stop()`
+/// antes de cada disparo.
 ///
-/// Usa `lowLatency` (SoundPool no Android), **medido**: numa sonda rodando no
+/// As duas coisas são exigidas pelo `SoundPool`, que é o que está atrás do
+/// `PlayerMode.lowLatency` no Android, e cada uma por um motivo diferente:
+///
+/// 1. `stop()` antes de tocar. O `SoundPool` não tem callback de fim de som —
+///    só o `MediaPlayer` tem — então o `audioplayers` nunca marca o player
+///    como parado: `WrappedPlayer.playing` fica `true` para sempre depois do
+///    primeiro disparo, e todo `play()` seguinte bate no guarda
+///    `if (!playing && !released)` e volta sem tocar nada. Resultado: cada
+///    player tocava **uma vez na vida**. Era por isso que um pool de 3 rendia
+///    exatamente 3 sons por abertura do app e tudo depois disso ficava mudo,
+///    inclusive o botão "testar" das configurações. `stop()`, com
+///    `ReleaseMode.stop`, zera o `playing` e o `streamId` sem descarregar a
+///    amostra: barato, sem reler o arquivo.
+///
+/// 2. Um player por efeito. O `SoundPool` indexa as amostras por URL e deixa o
+///    player registrado na URL antiga quando a fonte muda, então um player
+///    reaproveitado entre efeitos diferentes passa a servir o `soundId` errado
+///    para quem pedir o som antigo. Amarrando cada player a um único asset, a
+///    fonte nunca muda e o problema não existe.
+///
+/// Efeitos diferentes continuam podendo se sobrepor, porque são players
+/// diferentes — era o que o pool em rodízio queria garantir. O mesmo efeito
+/// disparado duas vezes rápido se corta e recomeça, que é justamente o que se
+/// quer no clique da cartela.
+///
+/// Sobre o modo: `lowLatency` é escolha **medida**: numa sonda rodando no
 /// aparelho, `lowLatency` produz um AudioTrack por efeito e o modo padrão
 /// `mediaPlayer` não produz nenhum — fica mudo sem lançar erro. A intuição
-/// aqui é traiçoeira, então a escolha é por medição e não por reputação.
-///
-/// Se mesmo assim o `lowLatency` lançar, cai para o modo padrão e não tenta de
+/// aqui é traiçoeira, então a escolha é por medição e não por reputação. Se
+/// mesmo assim o `lowLatency` lançar, cai para o modo padrão e não tenta de
 /// novo: um pouco de latência é melhor que silêncio.
 class AudioPlayersSfxPlayer implements SfxPlayer {
-  AudioPlayersSfxPlayer({int poolSize = 3})
-    : _players = List<AudioPlayer>.generate(
-        poolSize,
-        (_) => AudioPlayer()..setReleaseMode(ReleaseMode.stop),
-      );
+  AudioPlayersSfxPlayer();
 
-  final List<AudioPlayer> _players;
-  int _next = 0;
+  /// Um player por asset. Criados sob demanda: o primeiro disparo de cada
+  /// efeito paga a carga da amostra, os seguintes não.
+  final Map<String, AudioPlayer> _players = <String, AudioPlayer>{};
+
+  /// Fila por asset. O `stop()` e o `play()` de um disparo não podem se
+  /// intercalar com os do disparo seguinte do mesmo efeito: o `audioplayers`
+  /// decide se vai tocar comparando um `desiredState` compartilhado, e um
+  /// `stop()` que cai no meio do `play()` anterior faz o som sumir.
+  final Map<String, Future<void>> _queues = <String, Future<void>>{};
+
   bool _lowLatency = true;
 
   @override
-  Future<void> play(String asset, double volume) async {
-    final player = _players[_next];
-    _next = (_next + 1) % _players.length;
+  Future<void> play(String asset, double volume) {
+    final player = _players.putIfAbsent(
+      asset,
+      () => AudioPlayer()..setReleaseMode(ReleaseMode.stop),
+    );
+
+    final Future<void> queued = (_queues[asset] ?? Future<void>.value()).then(
+      (_) => _playNow(player, asset, volume),
+    );
+    // A fila não pode morrer num erro: o próximo disparo tem de poder tentar.
+    _queues[asset] = queued.catchError((Object _) {});
+    return queued;
+  }
+
+  Future<void> _playNow(AudioPlayer player, String asset, double volume) async {
+    // Devolve o player ao estado parado. Sem isto o `SoundPool` toca uma única
+    // vez por player (ver o comentário da classe). Falhar aqui não impede a
+    // tentativa de tocar.
+    try {
+      await player.stop();
+    } catch (e) {
+      log('SoundService: stop antes do play falhou: $e');
+    }
 
     if (_lowLatency) {
       try {
@@ -77,14 +125,22 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
       }
     }
 
-    await player.play(AssetSource(asset), volume: volume);
+    // `mode` explícito de propósito: o player já está em `lowLatency` depois da
+    // tentativa acima, e sem pedir a troca o fallback não trocaria nada.
+    await player.play(
+      AssetSource(asset),
+      volume: volume,
+      mode: PlayerMode.mediaPlayer,
+    );
   }
 
   @override
   Future<void> dispose() async {
-    for (final player in _players) {
+    for (final player in _players.values) {
       await player.dispose();
     }
+    _players.clear();
+    _queues.clear();
   }
 }
 
