@@ -143,6 +143,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutDeveloper => '開発者 (GitHub)';
 
   @override
+  String aboutVersion(String version) {
+    return 'バージョン $version';
+  }
+
+  @override
   String get aboutTitle => 'ビンゴについて';
 
   @override

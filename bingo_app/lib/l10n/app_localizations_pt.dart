@@ -152,6 +152,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get aboutDeveloper => 'Desenvolvedor (GitHub)';
 
   @override
+  String aboutVersion(String version) {
+    return 'Versão $version';
+  }
+
+  @override
   String get aboutTitle => 'Sobre o Bingo';
 
   @override

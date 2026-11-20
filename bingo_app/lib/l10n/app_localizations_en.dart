@@ -150,6 +150,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutDeveloper => 'Developer (GitHub)';
 
   @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
   String get aboutTitle => 'About Bingo';
 
   @override

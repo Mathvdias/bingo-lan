@@ -352,6 +352,12 @@ abstract class AppLocalizations {
   /// **'Developer (GitHub)'**
   String get aboutDeveloper;
 
+  /// App version shown in About
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(String version);
+
   /// No description provided for @aboutTitle.
   ///
   /// In en, this message translates to:

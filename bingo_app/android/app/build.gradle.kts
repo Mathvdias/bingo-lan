@@ -87,6 +87,13 @@ android {
             applicationIdSuffix = ".dev"
             resValue("string", "app_name", "\"BingoDev\"")
         }
+        // Teste fechado da Play: mesmo applicationId e Firebase da prod
+        // (src/alpha/google-services.json é cópia do de prod), nome e ícone
+        // com faixa BETA para distinguir do app da loja.
+        create("alpha") {
+            dimension = "env"
+            resValue("string", "app_name", "\"Bingo β\"")
+        }
         create("prod") {
             dimension = "env"
             resValue("string", "app_name", "\"Bingo\"")

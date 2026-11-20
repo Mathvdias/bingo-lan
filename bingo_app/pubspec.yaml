@@ -70,6 +70,7 @@ dependencies:
   app_tracking_transparency: ^2.0.6+1
   # 6.8.x exige Flutter >=3.44; o projeto e o CI estão em 3.38.10.
   audioplayers: ^6.7.1
+  package_info_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:

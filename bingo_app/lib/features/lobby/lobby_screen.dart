@@ -5,6 +5,7 @@ import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/banner_ad_widget.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
+import 'package:bingo_app/shared/ui/widgets/config_listenable_builder.dart';
 import 'package:bingo_core/bingo_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -85,6 +86,12 @@ class _LobbyScreenState extends State<LobbyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Reconstrói quando as flags mudam ao vivo (override em /debug/flags ou
+    // novo fetch): botão de upgrade e modo solo dependem delas.
+    return ConfigListenableBuilder(builder: _buildLobby);
+  }
+
+  Widget _buildLobby(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;

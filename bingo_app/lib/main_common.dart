@@ -11,6 +11,7 @@ import 'package:bingo_app/shared/services/ad_service.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
 import 'package:bingo_app/shared/services/att_service.dart';
 import 'package:bingo_app/shared/services/revenue_config_service.dart';
+import 'package:bingo_app/shared/services/shared_prefs_key_value_store.dart';
 import 'package:bingo_app/shared/services/sound_service.dart';
 import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/app_fonts.dart';
@@ -24,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'firebase_options.dart' as prod;
@@ -87,9 +89,15 @@ Future<void> mainCommon(AppConfig appConfig) async {
     );
   }
 
-  // 2. Initialize the Bingo SDK (não configura o RevenueCat)
+  // 2. Initialize the Bingo SDK (não configura o RevenueCat). Em dev/alpha
+  //    o IConfigDriver ganha overrides locais de flags (tela /debug/flags),
+  //    persistidos em shared_preferences; em prod é o Remote Config puro.
   try {
-    await BingoSDK.initialize();
+    await BingoSDK.initialize(
+      debugOverridesStore: appConfig.hasDebugTools
+          ? SharedPrefsKeyValueStore(await SharedPreferences.getInstance())
+          : null,
+    );
   } catch (e) {
     log('BingoSDK (Core) initialization failed: $e');
   }

@@ -11,7 +11,7 @@
 
 | Branch | Evento | Trilha | Nome da versão | Quem recebe |
 | --- | --- | --- | --- | --- |
-| `develop` | todo push (merge de PR) | **alpha** (teste fechado) | `<pubspec>-alpha.<run_number>`, ex. `1.0.5-alpha.14` | grupo bingo-testadores, automaticamente |
+| `develop` | todo push (merge de PR) | **alpha** (teste fechado) | `<pubspec>-alpha.<run_number>`, ex. `1.0.5-alpha.14`; flavor `alpha` (ícone BETA, tela de flags) | grupo bingo-testadores, automaticamente |
 | `main` | tag `vX.Y.Z` | `RELEASE_TRACK` do workflow: `internal` hoje, `production` quando a Play liberar | `X.Y.Z` (da tag) | testadores de licença (interna) / público (produção) |
 
 O `versionCode` é o `run_number` do workflow, único e crescente nos dois caminhos. Regras:
@@ -20,6 +20,20 @@ O `versionCode` é o `run_number` do workflow, único e crescente nos dois camin
 - Para lançar: merge de `develop` em `main` **antes** da tag. Uma tag num commit mais antigo que a Alpha atual gera um `versionCode` maior mesmo assim, mas publicaria código mais velho que o dos testadores.
 - A Play não deixa um usuário "descer" de versão: quem está no grupo da Alpha só recebe a produção quando o `versionCode` dela passar o da Alpha. Com o contador único isso acontece naturalmente.
 - O primeiro envio de cada trilha para revisão ("Enviar para revisão" na Visão geral da publicação) é manual no Console; depois disso os uploads seguintes entram sozinhos.
+
+## Flavor alpha
+
+O flavor `alpha` é o build da trilha de teste fechado: mesmo `applicationId` (`com.nightstudios.bingo`), mesmo projeto Firebase (`android/app/src/alpha/google-services.json` é cópia do de prod), mesmas chaves do RevenueCat, Crashlytics, anúncios e validação de `RC_ANDROID_KEY` que a prod. O que muda: nome `Bingo β`, ícone com a faixa BETA (`android/app/src/alpha/res`, gerado por `tool/icons/make_alpha_icon.py` + `dart run flutter_launcher_icons -f flutter_launcher_icons-alpha.yaml`) e `AppConfig.hasDebugTools = true`, que liga a tela `/debug/flags` (overrides locais de Remote Config) e a entrada escondida no "Sobre" (5 toques na versão). A prod continua sem nada disso.
+
+```bash
+# App Bundle para a trilha alpha (as mesmas secrets/keystore do release prod)
+flutter build appbundle --release --flavor alpha -t lib/main_alpha.dart \
+  --dart-define=ENVIRONMENT=alpha --dart-define=RC_ANDROID_KEY=$RC_ANDROID_KEY \
+  --build-name=X.Y.Z-alpha.N --build-number=N
+
+# APK de depuração local
+flutter build apk --debug --flavor alpha -t lib/main_alpha.dart --dart-define=ENVIRONMENT=alpha
+```
 
 ## Como lançar
 

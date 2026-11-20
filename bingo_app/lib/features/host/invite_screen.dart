@@ -5,6 +5,7 @@ import 'package:bingo_app/shared/services/subscription_service.dart';
 import 'package:bingo_app/shared/ui/tokens/app_colors.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_button.dart';
 import 'package:bingo_app/shared/ui/widgets/bingo_scaffold.dart';
+import 'package:bingo_app/shared/ui/widgets/config_listenable_builder.dart';
 import 'package:bingo_app/shared/ui/widgets/players_counter.dart';
 import 'package:bingo_app/shared/ui/widgets/stroked_text.dart';
 import 'package:bingo_app/shared/ui/widgets/view_model_provider.dart';
@@ -184,20 +185,27 @@ class _HostInviteScreenState extends State<HostInviteScreen> {
                           const SizedBox(height: 16),
                           // "N/M" + "jogadores (plano grátis)" quando há limite e
                           // o host não é premium (modelo paywall_host).
-                          ValueListenableBuilder<bool>(
-                            valueListenable: SubscriptionService.isPremium,
-                            builder: (context, isPremium, _) {
-                              final showCap =
-                                  RevenueConfigService.hasFreePlayerCap &&
-                                  !isPremium;
-                              return PlayersCounter(
-                                key: const Key('invite_player_count'),
-                                count: players.length,
-                                max: showCap
-                                    ? RevenueConfigService.maxFreePlayersPathA
-                                    : null,
-                              );
-                            },
+                          // Reconstrói quando as flags mudam ao vivo.
+                          ConfigListenableBuilder(
+                            builder: (context) =>
+                                ValueListenableBuilder<bool>(
+                                  valueListenable:
+                                      SubscriptionService.isPremium,
+                                  builder: (context, isPremium, _) {
+                                    final showCap =
+                                        RevenueConfigService
+                                            .hasFreePlayerCap &&
+                                        !isPremium;
+                                    return PlayersCounter(
+                                      key: const Key('invite_player_count'),
+                                      count: players.length,
+                                      max: showCap
+                                          ? RevenueConfigService
+                                                .maxFreePlayersPathA
+                                          : null,
+                                    );
+                                  },
+                                ),
                           ),
                           if (players.isEmpty)
                             Padding(

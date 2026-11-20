@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:bingo_app/core/config/debug_tools.dart';
 import 'package:bingo_app/features/player/player_game_args.dart';
 import 'package:bingo_app/l10n/app_localizations.dart';
 import 'package:bingo_app/shared/services/analytics_service.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/about/about_screen.dart';
+import '../../features/debug/debug_flags_screen.dart';
 import '../../features/host/invite_screen.dart';
 import '../../features/host/room_screen.dart';
 import '../../features/host/setup_screen.dart';
@@ -23,6 +25,10 @@ import '../../features/solo/solo_game_screen.dart';
 /// Caminho do App Link https (`https://<BingoInvite.webHost>/join?data=`) e
 /// do deep link `bingo://join?data=`, como o go_router o recebe.
 const String joinPath = '/join';
+
+/// Tela de overrides de feature flags. Só existe com ferramentas de
+/// depuração (dev/alpha); em prod a rota não é registrada.
+const String debugFlagsPath = '/debug/flags';
 
 /// Convite recebido por link: `bingo://join?data=<base64>` ou
 /// `https://bingo-policy-and-terms.vercel.app/join?data=<base64>`.
@@ -69,7 +75,15 @@ final GoRouter router = GoRouter(
 
 /// Tabela de rotas do app (separada do [router] para ser testável sem os
 /// singletons do Firebase que o observer de analytics exige).
-final List<RouteBase> appRoutes = <RouteBase>[
+///
+/// Avaliada na primeira leitura, depois de a [AppConfig] estar no GetIt:
+/// é ela que decide se as rotas de depuração entram.
+final List<RouteBase> appRoutes = buildAppRoutes(
+  debugTools: debugToolsEnabled,
+);
+
+/// Monta a tabela de rotas. Com [debugTools] inclui `/debug/flags`.
+List<RouteBase> buildAppRoutes({required bool debugTools}) => <RouteBase>[
   // A splash nativa (flutter_native_splash) é a única splash: o app abre
   // direto no lobby. `/splash` segue válido só como redirecionamento.
   GoRoute(path: '/', redirect: (context, state) => '/lobby'),
@@ -135,4 +149,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
       initialData: state.uri.queryParameters[BingoInvite.dataParam],
     ),
   ),
+  // Ferramentas de depuração (dev/alpha). Em prod a lista termina acima.
+  if (debugTools)
+    GoRoute(
+      path: debugFlagsPath,
+      builder: (context, state) => const DebugFlagsScreen(),
+    ),
 ];
