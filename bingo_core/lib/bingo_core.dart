@@ -10,6 +10,7 @@ export 'src/drivers/i_config_driver.dart';
 export 'src/drivers/i_game_connection.dart';
 export 'src/drivers/i_key_value_store.dart';
 export 'src/drivers/i_network_info_driver.dart'; // New export
+export 'src/drivers/free_payment_driver.dart';
 export 'src/drivers/i_payment_driver.dart';
 export 'src/drivers/i_uuid_driver.dart'; // New export
 export 'src/drivers/overridable_config_driver.dart';

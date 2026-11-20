@@ -76,10 +76,14 @@ Future<void> mainCommon(AppConfig appConfig) async {
 
   setupServiceLocator();
 
+  // Sem chave do RevenueCat o app é a edição aberta: tudo liberado, sem
+  // compras e sem anúncios. Não é erro de configuração.
+  final openEdition = Env.isOpenEdition(appConfig);
+
   // Chave do RevenueCat ausente não derruba o app: fica registrada no
   // Crashlytics (não fatal) e as compras ficam desativadas nesta sessão.
   final envError = Env.validate(appConfig);
-  if (envError != null && kReleaseMode) {
+  if (envError != null && kReleaseMode && !openEdition) {
     unawaited(
       FirebaseCrashlytics.instance.recordError(
         StateError(envError),
@@ -97,6 +101,7 @@ Future<void> mainCommon(AppConfig appConfig) async {
       debugOverridesStore: appConfig.hasDebugTools
           ? SharedPrefsKeyValueStore(await SharedPreferences.getInstance())
           : null,
+      openEdition: openEdition,
     );
   } catch (e) {
     log('BingoSDK (Core) initialization failed: $e');

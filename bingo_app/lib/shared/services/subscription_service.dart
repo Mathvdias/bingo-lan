@@ -32,6 +32,11 @@ class SubscriptionService {
 
   static bool _configured = false;
 
+  static bool _openEdition = false;
+
+  /// `true` quando o app roda sem RevenueCat (edição aberta): premium liberado.
+  static bool get isOpenEdition => _openEdition;
+
   /// `true` após `Purchases.configure` ter sido chamado com sucesso.
   static bool get isConfigured => _configured;
 
@@ -49,7 +54,9 @@ class SubscriptionService {
     final key =
         apiKey ?? Env.revenueCatKeyFor(appConfig, isIOS: Platform.isIOS);
     if (key.isEmpty) {
-      log('RevenueCat: sem chave para este flavor/plataforma; compras off.');
+      log('Edição aberta: sem chave do RevenueCat, tudo liberado.');
+      _openEdition = true;
+      _setPremium(true);
       return;
     }
 

@@ -82,6 +82,14 @@ class Env {
     return message;
   }
 
+  /// Edição aberta: build sem chave do RevenueCat para a plataforma atual
+  /// (release do GitHub, forks). Tudo liberado, sem compras e sem anúncios.
+  static bool isOpenEdition(AppConfig appConfig, {bool? isIOS}) =>
+      revenueCatKeyFor(
+        appConfig,
+        isIOS: isIOS ?? (defaultTargetPlatform == TargetPlatform.iOS),
+      ).isEmpty;
+
   static bool get isDev => environment == 'dev';
   static bool get isAlpha => environment == 'alpha';
   static bool get isProd => environment == 'prod';

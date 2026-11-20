@@ -5,6 +5,7 @@ import '../drivers/i_game_connection.dart';
 import '../drivers/i_key_value_store.dart';
 import '../drivers/i_network_info_driver.dart';
 import '../drivers/i_payment_driver.dart';
+import '../drivers/free_payment_driver.dart';
 import '../drivers/i_uuid_driver.dart';
 import '../drivers/local_shelf_game_connection.dart';
 import '../drivers/network_info_driver.dart';
@@ -26,7 +27,13 @@ class BingoSDK {
   /// [OverridableConfigDriver] sobre o Remote Config (overrides locais de
   /// flags, para dev/alpha), também registrado pelo próprio tipo para a tela
   /// de flags. Nulo (prod): registra o [RemoteConfigDriver] puro, como sempre.
-  static Future<void> initialize({IKeyValueStore? debugOverridesStore}) async {
+  ///
+  /// Com [openEdition] (build sem chave do RevenueCat) o pagamento vira
+  /// [FreePaymentDriver]: todo recurso pago fica liberado.
+  static Future<void> initialize({
+    IKeyValueStore? debugOverridesStore,
+    bool openEdition = false,
+  }) async {
     final getIt = GetIt.instance;
 
     // config
@@ -43,8 +50,10 @@ class BingoSDK {
       getIt.registerSingleton<IConfigDriver>(overridable);
     }
 
-    // payment (somente leitura de CustomerInfo)
-    getIt.registerSingleton<IPaymentDriver>(PaymentDriver());
+    // payment: leitura de CustomerInfo, ou tudo liberado na edição aberta
+    getIt.registerSingleton<IPaymentDriver>(
+      openEdition ? const FreePaymentDriver() : PaymentDriver(),
+    );
 
     // network & uuid
     getIt.registerSingleton<INetworkInfoDriver>(NetworkInfoDriver());

@@ -111,4 +111,14 @@ void main() {
       expect(message, contains('Build prod sem RC_ANDROID_KEY'));
     });
   });
+
+  group('Env.isOpenEdition', () {
+    test('sem chave do RevenueCat o build é a edição aberta', () {
+      // Em testes as constantes de --dart-define estão vazias.
+      expect(Env.isOpenEdition(prod, isIOS: false), isTrue);
+      expect(Env.isOpenEdition(prod, isIOS: true), isTrue);
+      expect(Env.isOpenEdition(dev, isIOS: false), isTrue);
+      expect(Env.isOpenEdition(alpha, isIOS: false), isTrue);
+    });
+  });
 }

@@ -124,8 +124,10 @@ class _LobbyScreenState extends State<LobbyScreen> {
             label: l10n.lobbySettingsButton,
             onPressed: () => context.push('/settings'),
           ),
-          // Selo premium ou botão de upgrade, lendo o cache do status.
-          if (RevenueConfigService.purchasesEnabled)
+          // Selo premium ou botão de upgrade, lendo o cache do status. A
+          // edição aberta não tem loja: nem selo nem botão.
+          if (RevenueConfigService.purchasesEnabled &&
+              !SubscriptionService.isOpenEdition)
             ValueListenableBuilder<bool>(
               valueListenable: SubscriptionService.isPremium,
               builder: (context, isPremium, _) {
