@@ -1,0 +1,82 @@
+name: Release
+
+# Tag vX.Y.Z na main → APK assinado anexado a uma GitHub Release.
+# O build sai sem chave do RevenueCat: é a edição aberta (tudo liberado,
+# sem compras e sem anúncios).
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: 3.38.10
+
+jobs:
+  apk:
+    name: APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Versão
+        id: ver
+        run: |
+          PUBSPEC=$(grep '^version:' bingo_app/pubspec.yaml | sed -E 's/version: *([0-9.]+).*/\1/')
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then NAME="${GITHUB_REF_NAME#v}"; else NAME="$PUBSPEC"; fi
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Keystore e key.properties
+        working-directory: bingo_app/android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          test -n "$KEYSTORE_BASE64" || { echo "::error::Secret ANDROID_KEYSTORE_BASE64 ausente"; exit 1; }
+          echo "$KEYSTORE_BASE64" | base64 -d > app/upload-keystore.jks
+          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=upload-keystore.jks\n' \
+            "$STORE_PASSWORD" "$KEY_PASSWORD" "$KEY_ALIAS" > key.properties
+
+      - name: Build APK (edição aberta)
+        working-directory: bingo_app
+        run: |
+          flutter pub get
+          flutter build apk --release --flavor prod -t lib/main.dart \
+            --build-name="${{ steps.ver.outputs.name }}" \
+            --build-number="${{ github.run_number }}" \
+            --dart-define=ENVIRONMENT=prod
+          cp build/app/outputs/flutter-apk/app-prod-release.apk "bingo-${{ steps.ver.outputs.name }}.apk"
+          sha256sum "bingo-${{ steps.ver.outputs.name }}.apk" > "bingo-${{ steps.ver.outputs.name }}.apk.sha256"
+
+      - name: GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        working-directory: bingo_app
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "bingo-${{ steps.ver.outputs.name }}.apk" \
+            "bingo-${{ steps.ver.outputs.name }}.apk.sha256" \
+            --title "Bingo ${{ steps.ver.outputs.name }}" --generate-notes
+
+      - uses: actions/upload-artifact@v4
+        if: github.ref_type != 'tag'
+        with:
+          name: bingo-${{ steps.ver.outputs.name }}
+          path: bingo_app/bingo-*.apk*
+          retention-days: 14
